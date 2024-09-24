@@ -2,6 +2,7 @@ Définition
 Soit $A \in M_{n,n}(\mathbb{C})$ et $p$ est le nombre de coefficients non nuls.
 - $A$ est creuse si elle a peu de coefficients non nuls. $p \ll n^2$
 - $A$ est pleine si elle beaucoup de coefficients non nuls. $p \approx n^2$
+
 Remarque
 Exemple de matrice creuse :
 - Résolution de l'équation de Poisson par différences finies.
@@ -66,7 +67,7 @@ $$
    0 < \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n.
   $$
 
-Les valeurs propres $0 \leq \sigma_1 \leq \ldots \leq \sigma_m$ sont les valeurs singulières de $A$.
+   Les valeurs propres $0 \leq \sigma_1 \leq \ldots \leq \sigma_m$ sont les valeurs singulières de $A$.
 
 Définition
 1. **Les normes naturelles sur** $M_n(\mathbb{C})$ :
@@ -93,6 +94,7 @@ Pour tout $A \in M_{n,n}(\mathbb{C})$ :
 - $$\|A\|_\infty = \max_{1 \leq i \leq n} \sum_{j=1}^n |a_{ij}|$$
 - $$\|A\|_1 = \max_{1 \leq j \leq n} \sum_{i=1}^n |a_{ij}|$$
 - $$\|A\|_2 = \sqrt{\rho(A^* A)} = \sigma_{\max}$$
+mq
 
 Pour tout $x \in \mathbb{C}^m$ :
 1. Norme infinie :

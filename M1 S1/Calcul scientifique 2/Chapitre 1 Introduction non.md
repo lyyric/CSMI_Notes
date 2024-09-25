@@ -1,73 +1,74 @@
+
 > [!def]
 > Soit $A \in M_{n,n}(\mathbb{C})$ et $p$ est le nombre de coefficients non nuls.
 > - $A$ est creuse si elle a peu de coefficients non nuls. $p \ll n^2$
 > - $A$ est pleine si elle beaucoup de coefficients non nuls. $p \approx n^2$
 
-Remarque
-Exemple de matrice creuse :
-- Résolution de l'équation de Poisson par différences finies.
-
-**Équation de Poisson**
-$$
-\begin{cases}
--u''(x) = f(x) \\
-u(0) = 0, \; u(1) = 0
-\end{cases}
-$$
-Discrétisation de $[0, 1]$
-Pour tout $i \in [[0, n+1]]$ :
-$$
-x_i = \frac{i}{n+1}
-$$
-avec $\Delta x = \frac{1}{n+1}$.
-
-$$
-u''(x_i) = \frac{u(x_{i+1}) - 2u(x_i) + u(x_{i-1})}{(\Delta x)^2}
-$$
-
-Schéma numérique
-Solution approchée $u \in \mathbb{R}^m$ vérifiant $A u = b$, avec :
-$$
-A = \frac{1}{\Delta x^2} \begin{pmatrix} 
-2 & -1 & 0 & \cdots & 0 \\
--1 & 2 & -1 & \cdots & 0 \\
-0 & -1 & 2 & \cdots & 0 \\
-\vdots & \vdots & \vdots & \ddots & -1 \\
-0 & 0 & 0 & -1 & 2 
-\end{pmatrix}, \quad b = \begin{pmatrix} 
-f(x_1) \\
-f(x_2) \\
-\vdots \\
-f(x_{m-1})
-\end{pmatrix}
-$$
-où $A \in M_{m,m}(\mathbb{R})$ est une matrice creuse, et $b \in \mathbb{R}^m$.
+> [!rmk]
+> Exemple de matrice creuse :
+> - Résolution de l'équation de Poisson par différences finies.
+>
+> **Équation de Poisson**
+> $$
+> \begin{cases}
+> -u''(x) = f(x) \\
+> u(0) = 0, \; u(1) = 0
+> \end{cases}
+> $$
+> Discrétisation de $[0, 1]$
+> Pour tout $i \in [[0, n+1]]$ :
+> $$
+> x_i = \frac{i}{n+1}
+> $$
+> avec $\Delta x = \frac{1}{n+1}$.
+>
+> $$
+> u''(x_i) = \frac{u(x_{i+1}) - 2u(x_i) + u(x_{i-1})}{(\Delta x)^2}
+> $$
+>
+> Solution approchée $u \in \mathbb{R}^m$ vérifiant $A u = b$, avec :
+> $$
+> A = \frac{1}{\Delta x^2} \begin{pmatrix} 
+> 2 & -1 & 0 & \cdots & 0 \\
+> -1 & 2 & -1 & \cdots & 0 \\
+> 0 & -1 & 2 & \cdots & 0 \\
+> \vdots & \vdots & \vdots & \ddots & -1 \\
+> 0 & 0 & 0 & -1 & 2 
+> \end{pmatrix}, \quad b = \begin{pmatrix} 
+> f(x_1) \\
+> f(x_2) \\
+> \vdots \\
+> f(x_{m-1})
+> \end{pmatrix}
+> $$
+> où $A \in M_{m,m}(\mathbb{R})$ est une matrice creuse, et $b \in \mathbb{R}^m$.
 
 1) Norme Matricielle
 
-Définition
-Soit $A \in M_{n,n}(\mathbb{C})$, on appelle rayon spectral de $A$ (la quantité) :
-$$
-\rho(A) = \max \{ |\lambda|, \; \lambda \in \text{Sp}(A) \}
-$$
+> [!def] 
+> Soit $A \in M_{n,n}(\mathbb{C})$, on appelle rayon spectral de $A$ (la quantité) :
+> $$
+> \rho(A) = \max \{ |\lambda|, \; \lambda \in \text{Sp}(A) \}
+> $$
 
-$A^*=\bar A ^T$ 
+> [!rmk]
+> $A^*=\bar A ^T$ 
 
-Prop
-Soit $A \in M_{n,n}(\mathbb{C})$ (resp. $M_{n,n}(\mathbb{R})$) :
-
-1. **Si $A$ est normale**, c'est-à-dire $A^*A = AA^*$ (resp. $\bar{A}^T A = A \bar{A}^T$), alors $A$ est diagonalisable, donc il existe une base orthonormée $\exists P \in U_n(\mathbb{C})$ , telle que :
-$$
-   A = PDP^* \quad \text{avec } D = \text{diag}(\lambda_1, \ldots, \lambda_n)
-$$
-(resp. $\exists P \in O_n(\mathbb{R})$, telle que : $A = PDP^T$)
-
-2. **Si $A = A^*$**, $A$ est hermitienne (resp. $A = A^T$ symétrique) et $A$ est diagonalisable dans une base orthonormée et a des valeurs propres réelles. Si $A$ est définie positive*, alors les valeurs propres sont strictement positives :
-$$
-   0 < \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n.
-  $$
-
-   Les valeurs propres $0 \leq \sigma_1 \leq \ldots \leq \sigma_m$ sont les valeurs singulières de $A$.
+> [!prp]
+> Soit $A \in M_{n,n}(\mathbb{C})$ (resp. $M_{n,n}(\mathbb{R})$) :
+> 
+> 1. **Si $A$ est normale**, c'est-à-dire $A^*A = AA^*$ (resp. $\bar{A}^T A = A \bar{A}^T$), alors $A$ est diagonalisable, donc il existe une base orthonormée $\exists P \in U_n(\mathbb{C})$ , telle que :
+> $$
+>    A = PDP^* \quad \text{avec } D = \text{diag}(\lambda_1, \ldots, \lambda_n)
+> $$
+> (resp. $\exists P \in O_n(\mathbb{R})$, telle que : $A = PDP^T$)
+> 
+> 2. **Si $A = A^*$**, $A$ est hermitienne (resp. $A = A^T$ symétrique) et $A$ est diagonalisable dans une base orthonormée et a des valeurs propres réelles. Si $A$ est définie positive*, alors les valeurs propres sont strictement positives :
+> $$
+>    0 < \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n.
+>   $$
+> 
+>    Les valeurs propres $0 \leq \sigma_1 \leq \ldots \leq \sigma_m$ sont les valeurs singulières de $A$.
 
 Définition
 1. **Les normes naturelles sur** $M_n(\mathbb{C})$ :

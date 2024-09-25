@@ -1,7 +1,7 @@
-Définition
-Soit $A \in M_{n,n}(\mathbb{C})$ et $p$ est le nombre de coefficients non nuls.
-- $A$ est creuse si elle a peu de coefficients non nuls. $p \ll n^2$
-- $A$ est pleine si elle beaucoup de coefficients non nuls. $p \approx n^2$
+> [!def]
+> Soit $A \in M_{n,n}(\mathbb{C})$ et $p$ est le nombre de coefficients non nuls.
+> - $A$ est creuse si elle a peu de coefficients non nuls. $p \ll n^2$
+> - $A$ est pleine si elle beaucoup de coefficients non nuls. $p \approx n^2$
 
 Remarque
 Exemple de matrice creuse :

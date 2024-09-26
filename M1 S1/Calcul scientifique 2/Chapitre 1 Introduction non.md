@@ -4,7 +4,7 @@
 > - $A$ est creuse si elle a peu de coefficients non nuls. $p \ll n^2$
 > - $A$ est pleine si elle beaucoup de coefficients non nuls. $p \approx n^2$
 
-> [!rmk] 
+> [!example] 
 > Exemple de matrice creuse :
 > - Résolution de l'équation de Poisson par différences finies.
 >

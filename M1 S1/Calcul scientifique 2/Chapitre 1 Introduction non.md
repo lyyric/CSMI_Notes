@@ -4,7 +4,7 @@
 > - $A$ est creuse si elle a peu de coefficients non nuls. $p \ll n^2$
 > - $A$ est pleine si elle beaucoup de coefficients non nuls. $p \approx n^2$
 
-> [!rmk]
+> [!rmk] 
 > Exemple de matrice creuse :
 > - Résolution de l'équation de Poisson par différences finies.
 >
@@ -46,13 +46,13 @@
 1) Norme Matricielle
 
 > [!def] 
-> Soit $A \in M_{n,n}(\mathbb{C})$, on appelle rayon spectral de $A$ (la quantité) :
+> Soit $A \in M_{n,n}(\mathbb{C})$, on appelle **rayon spectral** de $A$ (la quantité) :
 > $$
 > \rho(A) = \max \{ |\lambda|, \; \lambda \in \text{Sp}(A) \}
 > $$
 
 > [!rmk]
-> $A^*=\bar A ^T$ 
+> on note $A^*=\bar A ^T$.
 
 > [!prp]
 > Soit $A \in M_{n,n}(\mathbb{C})$ (resp. $M_{n,n}(\mathbb{R})$) :
@@ -63,69 +63,69 @@
 > $$
 > (resp. $\exists P \in O_n(\mathbb{R})$, telle que : $A = PDP^T$)
 > 
-> 2. **Si $A = A^*$**, $A$ est hermitienne (resp. $A = A^T$ symétrique) et $A$ est diagonalisable dans une base orthonormée et a des valeurs propres réelles. Si $A$ est définie positive*, alors les valeurs propres sont strictement positives :
+> 2. **Si $A = A^*$**, $A$ est **hermitienne** (resp. $A = A^T$ **symétrique**) et $A$ est **diagonalisable** dans une base orthonormée et a des **valeurs propres** réelles. Si $A$ est définie positive*, alors les valeurs propres sont strictement positives :
 > $$
 >    0 < \lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n.
->   $$
+> $$
 > 
->    Les valeurs propres $0 \leq \sigma_1 \leq \ldots \leq \sigma_m$ sont les valeurs singulières de $A$.
+>    Les **valeurs propres** $0 \leq \sigma_1 \leq \ldots \leq \sigma_m$ sont les valeurs singulières de $A$.
 
-Définition
-1. **Les normes naturelles sur** $M_n(\mathbb{C})$ :
-   - Ce sont des normes compatibles avec la multiplication :
-$$
-     \forall A, B \in M_n(\mathbb{C}), \; \|AB\| \leq \|A\| \|B\|
-$$
+> [!def]
+> 1. **Les normes naturelles sur** $M_n(\mathbb{C})$ :
+>    - Ce sont des normes compatibles avec la multiplication :
+> $$
+>      \forall A, B \in M_n(\mathbb{C}), \; \|AB\| \leq \|A\| \|B\|
+> $$
+> 
+> 2. Soit $\| \cdot \|_V$ une norme sur $\mathbb{C}^n$. On lui associe une norme dite **subordonnée** $\| \cdot \|_M$ sur $M_n(\mathbb{C})$
+> $$
+>    \|A\|_M = \sup_{x \neq 0} \frac{\|Ax\|_V}{\|x\|_V}
+> $$
+>    Elle vérifie :
+> $$
+>    \forall A \in M_n(\mathbb{C}), \; \forall x \in \mathbb{C}^n, \; \|Ax\|_V \leq \|A\|_M \|x\|_V
+> $$
+>    et 
+> $$
+>    \|I\|_M = 1
+> $$
 
-2. **Soit** $\| \cdot \|_V$ **une norme sur** $\mathbb{C}^n$. On lui associe une norme dite subordonnée $\| \cdot \|_M$ sur $M_n(\mathbb{C})$
-$$
-   \|A\|_M = \sup_{x \neq 0} \frac{\|Ax\|_V}{\|x\|_V}
-$$
-   Elle vérifie :
-$$
-   \forall A \in M_n(\mathbb{C}), \; \forall x \in \mathbb{C}^n, \; \|Ax\|_V \leq \|A\|_M \|x\|_V
-$$
-   et 
-$$
-   \|I\|_M = 1
-$$
+> [!prp]
+> Pour tout $A \in M_{n,n}(\mathbb{C})$ :
+> - $$\|A\|_\infty = \max_{1 \leq i \leq n} \sum_{j=1}^n |a_{ij}|$$
+> - $$\|A\|_1 = \max_{1 \leq j \leq n} \sum_{i=1}^n |a_{ij}|$$
+> - $$\|A\|_2 = \sqrt{\rho(A^* A)} = \sigma_{\max}$$
 
-Proposition
-Pour tout $A \in M_{n,n}(\mathbb{C})$ :
-- $$\|A\|_\infty = \max_{1 \leq i \leq n} \sum_{j=1}^n |a_{ij}|$$
-- $$\|A\|_1 = \max_{1 \leq j \leq n} \sum_{i=1}^n |a_{ij}|$$
-- $$\|A\|_2 = \sqrt{\rho(A^* A)} = \sigma_{\max}$$
-mq
-
-Pour tout $x \in \mathbb{C}^m$ :
-1. Norme infinie :
-$$
-   \|x\|_\infty = \max |x_i|
-$$
-2. Norme 1 :
-$$
-   \|x\|_1 = \sum |x_i| 
-$$
-3. Norme 2 (norme Euclidienne) :
-$$
-   \|x\|_2 = \sqrt{\sum |x_i|^2}
-$$
+> [!rmk]
+> Pour tout $x \in \mathbb{C}^m$ :
+> 1. Norme infinie :
+> $$
+>    \|x\|_\infty = \max |x_i|
+> $$
+> 2. Norme 1 :
+> $$
+>    \|x\|_1 = \sum |x_i| 
+> $$
+> 3. Norme 2 (norme Euclidienne) :
+> $$
+>    \|x\|_2 = \sqrt{\sum |x_i|^2}
+> $$
  
- Prop
-1. Si $A$ est normale, alors :
-   $$
-   \|A\|_2 = \rho(A)
-   $$
-
-2. Si $A$ est hermitienne positive :
-   $$
-   \|A\|_2 = \rho(A) = \lambda_{\max}
-   $$
-
-3. Si $A$ est unitaire :
-   $$
-   \|A\|_2 = \rho(A) = 1
-   $$
+> [!prp]
+> 1. Si $A$ est normale, alors :
+>    $$
+>    \|A\|_2 = \rho(A)
+>    $$
+> 
+> 2. Si $A$ est hermitienne positive :
+>    $$
+>    \|A\|_2 = \rho(A) = \lambda_{\max}
+>    $$
+> 
+> 3. Si $A$ est unitaire :
+>    $$
+>    \|A\|_2 = \rho(A) = 1
+>    $$
 
 Prop
 Pour une matrice normale $A$ :

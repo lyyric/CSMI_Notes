@@ -1,0 +1,48 @@
+use rsplot1d::plot1d;
+use std::f64::consts::PI;
+
+fn main() {
+    // 空间网格设置
+    let nx = 1000;
+    let l = 1.0;
+    let dx = l / nx as f64;
+    let x: Vec<f64> = (0..=nx).map(|i| i as f64 * dx).collect();
+
+    // 截断项数 N
+    let n_terms = 50;
+
+    // 定义时间点
+    let times = vec![0.001, 0.01, 0.1, 1.0];
+
+    // 计算傅立叶系数 c_n
+    let mut c_n = vec![0.0; n_terms + 1];
+    c_n[0] = 0.25; // c_0 = 1/4
+
+    for n in 1..=n_terms {
+        let n_pi = n as f64 * PI;
+        let sin_term = (n_pi / 8.0).sin();
+        c_n[n] = (4.0 / (n_pi)) * (-1.0f64).powi(n as i32) * sin_term;
+    }
+
+    // 对于每个时间点，计算并绘制 u_N(x, t)
+    for &t in &times {
+        // 计算 u_N(x, t)
+        let u_nt: Vec<f64> = x
+            .iter()
+            .map(|&xi| {
+                let mut sum = c_n[0];
+                for n in 1..=n_terms {
+                    let n_pi = n as f64 * PI;
+                    let exponent = -n_pi.powi(2) * t;
+                    let term = c_n[n] * (exponent.exp()) * (n_pi * xi).cos();
+                    sum += term;
+                }
+                sum
+            })
+            .collect();
+
+        // 绘制结果
+        println!("绘制时间 t = {:.3}", t);
+        plot1d(&x, &u_nt, &u_nt);
+    }
+}

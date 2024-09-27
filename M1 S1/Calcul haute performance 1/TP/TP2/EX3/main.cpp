@@ -1,8 +1,7 @@
-# include <iostream>
-# include <mpi.h>
-# include <vector>
-# include <cstdlib>  // For rand() and srand()
-# include <ctime>    // For time()
+#include <mpi.h>
+#include <iostream>
+#include <cstdlib>  // For rand() and srand()
+#include <ctime>    // For time()
 
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
@@ -18,9 +17,9 @@ int main(int argc, char** argv) {
 
     // Step 2: Generate M random numbers in the interval and calculate the average
     int M = 100;  // You can adjust M to see the effect on convergence
+    double* random_numbers = new double[M];  // Allocate array for random numbers
     std::srand(time(0) + rank);  // Seed the random number generator uniquely for each process
 
-    std::vector<double> random_numbers(M);
     double sum = 0.0;
     for (int i = 0; i < M; ++i) {
         random_numbers[i] = Ip_start + static_cast<double>(rand()) / RAND_MAX * (Ip_end - Ip_start);
@@ -29,9 +28,12 @@ int main(int argc, char** argv) {
 
     double local_average = sum / M;
 
-    // Step 3: Each process sends its average to process p (itself in this case)
-    std::vector<double> averages(nproc);
-    MPI_Gather(&local_average, 1, MPI_DOUBLE, averages.data(), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    // Step 3: Each process sends its average to process 0
+    double* averages = nullptr;
+    if (rank == 0) {
+        averages = new double[nproc];  // Allocate array to gather averages in process 0
+    }
+    MPI_Gather(&local_average, 1, MPI_DOUBLE, averages, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // Step 4: Display results (only process 0 will gather and print results)
     if (rank == 0) {
@@ -39,7 +41,11 @@ int main(int argc, char** argv) {
         for (int i = 0; i < nproc; ++i) {
             std::cout << "Process " << i << " average: " << averages[i] << std::endl;
         }
+        delete[] averages;  // Free the allocated memory for averages
     }
+
+    // Free the allocated memory for random numbers
+    delete[] random_numbers;
 
     MPI_Finalize();
     return 0;

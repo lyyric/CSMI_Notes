@@ -1,3 +1,4 @@
+Chapitre 1 : Introduction
 
 > [!definition]
 > Soit $A \in M_{n,n}(\mathbb{C})$ et $p$ est le nombre de coefficients non nuls.

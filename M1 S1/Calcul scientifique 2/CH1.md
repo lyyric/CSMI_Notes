@@ -242,31 +242,30 @@ $$
 $$
    \frac{\|\delta x\|}{\|x + \delta x\|} \leq \text{cond}(A) \frac{\|\delta A\|}{\|A\|}.
 $$
+> [!remark]
+> Si le conditionnement de $A$, noté $\text{cond}(A)$, est élevé, cela implique un mauvais contrôle de la propagation des erreurs.
 
-Remarque 1
-Si le conditionnement de $A$, noté $\text{cond}(A)$, est élevé, cela implique un mauvais contrôle de la propagation des erreurs.
-
-Remarque 2
-Les erreurs relatives sur les réels sont codées avec des nombres à virgule flottante en :
-
-- **Simple précision** (32 bits)
-- **Double précision** (64 bits)
-
-Exemple
-
-Le nombre `103.000.004` est codé en base décimale comme :
-
-- `0.10300 \times 10^9` si on garde seulement 5 chiffres significatifs.
-
-Le nombre le plus proche de `0.10300 \times 10^9` est `0.10301 \times 10^9`, c'est-à-dire `103.001.000`.
-
-Étant donné $x \in \mathbb{R}^n$, le nombre le plus proche $\tilde{x}$ vérifie :
-$$
-|x - \tilde{x}| \leq \varepsilon |x|,
-$$
-où $\varepsilon = \text{précision machine}$ :
-- $\varepsilon \approx 10^{-7}$ (simple précision)
-- $\varepsilon \approx 10^{-16}$ (double précision)
+> [!remark]
+> Les erreurs relatives sur les réels sont codées avec des nombres à virgule flottante en :
+> 
+> - **Simple précision** (32 bits)
+> - **Double précision** (64 bits)
+> 
+> Exemple
+> 
+> Le nombre `103.000.004` est codé en base décimale comme :
+> 
+> - `0.10300 \times 10^9` si on garde seulement 5 chiffres significatifs.
+> 
+> Le nombre le plus proche de `0.10300 \times 10^9` est `0.10301 \times 10^9`, c'est-à-dire `103.001.000`.
+> 
+> Étant donné $x \in \mathbb{R}^n$, le nombre le plus proche $\tilde{x}$ vérifie :
+> $$
+> |x - \tilde{x}| \leq \varepsilon |x|,
+> $$
+> où $\varepsilon = \text{précision machine}$ :
+> - $\varepsilon \approx 10^{-7}$ (simple précision)
+> - $\varepsilon \approx 10^{-16}$ (double précision)
 
  Preuve
 

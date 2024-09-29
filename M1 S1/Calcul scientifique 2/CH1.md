@@ -221,14 +221,14 @@ où $y = P^* x$ avec $P$ unitaire.
 > Soit $A \in M_{n,n}(\mathbb{C})$ inversible. On appelle **conditionnement** de $A$ le réel :
 > 
 > $$
-> \text{cond}(A) = \|A\| \|A^{-1}\| \geq 1.
+> \text{cond}(A) = \|A\| \|A^{-1}\|.
 > $$
-> 
-> Pour toute norme subordonnée, on a :
-> 
-> $$
-> 1 = \|I\| = \|A A^{-1}\| \leq \|A\| \|A^{-1}\|.
-> $$
+
+Pour toute norme subordonnée, on a :
+
+$$
+1 = \|I\| = \|A A^{-1}\| \leq \|A\| \|A^{-1}\|.
+$$
 
  3. Sensibilité des Solutions
 

@@ -44,7 +44,7 @@ Chapitre 1 : Introduction
 > $$
 > où $A \in M_{m,m}(\mathbb{R})$ est une matrice creuse, et $b \in \mathbb{R}^m$.
 
-1) Norme Matricielle
+## 1. Norme Matricielle
 
 > [!definition] 
 > Soit $A \in M_{n,n}(\mathbb{C})$, on appelle **rayon spectral** de $A$ (la quantité) :
@@ -215,7 +215,7 @@ $$
 
 où $y = P^* x$ avec $P$ unitaire.
 
- 2. Conditionnement
+## 2. Conditionnement
 
 > [!definition]
 > Soit $A \in M_{n,n}(\mathbb{C})$ inversible. On appelle **conditionnement** de $A$ le réel :
@@ -230,8 +230,6 @@ $$
 1 = \|I\| = \|A A^{-1}\| \leq \|A\| \|A^{-1}\|.
 $$
 
- 3. Sensibilité des Solutions
-
 **Définition :** Soit $A \in M_{n,n}(\mathbb{C})$ inversible, $b \in \mathbb{C}^n$ et $x \in \mathbb{C}^n$ la solution de $Ax = b$.
 1. Si $Ax = b$ et $A(x + \delta x) = (b + \delta b)$, alors :
 $$
@@ -242,6 +240,7 @@ $$
 $$
    \frac{\|\delta x\|}{\|x + \delta x\|} \leq \text{cond}(A) \frac{\|\delta A\|}{\|A\|}.
 $$
+
 > [!remark]
 > Si le conditionnement de $A$, noté $\text{cond}(A)$, est élevé, cela implique un mauvais contrôle de la propagation des erreurs.
 
@@ -304,45 +303,43 @@ $$
    $$
    \frac{\|\delta x\|}{\|x + \delta x\|} \leq \text{cond}(A) \frac{\|\delta A\|}{\|A\|}.
    $$
- Proposition
 
-1. Pour $A \in M_{n,n}(\mathbb{C})$ inversible :
-   $$
-   \text{cond}(A) = \|A\|_2 \|A^{-1}\|_2 = \frac{\sigma_{\max}}{\sigma_{\min}}.
-   $$
+> [!proposition]
+> 1. Pour $A \in M_{n,n}(\mathbb{C})$ inversible :
+>    $$
+>    \text{cond}(A) = \|A\|_2 \|A^{-1}\|_2 = \frac{\sigma_{\max}}{\sigma_{\min}}.
+>    $$
+> 
+> 2. Pour $A \in M_{n,n}(\mathbb{C})$ hermitienne définie positive :
+> $$
+>    \text{cond}(A) =\|A\|_2\|A^{-1}\|_2 = \frac{\lambda_{\max}}{\lambda_{\min}}.
+>    $$
+> 
+> 3. Pour $A \in M_{n,n}(\mathbb{C})$ unitaire :
+> $$
+>    \text{cond}(A) = 1.
+> $$
 
-2. Pour $A \in M_{n,n}(\mathbb{C})$ hermitienne définie positive :
-$$
-   \text{cond}(A) =\|A\|_2\|A^{-1}\|_2 = \frac{\lambda_{\max}}{\lambda_{\min}}.
-   $$
+> [!remark]
+> Pour une matrice hermitienne définie positive $A$, on a :
+> $$
+> A = PDP^*, \quad A^{-1} = (P^{-1})^* D^{-1} P^{-1},
+> $$
+> avec $P$ unitaire et $D$ diagonal.
+> 
+> Si $A$ est une matrice hermitienne définie positive, alors :
+> $$
+> \|A^{-1}\|_2 = \rho(A^{-1}) = \frac{1}{\lambda_{\max}}.
+> $$
 
-3. Pour $A \in M_{n,n}(\mathbb{C})$ unitaire :
-$$
-   \text{cond}(A) = 1.
-$$
-
-Remarque
-
-Pour une matrice hermitienne définie positive $A$, on a :
-$$
-A = PDP^*, \quad A^{-1} = (P^{-1})^* D^{-1} P^{-1},
-$$
-avec $P$ unitaire et $D$ diagonal.
-
-Si $A$ est une matrice hermitienne définie positive, alors :
-$$
-\|A^{-1}\|_2 = \rho(A^{-1}) = \frac{1}{\lambda_{\max}}.
-$$
-
-Proposition
-
-Pour toutes matrices $B, C \in M_{n,n}(\mathbb{C})$ :
-$$
-\text{cond}(BC) \leq \text{cond}(B) \cdot \text{cond}(C).
-$$
-$$
-\|BC\|\|BC^{-1}\| \leq \|B\|\|B^{-1}\| \cdot \|C\|\|C^{-1}\|.
-$$
+> [!proposition]
+> Pour toutes matrices $B, C \in M_{n,n}(\mathbb{C})$ :
+> $$
+> \text{cond}(BC) \leq \text{cond}(B) \cdot \text{cond}(C).
+> $$
+> $$
+> \|BC\|\|BC^{-1}\| \leq \|B\|\|B^{-1}\| \cdot \|C\|\|C^{-1}\|.
+> $$
 
 Remarque : Méthode Directe de Résolution de Systèmes Linéaires
 
@@ -376,16 +373,16 @@ $$
 
 "Perte" dans le contrôle de la propagation de l'erreur.
 
- 3) Matrices Creuses
+## 3. Matrices Creuses
 
-Remarque
-La multiplication matrice-vecteur nécessite en général $O(n^2)$ opérations pour calculer $Ax$.
+> [!remark]
+> La multiplication matrice-vecteur nécessite en général $O(n^2)$ opérations pour calculer $Ax$.
+> 
+> Si la matrice est creuse avec $p$ coefficients non nuls, le calcul de $Ax$ nécessite $O(p)$ opérations.
+> 
+> Il est donc avantageux de stocker les coefficients non nuls de la matrice.
 
-Si la matrice est creuse avec $p$ coefficients non nuls, le calcul de $Ax$ nécessite $O(p)$ opérations.
-
-Il est donc avantageux de stocker les coefficients non nuls de la matrice.
-
- a) Stockage
+### Stockage
 
 **Stockage par coordonnées (Coordinate)**
 
@@ -458,6 +455,7 @@ $$ \text{data}[ \text{indptr}[i] : \text{indptr}[i+1] ] $$
 3. **Stockage Bande (Band Storage) :**  
    - Les coefficients nuls sont sous les diagonales de -r à +s.  
    - Le stockage des diagonales se fait dans un tableau de taille $(r + s + 1) \times m$.
+
 ```tikz 
 \begin{document} 
 \begin{tikzpicture}[scale=1.2]
@@ -499,10 +497,6 @@ $$ \text{data}[ \text{indptr}[i] : \text{indptr}[i+1] ] $$
 \end{document} 
 ```
 
-Stockage Ligne de Ciel (Skyline Storage)
-
-Le **stockage ligne de ciel (Skyline)** est une méthode de stockage pour les matrices creuses (sparse matrices) où les coefficients non nuls se trouvent principalement autour de la diagonale.
-
 ```tikz 
 \begin{document} 
 \begin{tikzpicture}
@@ -530,6 +524,10 @@ Le **stockage ligne de ciel (Skyline)** est une méthode de stockage pour les ma
 \end{document} 
 ```
 
+Stockage Ligne de Ciel (Skyline Storage)
+
+Le **stockage ligne de ciel (Skyline)** est une méthode de stockage pour les matrices creuses (sparse matrices) où les coefficients non nuls se trouvent principalement autour de la diagonale.
+
 Méthode de Stockage
 
 1. **Tableau de taille n :**  
@@ -541,6 +539,7 @@ Méthode de Stockage
 Exemple de Stockage
 
 Soit la matrice suivante :
+
 ```tikz
 \begin{document}
 \begin{tikzpicture}
@@ -654,42 +653,54 @@ L'illustration en bas de l'image montre une représentation graphique des sous-c
 
 ```
 
- 2) Renumérotation
+### Renumérotation
 
-**Changer la numérotation des lignes et des colonnes** permet d'améliorer le stockage bande ou ligne de ciel.
+Changer la numérotation des lignes et des colonnes permet d'améliorer le **stockage bande** ou **ligne de ciel**.
 
-Exemple :
-$$
-A = \begin{bmatrix} 
-a & b \\ 
-c & d \\ 
-\end{bmatrix} 
-\quad \xrightarrow{\text{Permutation}} \quad 
-B = \begin{bmatrix} 
-d & c \\ 
-b & a \\ 
-\end{bmatrix}
-$$
+> [!example]
+>  $$
+> A = \begin{bmatrix} 
+> 	a & b \\ 
+> 	c & d \\ 
+> \end{bmatrix} 
+> \quad 
+> \xrightarrow{
+> 	\begin{bmatrix} 
+> 	0 & 1 \\ 
+> 	1 & 0
+> 	\end{bmatrix}
+> } \quad 
+> B = \begin{bmatrix} 
+> d & c \\ 
+> b & a \\ 
+> \end{bmatrix}
+> $$
 
-**Plus généralement :**
+> [!definition]
+> **Plus généralement :**
+> 
+> - Soit $\pi : [[0,n]] \to [[0,n]]$ une permutation.
+> 
+> - Définir 
+> $$
+> B_{ij} = A_{\pi(i), \pi(j)} = (P_{\pi} A P_{\pi}^T)_{ij}
+> $$
+> 
+> où $P_{\pi}$ est la **matrice de permutation** associée à $\pi$. 
+> $$
+> (P_{\pi})_{i,j}=\delta _{\pi(i),j}
+> $$
 
-- Soit $\pi : [[0,n]] \to [[0,n]]$ une permutation.
-
-- Définir $B_{ij} = A_{\pi(i), \pi(j)} = (P_{\pi} A P_{\pi}^T)_{ij}$
-
-où $P_{\pi}$ est la **matrice de permutation** associée à $\pi$. 
-$$
-(P_{\pi})_{i,j}=\delta _{\pi(i),j}
-$$
 $$
 \pi = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix},
 \quad \quad \quad
 P_{\pi} = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}.
 $$
 
-**Objectif :** Concentrer les coefficients non nuls autour de la diagonale.
-
-Construction de $\pi$ ?
+> [!question]
+> Concentrer les coefficients non nuls autour de la diagonale.
+> 
+> Construction de $\pi$ ?
 
 Pour construire $\pi$, on considère le **graphe associé à la matrice $A$** :
 
@@ -698,6 +709,7 @@ Pour construire $\pi$, on considère le **graphe associé à la matrice $A$** :
 - **Arêtes orientées :** $E = \{ (i,j) \ | \ A_{ij} \neq 0 \}$
 
 Les arêtes non orientées si $A$ est symétrique.
+
 ```tikz
 \begin{document}
 \begin{tikzpicture}
@@ -749,6 +761,7 @@ Les arêtes non orientées si $A$ est symétrique.
 \end{tikzcd}
 \end{document}
 ```
+
 Renumérotation par Niveaux de Distance
 
 1. **Parcours du graphe en largeur** :
@@ -945,6 +958,7 @@ $\pi = \left(\begin{matrix} 0 & 1 & 2 & 3 \\ 0 & 3 & 2 & 1 \end{matrix}\right)$
 \end{tikzpicture}
 \end{document}
 ```
+
 Tridiagonale, ensemble de niveaux de taille 1.
 
 **L'algorithme est appelé algo de Cuthill-McKee (CMK)**

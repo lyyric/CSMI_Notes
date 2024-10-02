@@ -1,6 +1,6 @@
 Chap. 3: Méthodes itératives pour les systèmes linéaires creux
 
-## I) Rappels sur les méthodes itératives
+## I Rappels sur les méthodes itératives
 
 > [!question]
 > Résoudre $Ax = b$ avec $A \in M_n(\mathbb{C})$ et $b \in \mathbb{C}^n$.
@@ -349,3 +349,428 @@ On ne peut pas calculer l'erreur $e_p$ directement, mais on peut calculer le ré
   c'est-à-dire que le nombre d'itérations ne doit pas dépasser un maximum fixé à l'avance.
 
 Il est également judicieux de vérifier que les résidus sont de plus en plus petits au fil des itérations.
+
+## II Méthode GMRES
+
+### 1) Espaces de Krylov
+
+Remarque : (méthode de Richardson)
+
+$$
+r_{p+1} = b - A x_{p+1}
+$$
+$$
+= b - A \left( x_p + \alpha r_p \right)
+$$
+$$
+= b - A (x_p + \alpha (b - A r_p))
+$$
+$$
+= r_p - \alpha A r_p
+$$
+
+Soit $r_{p+1} = (Id - \alpha A) r_p$
+
+Donc $r_p = (Id - \alpha A)^p r_0=q(A) r_0$
+
+avec $q \in \mathbb{P}_p$. On a $r_p = \beta_0 r_0 + \beta_1 A r_0 + \beta_2 A^2 r_0 + \dots + \beta_p A^p r_0$
+
+avec $\beta_0, \beta_1, \dots, \beta_p \in \mathbb{R}$.
+
+> [!definition] Définition (espace de Krylov)
+> 
+> $$
+> K_p(A, r) = \text{vect} \{r, A r, \dots, A^{p-1} r\}.
+> $$
+>
+> $$
+> = \{q(A) r, q \in \mathbb{P}_p\}.
+> $$
+
+C'est un espace vectoriel de dimension $\leq p+1$.
+
+> [!proposition] Proposition (méthode de Richardson) 
+> $r_p \in K_p(A, r_0)$ et $x_{p+1} \in x_0 + K_p(A, r_0)$.
+
+Preuve : $x_{p+1} = x_0 + \alpha r_p \in x_0 + K_p(A, r_0)$.
+
+> [!info] GMRES (Generalized Minimum Residual)  
+> 
+> À chaque itération, on choisit
+> 
+> $x_{p+1} \in x_0 + K_p(A, r_0)$ t.q.
+> 
+> $$
+> \|r_{p+1}\| = \|b - A x_{p+1}\| = \min_{x \in x_0 + K_p} \|b - A x\| \quad (\text{résidu minimal, petit sous espace vectoriel})
+> $$
+> 
+### 2) Itérations d'Arnoldi (base de $K_p$)
+
+Étant donnée $(v_0, \dots, v_p)$ base orthonormée de $K_p$, on construit $v_{p+1}$ en orthonormalisant $(v_0, \dots, v_p, A v_p)$.
+
+$$
+v_{p+1}=\frac{A v_p - \sum_{j \leq p} (A v_p, v_j) v_j}{\|A v_p - \sum_{j \leq p} (A v_p, v_j) v_j \|}
+$$
+
+$(v_0, \dots, v_{p+1})$ est une base de $K_{p}(A, r_0)$.  
+
+On choisit $v_0 = r_0 / \|r_0\|$.
+
+De la formule ci-dessus, on a
+
+$$
+A v_p = \|A v_p - \sum_{j \leq p} (A v_p, v_j) v_j\| v_{p+1} + \sum_{j \leq p} (A v_p, v_j) v_j
+$$
+$$
+= h_{p+1, p} v_{p+1} + \sum_{j \leq p} h_{j p} v_j
+$$
+
+Proposition : Si $h_{j+1, j} \neq 0$ $\forall j \leq p$, alors $(v_0, \dots, v_p)$ est une base de $K_p(A, r_0)$. Notant $V_p = \begin{bmatrix} v_0 & \dots & v_p \end{bmatrix} \in \mathcal{M}_{n, p+1}(\mathbb{R})$ et
+
+$$
+\hat{H}_p = \begin{bmatrix} h_{0,0} & h_{0,1} & \dots & h_{0,p} \\ h_{1,0} & h_{1,1} & \dots & h_{1,p} \\ 0 & h_{2,1} & \dots & h_{2,p} \\ & & \ddots & \\ & & & h_{p+1, p} \end{bmatrix} \in \mathcal{M}_{p+2, p+1}
+$$
+
+on a $A V_p = V_{p+1} \hat{H}_p$ et $V_p^T A V_p = \text{Id}_{p+1,p+2} \hat{H}_{p} = H_p$.
+
+Exemple :
+
+$$
+A V_1 = A 
+\begin{bmatrix}\begin{array}{c|c} 
+ & \\
+v_0 & v_1 \\ 
+ &
+\end{array}\end{bmatrix}
+$$
+
+$$
+= \begin{bmatrix}\begin{array}{c|c} 
+&\\
+A v_0 & A v_1 \\
+& 
+\end{array}\end{bmatrix}
+$$
+
+$$
+= \begin{bmatrix}\begin{array}{c|c} 
+ & \\
+h_{0,0} v_0 + h_{1,0} v_1 & h_{2,1} v_2 + h_{1,1} v_1 + h_{0,1} v_0 \\
+&
+\end{array}\end{bmatrix}
+$$
+
+$$
+= \begin{bmatrix}\begin{array}{c|c|c} 
+&&\\
+v_0 & v_1 & v_2\\ 
+&&
+\end{array}\end{bmatrix} 
+\begin{bmatrix} h_{0,0} & h_{0,1} \\ h_{1,0} & h_{1,1} \\ 0 & h_{2,1} \end{bmatrix}
+$$
+$$
+= V_2 \begin{bmatrix} h_{0,0} & h_{0,1} \\ h_{1,0} & h_{1,1} \\ 0 & h_{2,1} \end{bmatrix}
+$$
+
+Remarque : 
+
+$$
+V_p^T A V_p = V_p^T V_{p+1} \hat{H}_p
+$$
+car
+$$
+V_p^T V_{p+1} = \text{Id}_{p+1, p+2}
+$$
+
+$$
+V_p^T V_{p+1} = 
+\begin{bmatrix} 
+v_0^T \\ \vdots \\ v_p^T 
+\end{bmatrix} 
+\begin{bmatrix} 
+v_0 & \dots & v_{p+1} 
+\end{bmatrix} 
+= \left( v_i^T v_j \right)_{0 \leq i \leq p+1,\, 0 \leq j \leq p+2} 
+= (\delta_{ij})_{0 \leq i \leq p+1,\, 0 \leq j \leq p+2}
+$$
+
+Remarque : $V_p^T V_p = \text{Id}_{p+1}$, $V_p$ est "orthogonale".
+
+$V_p$ conserve donc la norme :
+
+$$
+\forall y \in \mathbb{R}^{p+1} \quad \|V_p y\|_{\mathbb{R}^n}^2 = (V_p y, V_p y)_{\mathbb{R}^n} = (V_p^T V_p y, y)_{\mathbb{R}^p} = (y, y)_{\mathbb{R}^p} = \|y\|^2_{\mathbb{R}^{p+1}}
+$$
+
+$\hat{H}_p$ est de Hessenberg : $\hat{H}_{ij} = 0$ $\forall i > j + 2$.
+
+![](assets/Pasted%20image%2020241002142705.png)
+
+### 3) Résoudre le problème de minimisation
+
+À l’itération $p$, on cherche
+
+$$
+x_{p+1} \in x_0 + K_p(A, r_0)
+$$
+
+ce qui revient à chercher des coefficients $y \in \mathbb{R}^{p+1}$.
+
+$$
+x_{p+1} = x_0 + (y_0 v_0 + y_1 v_1 + \dots + y_p v_p)
+$$
+
+$$
+= x_0 + \begin{bmatrix} v_0 & v_1 & \dots & v_p \end{bmatrix} \begin{bmatrix} y_0 \\ y_1 \\ \vdots \\ y_p \end{bmatrix}
+$$
+
+$$
+= x_0 + V_p y
+$$
+
+Le résidu associé devient :
+
+$$
+r_{p+1} = b - A x_{p+1}
+$$
+$$
+= b - A (x_0 + V_p y)
+$$
+$$
+= r_0 - A V_p y
+$$
+$$
+= r_0 - V_{p+1} \hat{H}_p y
+$$
+
+$$
+r_0 =\|r_0\| v_0 =  =\|r_0\| v_{p+1} e_0
+$$
+
+Donc 
+
+$$
+r_{p+1} = V_{p+1} (\|r_0\| e_0 - \hat{H}_p y)
+$$
+
+$x_{p+1}$ est défini par 
+
+$$
+\|r_{p+1}\|_{\mathbb{R}^n} = \min_{y \in \mathbb{R}^{p+1}} \|V_{p+1} (\|r_0\| e_0 - \hat{H}_p y)\|_{\mathbb{R}^n}
+$$
+
+$$
+= \min_{y \in \mathbb{R}^{p+1}} \|\|r_0\| e_0 - \hat{H}_p y\|_{\mathbb{R}^{p+2}}
+$$
+
+À l'itération $p$, on doit donc résoudre un problème de minimisation en dimension $p+1$.
+
+**Résolution par factorisation QR**
+
+Supposons que la matrice $\hat{H}_p$ soit de rang $p+1$ (rang maximal) (c'est le cas si $h_{i+1,i} \neq 0$ $\forall i \leq p$), alors on peut factoriser $\hat{H}_p$ ainsi :
+
+$$
+\hat{H}_p = Q_p \hat{R}_p
+$$
+
+où $Q_p$ est une matrice orthogonale $\in \mathcal{M}_{p+2}(\mathbb{R})$ et $\hat{R}_p$ est une matrice triangulaire supérieure $\in \mathcal{M}_{p+2, p+1}(\mathbb{R})$.
+
+On a alors 
+
+$$
+\|\|r_0\| e_0 - \hat{H}_p y\|^2 = \|\|r_0\| e_0 - Q_p \hat{R}_p y\|^2
+$$
+(puisque $Q_p$ est orthogonale)
+$$
+= \|Q_p^T (\|r_0\| e_0 - Q_p \hat{R}_p y)\|^2
+$$
+(puisque $Q_p^T Q_p=\text{Id}$)
+$$
+= \|\|r_0\| Q_p^T e_0 - \hat{R}_p y\|^2
+$$
+$$
+= \left\| 
+\|r_0\|
+\begin{pmatrix} 
+( Q_p^T e_0)_{j\leq p+1} \\ 
+(Q_p^T e_0)_{p+2} 
+\end{pmatrix} 
+- 
+\begin{pmatrix} 
+R_p y \\ 
+0 
+\end{pmatrix} 
+\right\|^2
+$$
+$$
+= \|\|r_0\| (Q_p^T e_0)_{j\leq p+1} - R_p y\|^2 + \|r_0\|^2 {(Q^T_pe_0)_{p+2}}^2
+$$
+$$
+= \|r_0\|^2 {(Q^T_pe_0)_{p+2}}^2
+$$
+
+On choisit $y \in \mathbb{R}^{p+1}$ solution du système linéaire
+
+$$
+R_p y = \|r_0\| \|Q_p^T e_0\|_{:-1}.
+$$
+
+**Remarque :** Factorisation QR par matrices de Givens
+
+$$
+G_{i,j}(\theta) = \begin{bmatrix} 
+1 & & & & \\ 
+& \cos \theta & & -\sin \theta & \\ 
+& & 1 & & \\ 
+& \sin \theta & & \cos \theta & \\ 
+& & & & 1 
+\end{bmatrix}
+\in O(\mathbb{R})\quad\text{otrthogonal}.
+$$
+
+**Appliquée à un vecteur $x$ :**
+
+$$
+G_{i,j}(\theta) \begin{pmatrix} \vdots \\ x_i \\ \vdots \\ x_j \\ \vdots \end{pmatrix} = \begin{pmatrix} \vdots \\ \cos \theta \cdot x_i - \sin \theta \cdot x_j \\ \vdots \\ \sin \theta \cdot x_i + \cos \theta \cdot x_j \\ \vdots \end{pmatrix}.
+$$
+
+Effectuer une rotation d’angle $\theta$ dans le plan $(e_i, e_j)$.
+
+Cela permet d'annuler des coefficients :
+
+$$
+G_{i,i+1}(\theta) 
+\begin{pmatrix} 
+\vdots \\
+x_i \\ 
+x_j \\
+\vdots \\
+\end{pmatrix} 
+= 
+\begin{pmatrix} 
+\vdots \\
+\|(x_i, x_{i+1})\| \\ 
+0 \\
+\vdots \\
+\end{pmatrix}.
+$$
+
+en choisissant $\theta$ de manière adéquate.  ($\theta = \arctan\left(\frac{x_j}{x_i}\right)$).
+
+À partir d’une matrice de Hessenberg, on annule un à un les coefficients sous la diagonale :
+
+$$
+\left(G_{p+1, p+2}(\theta_{p+1}) \dots G_{0,1}(\theta_0)\right) \hat{H}_p = \hat{R}_p,
+$$
+
+où 
+
+$$
+\left(G_{p+1, p+2}(\theta_{p+1}) \dots G_{0,1}(\theta_0)\right) = Q_p^T.
+$$
+
+### 4) Arrêt de l'algorithme
+
+**Données :** $x_0 \in \mathbb{R}^m$
+
+$$
+r_0 = b - A x_0
+$$
+$$
+v_0 = \frac{r_0}{\|r_0\|}, \quad V_0 = [v_0], \quad \hat{H}_{-1} = [\, ]
+$$
+
+Tant que (critère d'arrêt non satisfait) faire :
+
+1. **Arnoldi** : calcul de $v_{p+1}$ à partir de $V_p$, assemble $V_{p+1}, \hat{H}_p$.
+2. **Factorisation** : factorise $\hat{H}_p$, $\hat{H}_p = Q_p \hat{R}_p$.
+3. **Résolution** : résout $R_p y = \|r_0\| (Q_p^T e_0)_{:-1}$.
+4. Mise à jour : $x_{p+1} = x_0 + V_p y$.
+
+Proposition :  
+1) Si $h_{i+1,i} \neq 0$ $\forall j \leq p$ et $h_{p+1,p} = 0$, alors $x_p = x^*$ solution du problème.  
+2) $\exists p \leq n-1$ tq $x_p = x^*$ solution du problème.
+
+A inversible ???
+
+Preuve :  
+1) On a
+
+$$
+A v_p = \sum_{j \leq p} (A v_p, v_j) v_j.
+$$
+
+Si $h_{p+1,p} = 0$. Donc $A v_p \in K_p$. 
+
+On en déduit que $A K_p \subseteq K_p$ (puisque $A v_j \in K_{j+1} \subseteq K_p$, $A v_p \subseteq K_p$, $\forall j \leq p-1$).
+
+$A$ est injective et $\dim A K_p = \dim K_p$ donc $A K_p = K_p$.
+
+On a 
+$$
+r_p = b - A(x_0 + v_p y) = r_0 - A v_p y.
+$$
+
+Or $r_0 \in K_p$, donc $\exists \bar{z} \in K_p$ tq $A \bar{z} = r_0$.  
+$\iff \exists \bar{y} \in \mathbb{R}^{p+1}$ tq $A v_p \bar{y} = r_0$.
+
+Donc en prenant 
+
+$$
+\bar{x} = x_0 + V_p \bar{y} \in x_0 + K_p,
+$$
+
+on obtient un résidu nul : 
+
+$$
+\bar{x} = x_p = x^*.
+$$
+
+$x_p$ est tq le rendu de norme minimale. résidu nul.
+
+2) Si $h_{j+1, j} \neq 0$, alors $\dim K_{j+1} = \dim K_j + 1$ (car $A v_j \notin K_j$ et $K_j \subseteq K_{j+1}$).
+
+Si $h_{j+1, j} \neq 0$ $forall p < n$, alors $\dim K_{n-1} = n$ et donc $K_{n-1} = \mathbb{R}^n$.
+
+Donc à la $(n-1)$-ième itération, on minimise le résidu sur $\mathbb{R}^n$ :
+
+et donc $x_{n-1} = x^*$.
+
+**Remarque (re-start) :** Pour éviter de résoudre des problèmes triangulaires trop gros, toutes les $p$ itérations, on redémarre l'algorithme avec pour initialisation $x_p$.
+
+**Remarque (convergence) :** À chaque itération, le résidu diminue.
+
+$$
+r_p = b - A x_p = b - A \left( x_0 + q_p(A) r_0 \right)
+$$
+avec $q_p(A) r_0\in K_p$ ,  $q \in \mathbb{P}_p$
+
+$$
+= r_0 - A q_p(A) r_0
+$$
+
+$$
+= \hat{q}_p(A) r_0 \quad \text{avec } \hat{q}_p(x) = 1 - x q(x)
+$$
+
+avec
+$$
+\hat{q}_p = 1 - x q_p(x) \in \mathbb{P}_{p+1} \cap \{\hat{q}\mid\hat{q}(0) = 1\}.
+$$
+
+$$
+\|r_p\| = \|\hat{q}_p(A) r_0\| = \min_{\hat{q} \in \mathbb{P}_{p+1}\cap \{\hat{q}\mid\hat{q}(0) = 1\}} \|\hat{q}(A) r_0\|
+$$
+$$
+\leq \left(\min_{\hat{q} \in \mathbb{P}_{p+1}\cap \{\hat{q}\mid\hat{q}(0) = 1\}} \|\hat{q}(A)\| \right)\|r_0\|.
+$$
+
+Car A sym. déf. pos
+
+$$
+\|\hat{q}(A)\| = \rho(\hat{q}(A)) = \max_{\lambda_i \in \text{Vp}(A)} |\hat{q}(\lambda_i)|
+$$
+$$
+\implies \min_{\hat{q}} \left( \max_{\lambda_i \in \text{Vp}(A)} |\hat{q}(\lambda_i)| \right).
+$$
+

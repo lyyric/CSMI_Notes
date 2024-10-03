@@ -2,9 +2,9 @@
 .obsidian/workspace.json
 
 # IDE and Editor files
-/.vscode/
-/.idea/
-/*.swp
+.vscode/
+.idea/
+*.swp
 *.iml
 *.sublime-workspace
 *.sublime-project
@@ -22,8 +22,8 @@
 Thumbs.db
 
 # Rust compiled files and build artifacts
-/target/
-/Cargo.lock
+target/
+Cargo.lock
 
 # Byte-compiled / cached / installed files
 __pycache__/

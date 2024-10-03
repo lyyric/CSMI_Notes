@@ -47,7 +47,7 @@ fn main() {
         coo.push((i + 1, i, cfl / 2.));
     }
 
-    let mut sky = Sky::new(coo);
+    let sky = Sky::new(coo);
 
     //let mut un = xi.iter().map(|&x| uinit(x)).collect::<Vec<f64>>();
     let mut un = vec![0.; nx];

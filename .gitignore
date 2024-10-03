@@ -1,2 +1,53 @@
+# Obsidian
 .obsidian/workspace.json
-.vscode
+
+# IDE and Editor files
+/.vscode/
+/.idea/
+/*.swp
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.sw?
+.trash/
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# Rust compiled files and build artifacts
+/target/
+/Cargo.lock
+
+# Byte-compiled / cached / installed files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Virtual environment directories
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+
+# Python package build files
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+*.manifest
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/

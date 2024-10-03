@@ -773,4 +773,336 @@ $$
 $$
 \implies \min_{\hat{q}} \left( \max_{\lambda_i \in \text{Vp}(A)} |\hat{q}(\lambda_i)| \right).
 $$
+Donc
+$$
+\frac{\|r_{p+1}\|}{\|r_0\|} \leq \min_{\tilde{q} \in \mathbb{P}_p \cap \{\tilde{q}(0) = 1\}} \left( \max_{\lambda_i \in \text{vp}(A)} |\tilde{q}(\lambda_i)| \right)
+$$
 
+Cas A diagonalisable  
+$$
+A = P D P^{-1}
+$$
+$$
+\tilde{q}(A) = \sum_{k=0}^p \alpha_k (P D P^{-1})^k = \sum_{k=0}^p \alpha_k P D^k P^{-1}
+$$
+$$
+= P \left( \sum_{k=0}^p \alpha_k D^k \right) P^{-1}
+$$
+$$
+= P \tilde{q}(D) P^{-1}
+$$
+
+Donc 
+$$
+\|\tilde{q}(A)\| = \|P \tilde{q}(D) P^{-1}\| \leq \|P\| \|\tilde{q}(D)\| \|P^{-1}\| = \text{cond}(P) \|\tilde{q}(D)\|
+$$
+$$
+\tilde{q}(D)=\text{diag}(\tilde{q}(\lambda_1),\cdots ,\tilde{q}(\lambda_n))
+$$
+$$
+\|\tilde{q}(D)\| = \rho (\tilde{q}(D)) = \max_{\lambda_i\text{vp de } A} |\tilde{q}(\lambda_i)|
+$$
+$\tilde{q}(D)$ sym.
+
+$$
+\Rightarrow \frac{\|r_{p+1}\|}{\|r_0\|} \leq \text{cond}(P) \min_{\tilde{q} \in \mathbb{P}_p \cap \{\tilde{q}(0) = 1\}} \left( \max_{\lambda_i \in \text{vp}} |\tilde{q}(\lambda_i)|\right)
+$$
+
+La convergence dépend des propriétés spectrales de $A$ :
+- $\text{cond}(P)$ de position des valeurs propres;
+- répartition des valeurs propres dans $\mathbb{C}$.
+
+
+## III Méthode des gradients conjugués
+
+$A \in \mathcal{M}_n(\mathbb{R})$ symétrique définie positive. $b\in \mathbb{R}^n$.
+
+Produit scalaire associé : $$ (x, y)_A = (x, Ay) $$
+
+Norme associée : $$ \|x\|_A = \sqrt{(x, x)_A} = \sqrt{(x, Ax)} $$
+
+**Gradient conjugué** $(x_p)$ construit tel que $x_{p+1} \in x_0 + K_p(A, r_0)$ et
+
+$$
+\|x_{p+1} - x^*\|_A = \min_{x \in x_0 + K_p(A, r_0)} \|x - x^*\|_A
+$$
+
+Erreur minimale sur $x_0 + K_p(A, r_0)$.
+
+$x^*$ : solution exacte du problème $Ax = b$.
+
+> [!proposition]
+> $x_{p+1} \in (x_0 + K_p(A, r_0))$ vérifie la propriété d'erreur minimale $\iff r_{p+1} \perp K_p(A, r_0)$
+
+![](assets/Pasted%20image%2020241003103514.png)
+
+**Preuve :**  
+
+Soit $x \in x_0 + K_p(A, r_0)$. On note $\delta = x - x_{p+1}$. $x = x_{p+1} + \delta$. Ainsi  
+
+$$
+\|x - x^*\|_A^2 = \|(x_{p+1} - x^*) + \delta\|_A^2
+$$
+$$
+= \|x_{p+1} - x^*\|_A^2 + 2 (x_{p+1} - x^*, \delta)_A + \|\delta\|_A^2
+$$
+$$
+= \|x_{p+1} - x^*\|_A^2 + 2 \left( \delta, A (x_{p+1} - x^*) \right) + \|\delta\|_A^2
+$$
+Or, $\delta = x - x_{p+1} \in K_p(A, r_0)$, 
+
+- **Si** $r_{p+1} \perp K_p(A, r_0)$  
+
+alors pour tout $x\in x_0 + K_p(A, r_0)$
+
+donc 
+$$
+\|x - x^*\|_A^2 = \|x_{p+1} - x^*\|_A^2 + \|\delta\|_A^2 \geq \|x_{p+1} - x^*\|_A^2
+$$
+donc, $x_{p+1}$ vérifie bien la propriété de minimisation.
+
+- **Si** $r_{p+1} \not\perp K_p(A, r_0)$.
+
+Soit $x = x_0 + K_p(A, r_0)$. Soit $\delta = x_p - x_{p+1} \in K_p$.
+
+donc
+$$
+x_{p+1}+s\delta \in x_0 + K_p(A, r_0)\quad \forall s \in \mathbb{R}
+$$
+
+Ainsi,
+$$
+\|(x_{p+1} + s \delta) - x^*\|_A^2 = \|(x_{p+1} - x^*) + s \delta\|_A^2
+$$
+$$
+= \|x_{p+1} - x^*\|_A^2 + 2s(x_{p+1}-x^*, \delta) + s^2 \|\delta\|_A^2
+$$
+$$
+= \|x_{p+1} - x^*\|_A^2 - 2s(r_{p+1}, \delta) + s^2 \|\delta\|_A^2
+$$
+$$
+=P(s)
+$$
+
+Polynôme de degré 2, minimal en $\tilde{s} = \dfrac{2(r_{p+1}, \delta)}{\|\delta\|_A^2} \neq 0$.
+
+$$
+\|(x_{p+1} + s \delta) - x^*\|_A^2 = P(\tilde{s}) < \tilde{P}(0) = \|x_{p+1} - x^*\|_A^2
+$$
+
+Donc $x_{p+1}$ ne vérifie pas la propriété de minimalité.
+
+### 1) Construction
+
+On cherche $x_p$ sous la forme 
+$$
+x_{p+1} = x_p + s_p d_p
+$$
+
+avec $s_p \in \mathbb{R}, d_p \in K_p(A, r_0)$.
+
+On a 
+$$
+r_{p+1} = b - A x_{p+1} = r_p - s_p A d_p
+$$
+
+Conditions sur $s_p$ et $d_p$ pour que $(x_p)$ vérifie la propriété de minimalité :
+
+> [!proposition]
+> Supposons que les $(d_j)_{j\leq n}$ forment une base des espaces vectoriels croissants $(K_j)_{j \leq n}$. Alors,
+> 
+>  $x_{p+1}$ la propriété de minimalité $\iff$ $r_{p+1} \perp K_p(A, r_0)$  $\iff$ $\begin{cases}s_p = \dfrac{(r_p, d_p)}{(A d_p, d_p)},\quad j=p\\ (A d_p, d_j) = 0, \quad \forall j < p\end{cases}$.
+
+Les $(d_j)$ doivent être $A$-conjugués, c'est-à-dire $(d_p, d_j)_A = (A d_p, d_j) = 0 \quad \forall j < p$.
+
+**Preuve :**
+
+Par récurrence, supposons $r_p \perp K_p$.
+
+$$
+r_{p+1} \perp K_p \iff r_{p+1} \perp d_j \quad \forall j \leq p
+$$
+$$
+\iff 0 = (r_{p+1}, d_j) = (r_p - s_p A d_p, d_j)
+$$
+$$
+= (r_p, d_j) - s_p (A d_p, d_j) \quad \forall j \leq p
+$$
+$$
+\iff \begin{cases}s_p = \dfrac{(r_p, d_p)}{(A d_p, d_p)},\quad j=p\\ (A d_p, d_j) = 0, \quad \forall j < p\end{cases}
+$$
+
+Construction de $(d_j)$ $A$-conjugués tel que $(d_j)_{j\leq p}$ soit une base de $K_p$ pour tout $p \leq n$.
+
+On la construit par récurrence. Pour construire $d_p \in K_p$, on considère
+
+$$
+r_p = b - A x_p \in K_p \quad \text{et le } A\text{-orthogonalise.}
+$$
+$$
+d_p = r_p - \sum_{j < p} \frac{(r_p, d_j)_A}{(d_j, d_j)_A} d_j
+$$
+$$
+= r_p - \frac{(r_p, d_{p-1})_A}{(d_{p-1}, d_{p-1})_A} d_{p-1} - \sum_{j \leq p-2} \frac{(r_p, d_j)_A}{(d_j, d_j)_A} d_j
+$$
+
+car $(r_p, d_j)_A = (r_p, A d_j)$ et $A d_j \in K_{p-1}$ car $d_j \in K_{p-2}$. 
+
+Donc,
+$$
+d_p = r_p + \beta_p d_{p-1} \quad \text{avec} \quad \beta_p = \frac{(r_p, d_{p-1})_A}{(d_{p-1}, d_{p-1})_A}.
+$$
+
+$(d_j)_{j\leq p}$ est alors une famille $A$-orthogonale. C'est une famille libre à $(p+1)$ éléments dans $K_p$. C'est donc bien une base de $K_p$.
+
+**Simplification des expressions :**
+
+$$
+r_{p+1} = r_p - s_p A d_p,
+$$
+$$
+\iff A d_p = \frac{r_p - r_{p+1}}{s_p}.
+$$
+
+Ainsi,
+$$
+(r_p, d_{p-1})_A = (r_p, A d_{p-1}) = \left( r_p, \frac{r_{p-1} - r_{p}}{s_{p-1}} \right).
+$$
+$$
+= \frac{(r_p, r_{p-1})}{s_{p-1}} - \frac{(r_p, r_{p})}{s_{p-1}}.
+$$
+$$
+= - \frac{(r_p, r_{p})}{s_{p-1}}.
+$$
+$$
+(d_{p-1}, d_{p-1})_A = (A d_{p-1}, d_{p-1})
+$$
+
+$$
+= \left( r_{p-1} + \beta_{p-1} d_{p-2}, A d_{p-1} \right)
+$$
+
+$$
+= (r_{p-1}, A d_{p-1}) + \beta_{p-1} (d_{p-2}, A d_{p-1})
+$$
+$(d_{p-2}, A d_{p-1})=0$ car $A$-conjuguée
+$$
+=\left(r_{p-1}, \frac{r_{p-1}-r_{p-2}}{s_{p-1}}\right)
+$$
+$$
+=\frac{(r_{p-1}-r_{p-1})}{s_{p-1}}-\frac{(r_{p-1}-r_{p-2})}{s_{p-1}}
+$$
+
+Donc,
+$$
+\beta_p = - \frac{(r_p, r_p)}{s_{p-1}} \cdot \frac{1}{\dfrac{(r_{p-1}, r_{p-1})}{s_{p-1}}} = \frac{(r_p, r_p)}{(r_{p-1}, r_{p-1})}.
+$$
+$$
+s_p = \frac{(r_p, d_p)}{(A d_p, d_p)}
+$$
+
+Or $(r_p, d_p)=(r_p,r_p+\beta d_{p-1})=(r_p,r_p)+\beta (r_p,d_{p-1})=(r_p,r_p)$
+
+Donc,
+$$
+s_p = \frac{(r_p, r_p)}{(A d_p, d_p)}
+$$
+
+### 2) Algorithme
+
+Donnée $x_0$,  
+$r_0 = b - A x_0$, $d_0 = r_0$.  
+
+Tant que (critère d'arrêt non satisfait) 
+
+1. $s_p = \dfrac{(r_p, r_p)}{(A d_p, d_p)}$,
+2. $x_{p+1} = x_p + s_p d_p$,
+3. $r_{p+1} = r_p - s_p A d_p$.
+4.  $\beta_{p+1} = \frac{(r_{p+1}, r_{p+1})}{(r_p, r_p)}$,  
+5. $d_{p+1} = r_{p+1} + \beta_{p+1} d_p$.
+
+**Fin.**
+
+> [!remark]
+> - Une seule multiplication matrice-vecteur par itération.
+> - $(d_p)$ vérifie une relation de récurrence d'ordre 1, et il n'y a pas besoin de stocker tous les $(d_j)_{j\leq p}$ des itérations précédentes.
+
+> [!proposition]
+> L'algorithme converge en au plus $n$ étapes.
+
+**Preuve :** À l'itération $n$, on numérise l'erreur sur $K_n = \mathbb{R}^n \implies x_{n-1} = x^*$.
+
+> [!proposition] Proposition (Convergence)
+> $$
+> \frac{\|x_{p} - x^*\|_A}{\|x_0 - x^*\|_A} \leq 2\left( \frac{\sqrt{\text{cond}(A)} - 1}{\sqrt{\text{cond}(A)} + 1} \right)^p
+> $$
+
+**Remarque :** Rappel pour la méthode de Richardson :
+$$
+\rho(G_{\alpha^*})=\frac{\text{cond}(A) - 1}{\text{cond}(A) + 1}
+$$
+$$
+\frac{\|e_p\|}{\|e_0\|} \leq \left( \frac{\text{cond}(A) - 1}{\text{cond}(A) + 1} \right)^p
+$$
+
+Quand $\text{cond}(A)$ est grand, le nombre d'itérations pour atteindre une précision donnée est proportionnel à $\text{cond}(A)$. 
+
+Pour le gradient conjugué,  le nombre d'itérations pour atteindre une précision donnée est proportionnel à $\sqrt{\text{cond}(A)}$. 
+
+Exemple : $\text{cond}(A) = 10,000$ et $\sqrt{\text{cond}(A)} = 100$.
+
+## IV Préconditionnement
+
+Soit $x^*$ la solution de $Ax = b$.  
+Alors, $x^*$ est solution de :
+$$
+M^{-1} A x = M^{-1} b
+$$
+ou équivalemment,
+$$
+(A M^{-1}) M x = b.
+$$
+
+Remarque 
+en dimension 2, $Ax = b$ $\iff$ $x$ l'intersection de deux droites.
+
+Exemple :
+
+![](assets/Pasted%20image%2020241003115513.png)
+
+$$
+\begin{bmatrix} 3 & -1 \\ -2 & 3 \end{bmatrix} \begin{bmatrix} x^* \\ y^* \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}.
+$$
+
+**Remarque :**  
+- Le nombre d'itérations pour résoudre $Ax = b$ est proportionnel à $\text{cond}(A)$.  
+- Le nombre d'itérations pour résoudre $M^{-1}Ax = M^{-1}b$ est proportionnel à $\text{cond}(M^{-1}A)$.
+
+**Préconditionnement :** Choisir $M$ tel que $\text{cond}(M^{-1}A)$ soit petit.
+- Prendre $M$ proche de $A$.
+- Plus généralement, choisir $M$ tel que les valeurs propres de $M^{-1}A$ soient concentrées dans le plan complexe.
+
+### 1) Exemples
+
+- **Préconditionnement diagonal (Jacobi) :**  
+$$
+M = \text{diag}(A)
+$$
+
+- **Préconditionnement ILU (incomplet LU) :**  
+  $M = L_{\text{inc}} U_{\text{inc}}$, où $L_{\text{inc}}$ et $U_{\text{inc}}$ sont les facteurs de la décomposition LU incomplète, c’est-à-dire sans ajout de coefficients non nuls en dehors de ceux de $A$.  
+  (Matrice $M$ de même structure creuse que $A$).
+
+### 2) Préconditionnement symétrique
+
+**Remarque :** Si $A$ est symétrique définie positive, alors $M^{-1}A$ n'est plus nécessairement symétrique (sauf si $M = \text{diag}(A)$), même si $M$ est symétrique.
+
+Soit $M = P D P^T$, une matrice symétrique définie positive.  
+On considère $M^{1/2} = P D^{1/2} P^T$ (car $M^{1/2} M^{1/2} = M$).
+
+Le problème préconditionné devient :
+$$
+M^{-1/2} A M^{-1/2} M^{1/2} x = M^{-1/2} b,
+$$
+
+qui est symétrique définie positive.

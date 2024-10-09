@@ -2,28 +2,34 @@
 
 class Vehicule {
 protected:
-    int total_places;
-    int occupees;
-    double poids;
+    int nombre_de_place_totale;
+    int nombre_de_place_occupee;
+    double poids_du_vehicule; // 单位：公斤
 
 public:
-    Vehicule(int places, double p) : total_places(places), occupees(0), poids(p) {}
+    Vehicule(int total_places, double poids)
+        : nombre_de_place_totale(total_places), poids_du_vehicule(poids), nombre_de_place_occupee(0) {}
 
-    void setOccupees(int nb) {
-        if (nb > total_places) {
-            std::cout << "Erreur : Places insuffisantes." << std::endl;
+    virtual ~Vehicule() {}
+
+    // 设置已占用的座位数
+    void setNombreDePlaceOccupee(int n) {
+        if (n > nombre_de_place_totale) {
+            std::cout << "Erreur: les sièges occupés dépassent le nombre total de sièges." << std::endl;
         } else {
-            occupees = nb;
+            nombre_de_place_occupee = n;
         }
     }
 
-    int placesRestantes() const {
-        return total_places - occupees;
+    // 获取剩余的座位数
+    int getNombreDePlaceRestante() const {
+        return nombre_de_place_totale - nombre_de_place_occupee;
     }
 
-    double poidsTotal() const {
-        double poids_passagers = occupees * 75.0;
-        return poids + poids_passagers;
+    // 获取总重量（车辆 + 乘客）
+    double getPoidsTotal() const {
+        double poids_passagers = nombre_de_place_occupee * 75.0;
+        return poids_du_vehicule + poids_passagers;
     }
 };
 
@@ -48,12 +54,20 @@ public:
 };
 
 int main() {
-    Bus monBus;
-    monBus.setOccupees(35);
-    std::cout << "Places restantes dans le bus : " << monBus.placesRestantes() << std::endl;
-    std::cout << "Poids total du bus : " << monBus.poidsTotal() << " kg" << std::endl;
+    Voiture maVoiture;
+    maVoiture.setNombreDePlaceOccupee(3);
+    std::cout << "Places restantes dans le Voiture: " << maVoiture.getNombreDePlaceRestante() << std::endl;
+    std::cout << "Poids total du Voiture: " << maVoiture.getPoidsTotal() << " kg" << std::endl;
 
-    monBus.setOccupees(45);
+    Moto maMoto;
+    maMoto.setNombreDePlaceOccupee(2);
+    std::cout << "Places restantes dans le Moto: " << maMoto.getNombreDePlaceRestante() << std::endl;
+    std::cout << "Poids total du Moto: " << maMoto.getPoidsTotal() << " kg" << std::endl;
+
+    Bus monBus;
+    monBus.setNombreDePlaceOccupee(45); // 这将触发错误消息
+    std::cout << "Places restantes dans le Bus: " << monBus.getNombreDePlaceRestante() << std::endl;
+    std::cout << "Poids total du Bus: " << monBus.getPoidsTotal() << " kg" << std::endl;
 
     return 0;
 }

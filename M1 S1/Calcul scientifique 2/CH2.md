@@ -13,7 +13,7 @@ $Ly = b$
 
 $Ux = y$
 
-1) déterminer la facto **LU**
+1) déterminer la <font color="#2DC26B">facto</font> **LU**
 
 2) résolution du système $Ly = b$
 
@@ -86,8 +86,8 @@ I) Factorisation $LU$
 
 1) Opérations sur les lignes
 
-Déf. : 
-* ajout à la ligne $L_i$ d'un multiple de la ligne $L_j$ :
+Déf. :
+* ajout à la ligne $Li$ d'un multiple de la ligne $Lj$ :
 
 $L_i \leftarrow L_i + \mu_{i,j}L_j$
 

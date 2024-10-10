@@ -1,8 +1,6 @@
 ## TP 1 
 Matrices creuses et factorisation LU 
 
-L’objectif de ce TP est de se familiariser avec les structures creuses et leurs utilisation dans scipy. Commencez par importer les modules python : 
-
 ```python
 import numpy as np 
 import scipy as sp 

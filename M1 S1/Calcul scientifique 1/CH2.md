@@ -513,3 +513,462 @@ Principe du maximum discret :
 $$
 \| u_i^n \|_{l^\infty} \leq \| u_i^0 \|_{l^\infty}
 $$
+# Équation de transport  non linéaire
+
+## I) Modèle
+
+Exemple du trafic routier :
+$\rho(x,t)$ : densité du trafic  
+$x$ : abscisse sur l’autoroute (km)  
+$t$ : temps  
+$v(x,t)$ : vitesse des véhicules  
+
+$[ a,b ]$ : portion d’autoroute
+
+$m(t) = \int_a^b \rho(x,t) dx$
+
+$$
+\frac{d}{dt} m(t) = \rho(a,t) v(a,t) - \rho(b,t) v(b,t)
+$$  
+$$
+\frac{d}{dt} \int_a^b \rho(x,t) dx + \left[ \rho v \right]_a^b = 0
+$$
+
+$$
+\int_a^b \left( \frac{\partial \rho(x,t)}{\partial t} + \frac{\partial}{\partial x} (\rho v) \right) dx = 0
+$$
+
+$$
+\boxed{ \frac{\partial \rho}{\partial t} + \frac{\partial}{\partial x} (\rho v) = 0 }
+$$
+
+Modèle de Whitham
+
+$$
+V = \left( 1 - \frac{\rho}{\rho_{max}} \right) V_{max}
+$$
+$V = v(\rho)$
+$$
+f(\rho) = v(\rho) \rho
+$$
+
+$$
+\frac{\partial \rho}{\partial t} + \frac{\partial}{\partial x} f(\rho) = 0
+$$
+
+$$
+c = f'(\rho)
+$$
+$$
+\frac{\partial \rho}{\partial t} + c \frac{\partial \rho}{\partial x} = 0
+$$
+$c=c(\rho)$
+$$
+c = v(\rho) + \rho v'(\rho)
+$$
+$$
+= v(\rho)
+$$
+$$
+= \left( 1 - \frac{2\rho}{\rho_{max}} \right) V_{max}
+$$
+$$
+\neq v(\rho)
+$$
+
+
+$$
+\sum_{i} t \to (x(t), t)
+$$
+
+Si on prend $f(\rho) = c\rho$, $c=\text{const}$. 
+(équation de transport du cours précédent).  
+$f(\rho) = \frac{\rho^2}{2}$  
+équation de Burgers.
+
+## 2) Méthode des caractéristiques
+
+$$
+\partial_t \rho + \partial_x f(\rho) = 0
+$$
+$\rho(x,0) = \rho_0(x)$
+
+![[Pasted image 20241018083727.png|500]]
+
+$$
+\rho(x(t),t) = \text{constante}
+$$
+
+$$
+\frac{d}{dt} \rho(x(t),t) = 0
+$$
+
+$$
+\frac{\partial \rho}{\partial x}(x(t),t)\cdot x'(t) + \frac{\partial \rho}{\partial x}(x(t),t) \frac{\partial x}{\partial t} = 0
+$$
+
+ça marche si  
+$x'(t) = c(\rho(x(t),t))$
+
+$$
+= c(\rho_0(x(0))) = \text{constante}
+$$
+
+Les courbes caractéristiques sont encore des droites.
+
+$$
+x = c(\rho_0(x_0)) t + x_0
+$$
+
+![[Pasted image 20241018084522.png|400]]
+
+$$
+\rho(x,t) = ?
+$$
+$$
+\begin{cases}
+\rho(x,t) = \rho_0(x_0) \\
+x = f'(\rho_0(x_0)) t + x_0
+\end{cases}
+$$
+
+$$
+\rightarrow \rho, x_0
+$$
+
+![[Pasted image 20241018085100.png|400]]
+$$
+\rho(x,t) = \rho_0(x_0^{(1)}) = \rho_0(x_0^{(2)})
+$$
+
+$$
+f(\rho) = \frac{\rho^2}{2}
+$$
+
+Théorème : Pour certaines conditions initiales régulières, il n'existe pas de solution régulière pour tout $t > 0$ de l'équation de Burgers.
+
+Démonstration :  
+$f(\rho) = \dfrac{\rho^2}{2}$
+$\rho(x,0)$ de classe $C^\infty$, décroissante.  
+$\rho(x,0) = 1$ si $x < 0$  
+et $\rho(x,0) = 0$ si $x > 1$
+
+![[Pasted image 20241018085506.png]]
+
+$$
+\rho(x) = \begin{cases} 
+e^{-\frac{1}{1 - x^2}} & \text{si} \ |x| < 1 \\
+0 & \text{sinon}
+\end{cases}
+$$
+
+![[Pasted image 20241018085606.png]]
+
+$$
+\rho_0(x) = \int_{-\infty}^{+\infty} H(y) H(x - y) dy
+$$
+
+Par l'absurde, supposons qu'il existe une solution régulière.
+
+$$
+\partial_t \rho + \partial_x f(\rho) = 0
+$$
+
+$$
+\forall t \geq 0, \forall x
+$$
+
+$$
+\rho(x,0) = \rho_0(x)
+$$
+
+$$
+\rho(1,1) = ?
+$$
+
+$x_0 = 0$,  
+$\rho_0(0) = 1$,  $x=c(\rho_0)t+x_0$
+$c(a) = f'(\rho_0) = \rho_0 = 1$
+
+$$
+x = t
+$$
+
+$x_0 = 1$,  
+$\rho_0(1) = 0$,  
+$f'(\rho) = 0$
+
+$$
+x = 1
+$$
+
+![[Pasted image 20241018090045.png]]
+
+$$
+\rho(1,1) = 0
+$$
+
+$$
+\rho(1,1) = 1
+$$
+
+Impossible.
+
+On peut introduire une notion de solution discontinue :
+
+$$
+\partial_t \rho + \partial_x f(\rho) = 0 \quad (*)
+$$
+
+$$
+\rho_L(x,t), \quad \rho_R(x,t)
+$$
+
+![[Pasted image 20241018090628.png]]
+
+$\Sigma$ conste de discontinuité (choc) :
+
+$$
+\rho(x,t) = \begin{cases} 
+\rho_L(x,t) & \text{si} \ x < x(t) \\
+\rho_R(x,t) & \text{si} \ x > x(t)
+\end{cases}
+$$
+
+$PL, PR$ fonctions régulières (au moins $C^1$)
+
+Définition : $\rho$ est une solution faible de (\*) ssi
+
+$$
+\partial_t \rho_L + \partial_x f(\rho_L) = 0
+$$
+
+$$
+\partial_t \rho_R + \partial_x f(\rho_R) = 0
+$$
+
+et 
+
+$$
+\sigma = x'(t) \text{ (vitesse du choc)}
+$$
+
+$$
+\sigma (\rho_R - \rho_L) = f(\rho_R) - f(\rho_L)
+$$
+
+si $x(t) = x$
+
+Condition de Rankine-Hugoniot.
+
+> [!example]
+> 
+> $$
+> f(\rho) = \frac{\rho^2}{2}
+> $$
+> ![[Pasted image 20241018091214.png|400]]
+> $$
+> \sigma (\rho_R - \rho_L) = \frac{\rho_R^2}{2} - \frac{\rho_L^2}{2}
+> $$
+> 
+> $$
+> = \frac{1}{2} (\rho_R - \rho_L)(\rho_R + \rho_L)
+> $$
+> 
+> $$
+> \sigma = \frac{\rho_R + \rho_L}{2} = \frac{c(\rho_R) + c(\rho_L)}{2}
+> $$
+
+probleme : il n’y a pas unicité de la solution faible.
+
+Exemple :
+
+$$
+f(\rho) = \frac{\rho^2}{2}
+$$
+
+$$
+\rho(x,t) = \begin{cases} 
+0 & \text{si} \ x < \frac{t}{2} \\
+1 & \text{si} \ x > \frac{t}{2}
+\end{cases}
+$$
+
+$$
+\rho(x,0) = \begin{cases} 
+0 & \text{si} \ x < 0 \\
+1 & \text{sinon}
+\end{cases}
+$$
+
+![[Pasted image 20241018092347.png]]
+
+$$
+\sigma = \frac{1}{2} = \frac{\rho_L + \rho_R}{2} = \frac{1}{2}
+$$
+
+![[Pasted image 20241018092419.png]]
+
+$$
+\rho(x,t) = \begin{cases} 
+0 & \text{si} \ x \leq 0 \\
+x/t & \text{si} \ 0< x < t \\
+1 & \text{si} \ x \geq t
+\end{cases}
+$$
+
+Pour $t > 0$, $\rho(x,t)$ est continue.
+
+$$
+\partial_t \left( \frac{x}{t} \right) + \partial_x \left( \frac{1}{2} \left( \frac{x}{t} \right)^2 \right)
+$$
+$$
+= - \frac{x}{t^2} + \frac{x}{t^2} = 0
+$$
+
+**Condition de Lax** :
+
+![[Pasted image 20241018092811.png]]
+
+Définition : Choc admissible au sens de Lax, soit sur le choc  
+$f'(\rho_L) > f'(\rho_R)$
+
+$$
+\rho(x,t) = \begin{cases} 
+0 & \text{si} \ x < \frac{t}{2} \\
+1 & \text{sinon}
+\end{cases}
+$$
+
+$$
+f'(\rho_L) = 0, \quad f'(\rho_R) = \frac{1}{2}
+$$
+
+Donc, "$f'(\rho_L) > f'(\rho_R)$" pas possible
+
+Exemple de solution faible analytique.
+
+---
+
+## 3. Méthode numérique :  
+
+Schéma de Rusanov.  
+Solution sur $[a,b]$.
+
+$$
+i = 0 \quad CL \ \text{à gauche}
+$$
+
+$$
+i = N+1 \quad CL \ \text{à droite}
+$$
+
+$$
+x_i = a + i h - \frac{h}{2}
+$$
+
+$$
+h = \Delta x = \frac{b - a}{N}
+$$
+
+$$
+\partial_t \rho + \partial_x f(\rho) = 0
+$$
+
+N = 4
+
+![[Pasted image 20241018094014.png]]
+
+$$
+\Delta t = s, \quad t_m = m \Delta t
+$$
+
+$$
+\rho_i^n \approx \rho(x_i, t_n)
+$$
+
+![[Pasted image 20241018094023.png]]
+
+$$
+\frac{\rho_i^{n+1} - \rho_i^n}{\Delta t} + \frac{f_{i+1/2}^n - f_{i-1/2}^n}{h} = 0
+$$
+
+Flux numérique :
+
+$$
+f_{i+1/2}^n = f(\rho_i^n, \rho_{i+1}^n)
+$$
+
+$$
+f_{i-1/2}^n = f(\rho_{i-1}^n, \rho_i^n)
+$$
+
+$$
+f(\rho_L, \rho_R) = \frac{f(\rho_L) + f(\rho_R)}{2} - \frac{\lambda}{2} (\rho_R - \rho_L)
+$$
+
+$$
+\lambda = \max\left( |f'(\rho_R)|, |f'(\rho_L)| \right)
+$$
+
+**Pourquoi ?**
+
+Transport linéaire :
+
+$$
+f(\rho) = c \rho
+$$
+
+$c$ = constante, $c > 0$
+
+$$
+f(\rho_L, \rho_R) = \frac{c \rho_R + c \rho_L}{2} - \frac{|c|}{2} (\rho_R - \rho_L)
+$$
+
+$$
+\lambda = |c|
+$$
+
+- Si $c > 0$ :  
+  $f(\rho_L, \rho_R) = c \rho_L = f(\rho_L)$
+
+- Si $c < 0$ :  
+  $f(\rho_L, \rho_R) = c \rho_R$
+
+---
+
+$$
+\frac{\rho_i^{n+1} - \rho_i^n}{\Delta t} + \frac{f(\rho_i^n, \rho_{i+1}^n) - f(\rho_{i-1}^n, \rho_i^n)}{h} = 0
+$$
+
+Schéma décentré :
+
+$$
+\frac{\rho_i^{n+1} - \rho_i^n}{\Delta t} + \frac{c}{h} (\rho_i^n - \rho_{i-1}^n) = 0
+$$
+
+Autre interprétation :
+
+$$
+\frac{\rho_i^{n+1} - \rho_i^n}{\Delta t} + \frac{f(\rho_{i+1}^n) - f(\rho_{i-1}^n)}{2h}
+$$
+$$
+- \frac{1}{2h} \left( \lambda_{i+1/2} (\rho_{i+1}^n - \rho_i^n) - \lambda_{i-1/2} (\rho_i^n - \rho_{i-1}^n) \right) = 0
+$$
+
+$$
+\lambda_{i+1/2}^n = \max \left( |f'(\rho_i^n)|, |f'(\rho_{i+1}^n)| \right)
+$$
+
+$$
+\frac{f(\rho_{i+1}^n) - f(\rho_i^n)}{h} \simeq \partial_x f(\rho) |_{x_i} + O(h^2)
+$$
+
+$$
+\frac{\rho_{i+1}^n - \rho_i^n}{h} \sim \partial_x \rho |_{x_{i+1/2}} + O(h^2)
+$$
+
+$$
+\frac{\rho_i^n - \rho_{i-1}^n}{h} \sim \partial_x \rho |_{x_{i-1/2}} + O(h^2)
+$$
+

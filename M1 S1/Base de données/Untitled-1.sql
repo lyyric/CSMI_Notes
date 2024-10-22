@@ -256,3 +256,38 @@ USING ( NO_COMMANDE )
 WHERE DATE_COMMANDE = '01/05/2011'
 GROUP BY CODE_CLIENT
 HAVING COUNT( DISTINCT REF_PRODUIT) >= 40);
+
+
+
+--Exercice n° 4 Les sous-requêtes synchronisée
+--Écrivez les requêtes permettant d’afficher :
+--par commande dépassent leur moyenne globale des frais de ports.
+SELECT SOCIETE FROM COMMANDES A, CLIENTS
+WHERE A.CODE_CLIENT = CLIENTS.CODE_CLIENT AND
+PORT > ( SELECT AVG(PORT) FROM COMMANDES B
+WHERE A.CODE_CLIENT = B.CODE_CLIENT );
+
+
+--Le produit, le fournisseur et les unités en stock pour les produits qui ont un stock inférieur à la moyenne des unités en stock pour les produits du même fournisseur.
+
+SELECT NOM_PRODUIT, NO_FOURNISSEUR, UNITES_STOCK
+FROM PRODUITS A
+WHERE UNITES_STOCK >(SELECT AVG(UNITES_STOCK)
+FROM PRODUITS B
+WHERE A.NO_FOURNISSEUR =B.NO_FOURNISSEUR);
+
+
+--Les clients et ses commandes pour les clients qui payent un port supérieur à la moyenne des commandes pour la même année.
+
+SELECT CODE_CLIENT, NO_COMMANDE FROM COMMANDES A
+WHERE PORT > ( SELECT AVG(PORT) FROM COMMANDES B
+WHERE A.ANNEE = B.ANNEE);
+
+
+--Les employés avec leur salaire et le pourcentage correspondant par rapport au total de la masse salariale par fonction. Essayez d’utiliser une sous-requête dans la clause « FROM ».
+
+SELECT NOM, SALAIRE, TO_CHAR( 100*SALAIRE/SUM_S, '999D00')||'%' "% total la fonction"
+FROM EMPLOYES, ( SELECT FONCTION, SUM(SALAIRE) SUM_S
+FROM EMPLOYES
+GROUP BY FONCTION ) SUM_EMPLOYES
+WHERE EMPLOYES.FONCTION = SUM_EMPLOYES.FONCTION;

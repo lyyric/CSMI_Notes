@@ -461,12 +461,19 @@ h_{0,0} v_0 + h_{1,0} v_1 & h_{2,1} v_2 + h_{1,1} v_1 + h_{0,1} v_0 \\
 $$
 
 $$
-= \begin{bmatrix}\begin{array}{c|c|c} 
+= \begin{bmatrix}
+\begin{array}{c|c|c} 
 &&\\
 v_0 & v_1 & v_2\\ 
 &&
-\end{array}\end{bmatrix} 
-\begin{bmatrix} h_{0,0} & h_{0,1} \\ h_{1,0} & h_{1,1} \\ 0 & h_{2,1} \end{bmatrix}
+\end{array}
+\end{bmatrix}
+
+\begin{bmatrix} 
+h_{0,0} & h_{0,1} \\ 
+h_{1,0} & h_{1,1} \\ 
+0 & h_{2,1} 
+\end{bmatrix}
 $$
 $$
 = V_2 \begin{bmatrix} h_{0,0} & h_{0,1} \\ h_{1,0} & h_{1,1} \\ 0 & h_{2,1} \end{bmatrix}

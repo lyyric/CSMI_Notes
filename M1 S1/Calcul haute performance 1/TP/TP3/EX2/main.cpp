@@ -51,8 +51,9 @@ public:
         MPI_Get_address(&coords, &offsets[0]);
         MPI_Get_address(&id, &offsets[1]);
         
-        MPI_Get_adress(this, &baseAdress);
-        MpI_Get_
+        for (int i = 0; n < nItems; ++i){
+            offsets[]
+        }
 
         return newtype;
     }
@@ -67,8 +68,9 @@ int main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    const double P[3] = {0.5, 0.5, 0.5};
+    double P[3] = {0.5, 0.5, 0.5};
 
+    int N = 1000;
 
 
 

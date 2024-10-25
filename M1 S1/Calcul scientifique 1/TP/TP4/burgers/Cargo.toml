@@ -1,0 +1,7 @@
+[package]
+name = "burgers"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rsplot1d = {git = "https://github.com/phelluy/rsplot1d"}

@@ -349,3 +349,6 @@ $$
 \text{mat.push}((10^{20}, k, k))
 $$
 
+![[Pasted image 20241108095838.png]]
+
+![[Pasted image 20241108095844.png]]

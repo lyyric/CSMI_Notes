@@ -276,8 +276,7 @@ WHERE UNITES_STOCK >(SELECT AVG(UNITES_STOCK)
 FROM PRODUITS B
 WHERE A.NO_FOURNISSEUR =B.NO_FOURNISSEUR);
 
-
---Les clients et ses commandes pour les clients qui payent un port supérieur à la moyenne des commandes pour la même année.
+-----------Les clients et ses commandes pour les clients qui payent un port supérieur à la moyenne des commandes pour la même année.
 
 SELECT CODE_CLIENT, NO_COMMANDE FROM COMMANDES A
 WHERE PORT > ( SELECT AVG(PORT) FROM COMMANDES B

@@ -1113,3 +1113,339 @@ M^{-1/2} A M^{-1/2} M^{1/2} x = M^{-1/2} b,
 $$
 
 qui est symétrique définie positive.
+
+On souhaite $\text{cond}(M^{-\frac{1}{2}}AM^{-\frac{1}{2}})$ soit plus petit que $\text{cond}(A)$.
+
+Exemple : Gauss-Seidel symétrique
+
+On considère $M = D - E \quad F = E^T$
+
+$$ 
+A = \begin{pmatrix} 
+&  & -E^T \\ 
+ & D &  \\
+-E & &
+\end{pmatrix} = D - E - E^T 
+$$
+
+$$ 
+x_{p+1} = x_p + M^{-1}(b - Ax_p) 
+$$
+
+$$ 
+Mx_{p+1} = Nx_{p+1} + b 
+$$
+
+Gauss-Seidel
+
+![[Pasted image 20241112215947.png]]
+
+Symétrisation
+
+$$ 
+x_{p+\frac{1}{2}} = x_p + (D - E)^{-1}(b - Ax_p) 
+$$
+
+$$ 
+x_{p+1} = x_{p+\frac{1}{2}} + (D - E^T)^{-1}(b - A x_{p+\frac{1}{2}}) 
+$$
+$\iff$ 
+
+$$ 
+x_{p+1} = x_p + (D - E)^{-1}(b - Ax_p) + (D - E^T)^{-1} \left( b - A \left( x_p + (D - E)^{-1}(b - Ax_p) \right) \right) 
+$$
+
+$$ 
+= x_p + (D - E^T)^{-1}(D - E)^{-1}(b - Ax_p) + (D - E^T)^{-1}(D - E)(D - E)^{-1}(b - Ax_p) 
+$$
+$$ 
+- (D - E^T)^{-1}A(D - E)^{-1}(b - Ax_p) 
+$$
+
+$$ 
+= x_p + (D - E^T)^{-1} \left[ D - E^T + D - E - A \right](D - E)^{-1} (b - Ax_p) 
+$$
+
+$$ 
+= x_p + (D - E^T)^{-1} D (D - E)^{-1}(b - Ax_p) 
+$$
+$$ 
+= x_p + M^{-1}(b - Ax_p)
+$$
+
+La matrice de préconditionnement est 
+
+$$ 
+M = (D - E) D^{-1} (D - E^T) 
+$$
+
+Elle est symétrique définie positive dès que $A$ l'est. En effet, elle est symétrique (immédiat) et définie positive :
+
+$$ 
+M = (D - E)(I_d - D^{-1}E^T) 
+$$
+$$ 
+= D - E - (D - E)D^{-1}E^T 
+$$
+$$ 
+= D - E - E^T + ED^{-1}E^T 
+$$
+$$ 
+= A + ED^{-1}E^T 
+$$
+Donc
+
+$$ 
+(x, Mx) = (x, Ax) + (x, ED^{-1}E^Tx)
+$$
+On a 
+$$
+(x, Ax) > 0
+$$
+$$
+(x, ED^{-1}E^Tx) = (E^Tx, D^{-1}E^Tx) = \sum (D^{-1}x_i)(E^Tx_i)^2 \geq 0
+$$
+car
+$$
+D^{-1}_{ii} \geq 0
+$$
+
+## V) Méthode multi-grille
+
+"**Méthode itérative adaptée au problème considéré**"
+
+### 1) Laplacien discret
+
+On souhaite résoudre l'équation
+
+$$
+\begin{cases}
+-u''(x) = f(x) \quad \text{sur} \quad ]0, 1[ \\
+u(0) = u(1) = 0
+\end{cases}
+$$
+
+On considère un maillage régulier 
+
+$$ x_i = (ih) \quad 0 \leq i \leq N + 1 $$
+
+avec $h = \dfrac{1}{N+1}$ pas d'espace.
+
+Lorsque l'on utilise une méthode de différences finies ou d'éléments finis, on cherche une solution approchée 
+
+$$ u_h \in \mathbb{R}^N $$
+
+solution de
+
+$$ A_h u_h = b_h $$
+
+avec $b_h \in \mathbb{R}^N$ et
+
+$$ A_h = \frac{1}{h^2} \begin{pmatrix} 2 & -1 & & & \\ -1 & 2 & -1 & & \\ & -1 & 2 & -1 & \\ & & -1 & 2 \end{pmatrix} \in M_N(\mathbb{R}) $$
+
+matrice du Laplacien discret.
+
+---
+
+Prop : les valeurs propres de $(h^2 A_h)$ sont
+
+$$ \lambda_h = 4 \sin^2\left(\frac{k \pi h}{2}\right) = 2 - 2\cos(k \pi h) $$
+
+pour $\forall h \in [1, N]$
+
+et les vecteurs propres associés sont
+
+$$ v_h = \left( \sin\left(\frac{k \pi x_j}{i}\right) \right)_{1 \leq j \leq N} $$
+
+pour $\forall h \in [1, N]$
+
+### 2) Effet régularisant de Jacobi relaxé
+
+Méthode de Jacobi relaxée :
+
+$$ M_\omega = \frac{D}{\omega} $$
+
+$$ N_\omega = \frac{D}{\omega} - A $$
+
+$$ e_{p+1} = (M_\omega^{-1}N_\omega)e_p = G_\omega e_p $$
+
+avec
+
+$$ 
+G_\omega = M_\omega^{-1}N_\omega = \omega D^{-1} \left( \frac{D}{\omega} - A \right) = I_d - \omega D^{-1}A 
+$$
+
+---
+
+**Convergence** (dans le cas de la matrice du Laplacien discret)
+
+$$ 
+G_\omega = I_d - \omega \frac{h^2}{2} A_h \quad (car \, D = \frac{2}{h^2}I_d) 
+$$
+
+$$ 
+= I_d - \frac{\omega}{2}(h^2 A_h) 
+$$
+
+Dans ce cas, la méthode de Jacobi relaxée est équivalente à la méthode de Richardson pour la matrice $(h^2 A_h)$ avec $\alpha = \dfrac{\omega}{2}$.
+
+Le paramètre optimal pour la convergence est :
+
+$$ \alpha^* = \frac{2}{\lambda_1 + \lambda_N} $$
+
+Or 
+
+$$ \lambda_1 = 4 \sin^2\left(\frac{\pi h}{2}\right) = (\pi h)^2 + o(h^2) \quad h \to 0 $$
+
+$$ \lambda_N = 4 \sin^2\left(\frac{\pi h N}{2(N+1)}\right) = 4 \sin^2\left(\frac{\pi}{2} \frac{N}{N+1}\right) \to 4 \quad \text{lorsque} \, N \to +\infty $$
+
+$$ \alpha^* \to \frac{2}{0 + 4} = \frac{1}{2} \quad \text{lorsque} \, h \to 0 $$
+
+et donc 
+
+$$ \omega^* = 2 \alpha^* = 1 $$
+
+Utiliser la relaxation n'améliore pas la convergence quand $h \to 0$.
+
+**Effet régularisant**
+
+Étant donnée la décomposition de l'erreur :
+
+$$ e_0 = \sum_{h=1}^{N} \beta_h v_h $$
+
+dans la base associée à $(h^2 A_h)$, on a :
+
+$$ 
+e_p = G_\omega^p e_0 = \sum_{h=1}^{N} \beta_h G_\omega^p v_h 
+$$
+
+$$ 
+= \sum_{h=1}^{N} \beta_h \left( 1 - \frac{\omega}{2} \lambda_h \right)^p v_h 
+$$
+
+Les composantes de l'erreur sont amorties plus ou moins vite :
+
+$$ 
+1 - \omega \frac{\lambda_h}{2} = 1 - \omega \left(1 - \cos(h \pi h)\right) 
+$$
+$$ 
+= (1 - \omega) + \omega \cos( h \pi h ) 
+$$
+
+![[Pasted image 20241112222720.png]]
+
+On choisit $\omega$ de sorte que les hautes fréquences de l'erreur correspondant aux termes $h \geq N / 2$ soient amorties le plus vite.
+
+On choisit $\omega$ tel que :
+
+$$ \max_{h \geq \frac{N}{2}} \left| 1 - \frac{\omega}{2} \lambda_h \right| $$
+
+soit le plus petit possible.
+
+Remarque : 
+
+$v_j = \left( \sin(k \pi x_j) \right)_{1 \leq j \leq N}$
+
+- $v_2$ : basse fréquence (oscille peu)
+- $v_N$ : haute fréquence (oscille beaucoup)
+
+![[Pasted image 20241112222753.png]]
+
+### 3) Méthode à deux grilles
+
+Principe : **Éliminer les basses fréquences** comme les hautes fréquences d'un signal plus petit.
+
+Méthode de correction : 
+Étant donnée une solution approchée $v_h$ du problème $A_h u_h = b_h$, alors $u_h = v_h + e_h$ avec $e_h$, l'erreur qui satisfait $A_h e_h = r_h$.
+
+---
+
+Remarque : Convergence en deux phases
+
+![[Pasted image 20241112223133.png]]
+
+1. Amortissement des hautes fréquences
+2. Phase de convergence plus lente pour les basses fréquences
+
+Pour déterminer une meilleure approximation de $u_h$, on doit déterminer une approximation de $e_{h}$. Pour cela, on peut résoudre un problème du type $A_{e_{h}}  = r_{h}$ sur un maillage plus grossier.
+
+**Opérateurs de restriction et d'interpolation**
+
+Étant donné un maillage avec pas d'espace $h$ et $2h$ :
+
+![[Pasted image 20241112223345.png]]
+
+On introduit :
+- Opérateur de restriction : 
+
+$$ 
+R : \mathbb{R}^{N_h} \to \mathbb{R}^{N_{2h}} 
+$$
+$$ 
+(Ru)_j = \frac{(u_{2j} + 2u_{2j+1} + u_{2j+2})}{4} 
+$$ (moyenne pondérée)
+
+- Opérateur d'interpolation :
+
+$$ I : \mathbb{R}^{N_{2h}} \to \mathbb{R}^{N_h} $$
+
+$$ 
+(Iu)_j = \begin{cases} 
+u_{\frac{j}{2}} & \text{si} \, j \, \text{est pair} \\
+\frac{(u_{\frac{j-1}{2}} + u_{\frac{j+1}{2}})}{2} & \text{si} \, j \, \text{est impair} 
+\end{cases} 
+$$
+
+On a 
+$$
+R = \frac{I^T}{2}
+$$ et
+
+$$ A_{2h} = (R A_h I) $$ (admis)
+
+**Méthode à deux grilles**
+
+Étant donné $u_p$ :
+
+1. Effectuer $V_1$ itération de Jacobi relaxée pour déterminer $v_h$.
+2. Restreindre le résidu sur le maillage grossier : $\tilde{r}_{2h} = R r_h$
+3. Résoudre le problème $A_{2h} \tilde{e}_{2h} = \tilde{r}_{2h}$ sur le maillage grossier.
+4. Interpoler l'erreur sur le maillage fin : $\tilde{e}_h = I \tilde{e}_{2h}$
+5. En partant de $v_h = v_h + \tilde{e}_h$, effectuer $\frac{1}{2}$ itération de Jacobi relaxée pour obtenir $u_{p+1}$.
+
+**Remarques** :
+- L'étape 1 permet de supprimer les hautes fréquences (atténuer) dans l'erreur.
+- L'étape 2-3-4 permet de restreindre le problème sur un maillage grossier.
+- L'interpolation peut créer de hautes fréquences, d'où les itérations de Jacobi relaxées à l'étape 5.
+
+Si $V_1 = V_2 = 0$, alors $v_h = u_p$, et 
+
+$$ 
+u_{p+1} = u_p + I(A_{2h})^{-1} R r_p 
+$$
+$$ 
+= u_p + I(A_h R I)^{-1} R r_p 
+$$
+$$
+= u_p + M^{-1}r_p
+$$
+
+**$M$ est construit en restreignant $A_h$ sur un maillage grossier.**
+
+- Si $v_1 = v_2 = 1$ :
+
+$$ u_{p+1} = u_p + \left[ D^{-1} + D^{-1}(I_d - A D^{-1}) + (I_d - D^{-1}A) I (R A_h I)^{-1} R (I_d - A D^{-1}) \right] r_p $$
+
+Méthode dite en V à 1 niveau
+
+![[Pasted image 20241112224356.png|300]]
+
+Méthode dite en V à plusieurs niveaux
+
+![[Pasted image 20241112224402.png|300]]
+
+On applique la méthode récursivement à l'étape 3.
+
+Méthode dite en W
+
+![[Pasted image 20241112224410.png|300]]

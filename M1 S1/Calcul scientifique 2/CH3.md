@@ -1210,7 +1210,7 @@ $$
 D^{-1}_{ii} \geq 0
 $$
 
-## V) Méthode multi-grille
+## V Méthode multi-grille
 
 "**Méthode itérative adaptée au problème considéré**"
 

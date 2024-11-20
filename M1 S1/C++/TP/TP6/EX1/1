@@ -1,0 +1,32 @@
+#include <iostream>
+#include <vector>
+#include <numeric> // Pour std::accumulate
+#include "randomnumber.hpp" // Pour RandomNumber
+
+int main() {
+    // Demande à l'utilisateur la taille du tableau
+    size_t size;
+    std::cout << "Entrez la taille du tableau : ";
+    std::cin >> size;
+
+    // Création du générateur de nombres aléatoires
+    RandomNumber<double> rnd(0.0, 500.0); // Générateur de nombres réels entre 0 et 500
+
+    // Création du tableau avec std::vector
+    std::vector<double> tableau(size);
+
+    // Initialisation du tableau avec des valeurs aléatoires à l'aide d'itérateurs
+    for (auto it = tableau.begin(); it != tableau.end(); ++it) {
+        *it = rnd();
+    }
+
+    // Calcul de la moyenne
+    double somme = std::accumulate(tableau.begin(), tableau.end(), 0.0);
+    double moyenne = somme / size;
+
+    // Affichage de la moyenne
+    std::cout << "La moyenne des valeurs dans le tableau est : " << moyenne << std::endl;
+
+    // Observation : La moyenne devrait tendre vers 250 quand la taille augmente
+    return 0;
+}

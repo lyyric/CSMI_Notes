@@ -1,79 +1,113 @@
-select pr.nom_produit, fo.societe, cat.NOM_CATEGORIE, pr.unites_stock ,  pr.quantite
-from produits pr
-join CATEGORIES cat on cat.CODE_CATEGORIE = pr.CODE_CATEGORIE
-join FOURNISSEURS fo on fo.NO_FOURNISSEUR = pr.NO_FOURNISSEUR
-where (fo.pays = 'France' or 
-        cat.NOM_CATEGORIE = 'Boissons' or cat.NOM_CATEGORIE = 'Desserts')
-        and (pr.QUANTITE like '%boîtes%' or pr.QUANTITE like '%carton%');
+SELECT
+NOM_PRODUIT,
+SOCIETE FOURNISSEUR,
+NOM_CATEGORIE CATEGORIE,
+UNITES_STOCK,
+QUANTITE
+FROM PRODUITS
+JOIN FOURNISSEURS USING(NO_FOURNISSEUR)
+JOIN CATEGORIES USING(CODE_CATEGORIE)
+WHERE (PAYS = 'FRANCE'
+OR NOM_CATEGORIE IN ('Boissons','Desserts') )
+AND (QUANTITE LIKE '%boîtes%'
+OR QUANTITE LIKE '%carton%')
+ORDER BY NO_FOURNISSEUR, CODE_CATEGORIE;
 
 
+SELECT AD.PAYS
+,CL.SOCIETE
+,AC.NOM||' '||UPPER(AC.PRENOM) VENDEUR
+,EXTRACT(YEAR FROM CO.DATE_COMMANDE) ANNEE
+,COUNT(DISTINCT CO.NO_COMMANDE) NB_COMMANDES
+FROM ADRESSES AD
+JOIN ACHETEURS AC ON AC.NO_ADRESSE = AD.NO_ADRESSE
+JOIN COMMANDES CO ON CO.NO_ACHETEUR = AC.NO_ACHETEUR
+JOIN CLIENTS CL ON AD.CODE_CLIENT = CL.CODE_CLIENT
+WHERE EXTRACT(YEAR FROM CO.DATE_COMMANDE) = 2019
+GROUP BY AD.PAYS
+,CL.SOCIETE
+,AC.NOM
+, AC.PRENOM
+, EXTRACT(YEAR FROM CO.DATE_COMMANDE)
+HAVING COUNT(DISTINCT CO.NO_COMMANDE) > 23
+ORDER BY AD.PAYS
+,CL.SOCIETE
+,AC.NOM;
+
+SELECT VN.pays
+,EM.NOM||' '||EM.PRENOM VENDEUR
+,SUM(DC.PORT) SUM_PORT
+FROM EMPLOYES EM
+JOIN VENDEURS VN ON VN.NO_VENDEUR = EM.NO_EMPLOYE
+JOIN COMMANDES CO ON CO.NO_VENDEUR = VN.NO_VENDEUR
+JOIN DETAILS_COMMANDES DC ON DC.NO_COMMANDE = CO.NO_COMMANDE
+WHERE extract(year from CO.DATE_COMMANDE) = 2019
+and extract(month from CO.DATE_COMMANDE) = 5
+GROUP BY VN.pays
+,EM.NOM
+,EM.PRENOM
+HAVING SUM(DC.PORT) > 80000
+ORDER BY VN.pays, EM.NOM;
 
 
-SELECT 
-    adresses.pays,
-    clients.SOCIETE AS societe_cliente, 
-    acheteurs.nom||' '||acheteurs.prenom acheteur, 
-    extract(year from commandes.DATE_COMMANDE) annee,
-    COUNT(commandes.NO_COMMANDE) AS nombre_commandes
-FROM 
-    commandes
-JOIN 
-    acheteurs ON commandes.NO_ACHETEUR = acheteurs.NO_ACHETEUR 
-JOIN 
-    adresses ON acheteurs.NO_Adresse = adresses.NO_adresse
-JOIN 
-    clients ON adresses.code_client = clients.CODE_CLIENT 
-WHERE 
-    extract(year from commandes.DATE_COMMANDE) = 2019
-GROUP BY 
-    adresses.pays,clients.SOCIETE,acheteurs.nom,acheteurs.prenom,extract(year from commandes.DATE_COMMANDE)
-HAVING 
-    COUNT(commandes.NO_COMMANDE) > 23;
+SELECT A.NOM||' '||A.PRENOM "Employé A",
+A.FONCTION,
+B.NOM||' '||B.PRENOM "Employé B Gérés par Employé A",
+C.NOM||' '||C.PRENOM "Gérés par Employé B"
+FROM EMPLOYES A LEFT OUTER JOIN EMPLOYES B
+ON ( A.NO_EMPLOYE = B.REND_COMPTE )
+LEFT OUTER JOIN EMPLOYES C
+ON ( B.NO_EMPLOYE = C.REND_COMPTE )
+ORDER BY "Employé A","Employé B Gérés par Employé A","Gérés par Employé B" ;
 
 
-
-SELECT 
-    adresses.pays,
-    clients.SOCIETE AS societe_cliente, 
-    employes.nom||' '||employes.prenom vendeur, 
-    extract(year from commandes.DATE_COMMANDE) annee,
-    COUNT(commandes.NO_COMMANDE) AS nombre_commandes
-FROM 
-    commandes
-JOIN 
-    acheteurs ON commandes.NO_ACHETEUR = acheteurs.NO_ACHETEUR 
-JOIN 
-    adresses ON acheteurs.NO_Adresse = adresses.NO_adresse
-JOIN 
-    clients ON adresses.code_client = clients.CODE_CLIENT 
-JOIN 
-    vendeurs ON vendeurs.no_vendeur = commandes.no_vendeur
-JOIN 
-    employes ON vendeurs.no_vendeur = employes.no_employe    
-WHERE 
-    extract(year from commandes.DATE_COMMANDE) = 2019
-GROUP BY 
-    adresses.pays,clients.SOCIETE,employes.nom,employes.prenom,extract(year from commandes.DATE_COMMANDE)
-HAVING 
-    COUNT(commandes.NO_COMMANDE) > 23;
+SELECT VN.PAYS
+,FO.SOCIETE
+,EM.NOM||' '||UPPER(EM.PRENOM) VENDEUR
+,EXTRACT(YEAR FROM CO.DATE_COMMANDE)
+,SUM(DC.QUANTITE)
+,COUNT(DISTINCT CO.NO_COMMANDE) NB_COMMANDES
+FROM EMPLOYES EM
+JOIN VENDEURS VN ON VN.NO_VENDEUR = EM.NO_EMPLOYE
+JOIN COMMANDES CO ON CO.NO_VENDEUR = VN.NO_VENDEUR
+JOIN DETAILS_COMMANDES DC ON DC.NO_COMMANDE = CO.NO_COMMANDE
+JOIN PRODUITS PR ON PR.REF_PRODUIT = DC.REF_PRODUIT
+JOIN FOURNISSEURS FO ON FO.NO_FOURNISSEUR = PR.NO_FOURNISSEUR
+AND FO.PAYS = VN.PAYS
+GROUP BY FO.SOCIETE
+,VN.PAYS
+,EM.NOM
+,EM.PRENOM, EXTRACT(YEAR FROM CO.DATE_COMMANDE)
+HAVING COUNT(DISTINCT CO.NO_COMMANDE) > 600
+ORDER BY EXTRACT(YEAR FROM CO.DATE_COMMANDE), NB_COMMANDES;
 
 
-
-select vendeurs.pays,
-       employes.nom||' '||employes.prenom vendeur,
-       sum(port)      
-from employes
-     join vendeurs on employes.no_employe = vendeurs.no_vendeur
-     join commandes USING(no_vendeur)
-     join details_commandes USING(no_commande)
-where extract(year from  commandes.date_commande)=2019
-  and extract(month from  commandes.date_commande)=5
-group by vendeurs.pays,employes.nom, employes.prenom     
-having sum(port)> 80000;
+SELECT NOM_CATEGORIE, SOCIETE FOURNISSEUR, NOM_PRODUIT, UNITES_STOCK
+FROM PRODUITS PR1
+JOIN CATEGORIES CA ON PR1.CODE_CATEGORIE = CA.CODE_CATEGORIE
+JOIN FOURNISSEURS FR ON FR.NO_FOURNISSEUR = PR1.NO_FOURNISSEUR
+WHERE UNITES_STOCK >(SELECT AVG(PR2.UNITES_STOCK)
+FROM PRODUITS PR2
+WHERE PR1.NO_FOURNISSEUR = PR2.NO_FOURNISSEUR)
+AND NOM_CATEGORIE = 'Desserts'
+ORDER BY SOCIETE, UNITES_STOCK DESC;
 
 
-SELECT em1.nom||' '||em1.prenom as employés_A, em1.FONCTION, em2.nom||' '||em2.prenom as employés_B_gérés_par_A, em3.nom||' '||em3.prenom as employés_C_gérés_par_B
-from EMPLOYES em1
-left join employes em2 on em1.NO_EMPLOYE = em2.REND_COMPTE
-left join employes em3 on em2.NO_EMPLOYE = em3.REND_COMPTE
-order by 2, 1, 3, 4;
+SELECT FO.PAYS
+,CO.ANNEE
+,CO.MOIS
+,SUM(DC.QUANTITE) QUANTITES
+,ROUND(SUM(DC.QUANTITE)*100/
+SUM(SUM(DC.QUANTITE)) OVER
+(PARTITION BY ANNEE),2) "%"
+,SUM(SUM(DC.QUANTITE)) OVER
+(PARTITION BY ANNEE ORDER BY MOIS) "Somme cumulative"
+FROM COMMANDES CO
+JOIN DETAILS_COMMANDES DC ON DC.NO_COMMANDE = CO.NO_COMMANDE
+JOIN PRODUITS PR ON PR.REF_PRODUIT = DC.REF_PRODUIT
+JOIN FOURNISSEURS FO ON FO.NO_FOURNISSEUR = PR.NO_FOURNISSEUR
+AND FO.PAYS = 'France'
+JOIN CATEGORIES CA ON PR.CODE_CATEGORIE = CA.CODE_CATEGORIE
+GROUP BY FO.PAYS,ANNEE,MOIS;
+
+

@@ -1,7 +1,7 @@
----练习 1
+--练习 1
 
----对于法国供应商，或者类别为“Boissons”（饮料）或“Desserts”（甜点）的产品，显示产品名称、供应商、类别和产品数量。
----显示那些数量以“boîtes”（盒子）或“carton”（纸箱）为单位的产品。
+--对于法国供应商，或者类别为“Boissons”（饮料）或“Desserts”（甜点）的产品，显示产品名称、供应商、类别和产品数量。
+--显示那些数量以“boîtes”（盒子）或“carton”（纸箱）为单位的产品。
 
 SELECT
     NOM_PRODUIT,
@@ -19,9 +19,9 @@ WHERE (PAYS = 'FRANCE'
 ORDER BY NO_FOURNISSEUR, CODE_CATEGORIE;
 
 
----练习 2
+--练习 2
 
----对于在2019年完成超过23个订单的客户，显示他们所在的国家、公司名称、购买者的姓名和每年订单数量。
+--对于在2019年完成超过23个订单的客户，显示他们所在的国家、公司名称、购买者的姓名和每年订单数量。
 
 SELECT
     AD.PAYS,
@@ -47,10 +47,10 @@ ORDER BY
     AC.NOM;
 
 
----练习 3
+--练习 3
 
----按销售员和销售员所在国家，计算运费总和。
----仅显示2019年5月且运费总和大于80,000€的记录。
+--按销售员和销售员所在国家，计算运费总和。
+--仅显示2019年5月且运费总和大于80,000€的记录。
 
 SELECT
     VN.pays,
@@ -69,9 +69,9 @@ GROUP BY
 HAVING SUM(DC.PORT) > 80000
 ORDER BY VN.pays, EM.NOM;
 
----练习 4
+--练习 4
 
----显示所有员工的姓名、职位，以及他们管理的员工的姓名，如果有的话，还包括这些员工所管理的员工的姓名。
+--显示所有员工的姓名、职位，以及他们管理的员工的姓名，如果有的话，还包括这些员工所管理的员工的姓名。
 
 SELECT
     A.NOM || ' ' || A.PRENOM "Employé A",
@@ -84,10 +84,10 @@ LEFT OUTER JOIN EMPLOYES C ON B.NO_EMPLOYE = C.REND_COMPTE
 ORDER BY "Employé A", "Employé B Gérés par Employé A", "Gérés par Employé B";
 
 
----练习 5
+--练习 5
 
----对于与供应商来自同一国家的销售员，显示国家和供应商。
----按年份显示订单数量和销售数量，仅显示订单数量超过600的记录。
+--对于与供应商来自同一国家的销售员，显示国家和供应商。
+--按年份显示订单数量和销售数量，仅显示订单数量超过600的记录。
 
 SELECT
     VN.PAYS,
@@ -113,10 +113,10 @@ HAVING COUNT(DISTINCT CO.NO_COMMANDE) > 600
 ORDER BY EXTRACT(YEAR FROM CO.DATE_COMMANDE), NB_COMMANDES;
 
 
----练习 6
+--练习 6
 
----对于同一供应商的“Desserts”类别的产品，显示那些库存单位低于该供应商“Desserts”类别产品平均库存的产品的供应商、产品和库存单位。
----按供应商升序和库存单位降序排序。
+--对于同一供应商的“Desserts”类别的产品，显示那些库存单位低于该供应商“Desserts”类别产品平均库存的产品的供应商、产品和库存单位。
+--按供应商升序和库存单位降序排序。
 
 SELECT
     NOM_CATEGORIE,
@@ -135,10 +135,10 @@ AND NOM_CATEGORIE = 'Desserts'
 ORDER BY SOCIETE, UNITES_STOCK DESC;
 
 
----练习 7
+--练习 7
 
----对于法国的供应商，按年份和月份显示订单数量和销售数量。
----计算运费在年度运费总和中的百分比，以及年度累计销售数量。
+--对于法国的供应商，按年份和月份显示订单数量和销售数量。
+--计算运费在年度运费总和中的百分比，以及年度累计销售数量。
 
 SELECT
     FO.PAYS,

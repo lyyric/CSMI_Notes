@@ -1,79 +1,157 @@
-select pr.nom_produit, fo.societe, cat.NOM_CATEGORIE, pr.unites_stock ,  pr.quantite
-from produits pr
-join CATEGORIES cat on cat.CODE_CATEGORIE = pr.CODE_CATEGORIE
-join FOURNISSEURS fo on fo.NO_FOURNISSEUR = pr.NO_FOURNISSEUR
-where (fo.pays = 'France' or 
-        cat.NOM_CATEGORIE = 'Boissons' or cat.NOM_CATEGORIE = 'Desserts')
-        and (pr.QUANTITE like '%boîtes%' or pr.QUANTITE like '%carton%');
+--练习 1
+
+--对于法国供应商，或者类别为“Boissons”（饮料）或“Desserts”（甜点）的产品，显示产品名称、供应商、类别和产品数量。
+--显示那些数量以“boîtes”（盒子）或“carton”（纸箱）为单位的产品。
+
+SELECT
+    NOM_PRODUIT,
+    SOCIETE FOURNISSEUR,
+    NOM_CATEGORIE CATEGORIE,
+    UNITES_STOCK,
+    QUANTITE
+FROM PRODUITS
+JOIN FOURNISSEURS USING(NO_FOURNISSEUR)
+JOIN CATEGORIES USING(CODE_CATEGORIE)
+WHERE (PAYS = 'FRANCE'
+    OR NOM_CATEGORIE IN ('Boissons', 'Desserts'))
+    AND (QUANTITE LIKE '%boîtes%'
+    OR QUANTITE LIKE '%carton%')
+ORDER BY NO_FOURNISSEUR, CODE_CATEGORIE;
 
 
+--练习 2
+
+--对于在2019年完成超过23个订单的客户，显示他们所在的国家、公司名称、购买者的姓名和每年订单数量。
+
+SELECT
+    AD.PAYS,
+    CL.SOCIETE,
+    AC.NOM || ' ' || UPPER(AC.PRENOM) VENDEUR,
+    EXTRACT(YEAR FROM CO.DATE_COMMANDE) ANNEE,
+    COUNT(DISTINCT CO.NO_COMMANDE) NB_COMMANDES
+FROM ADRESSES AD
+JOIN ACHETEURS AC ON AC.NO_ADRESSE = AD.NO_ADRESSE
+JOIN COMMANDES CO ON CO.NO_ACHETEUR = AC.NO_ACHETEUR
+JOIN CLIENTS CL ON AD.CODE_CLIENT = CL.CODE_CLIENT
+WHERE EXTRACT(YEAR FROM CO.DATE_COMMANDE) = 2019
+GROUP BY
+    AD.PAYS,
+    CL.SOCIETE,
+    AC.NOM,
+    AC.PRENOM,
+    EXTRACT(YEAR FROM CO.DATE_COMMANDE)
+HAVING COUNT(DISTINCT CO.NO_COMMANDE) > 23
+ORDER BY
+    AD.PAYS,
+    CL.SOCIETE,
+    AC.NOM;
 
 
-SELECT 
-    adresses.pays,
-    clients.SOCIETE AS societe_cliente, 
-    acheteurs.nom||' '||acheteurs.prenom acheteur, 
-    extract(year from commandes.DATE_COMMANDE) annee,
-    COUNT(commandes.NO_COMMANDE) AS nombre_commandes
-FROM 
-    commandes
-JOIN 
-    acheteurs ON commandes.NO_ACHETEUR = acheteurs.NO_ACHETEUR 
-JOIN 
-    adresses ON acheteurs.NO_Adresse = adresses.NO_adresse
-JOIN 
-    clients ON adresses.code_client = clients.CODE_CLIENT 
-WHERE 
-    extract(year from commandes.DATE_COMMANDE) = 2019
-GROUP BY 
-    adresses.pays,clients.SOCIETE,acheteurs.nom,acheteurs.prenom,extract(year from commandes.DATE_COMMANDE)
-HAVING 
-    COUNT(commandes.NO_COMMANDE) > 23;
+--练习 3
+
+--按销售员和销售员所在国家，计算运费总和。
+--仅显示2019年5月且运费总和大于80,000€的记录。
+
+SELECT
+    VN.pays,
+    EM.NOM || ' ' || EM.PRENOM VENDEUR,
+    SUM(DC.PORT) SUM_PORT
+FROM EMPLOYES EM
+JOIN VENDEURS VN ON VN.NO_VENDEUR = EM.NO_EMPLOYE
+JOIN COMMANDES CO ON CO.NO_VENDEUR = VN.NO_VENDEUR
+JOIN DETAILS_COMMANDES DC ON DC.NO_COMMANDE = CO.NO_COMMANDE
+WHERE EXTRACT(YEAR FROM CO.DATE_COMMANDE) = 2019
+    AND EXTRACT(MONTH FROM CO.DATE_COMMANDE) = 5
+GROUP BY
+    VN.pays,
+    EM.NOM,
+    EM.PRENOM
+HAVING SUM(DC.PORT) > 80000
+ORDER BY VN.pays, EM.NOM;
+
+--练习 4
+
+--显示所有员工的姓名、职位，以及他们管理的员工的姓名，如果有的话，还包括这些员工所管理的员工的姓名。
+
+SELECT
+    A.NOM || ' ' || A.PRENOM "Employé A",
+    A.FONCTION,
+    B.NOM || ' ' || B.PRENOM "Employé B Gérés par Employé A",
+    C.NOM || ' ' || C.PRENOM "Gérés par Employé B"
+FROM EMPLOYES A
+LEFT OUTER JOIN EMPLOYES B ON A.NO_EMPLOYE = B.REND_COMPTE
+LEFT OUTER JOIN EMPLOYES C ON B.NO_EMPLOYE = C.REND_COMPTE
+ORDER BY "Employé A", "Employé B Gérés par Employé A", "Gérés par Employé B";
 
 
+--练习 5
 
-SELECT 
-    adresses.pays,
-    clients.SOCIETE AS societe_cliente, 
-    employes.nom||' '||employes.prenom vendeur, 
-    extract(year from commandes.DATE_COMMANDE) annee,
-    COUNT(commandes.NO_COMMANDE) AS nombre_commandes
-FROM 
-    commandes
-JOIN 
-    acheteurs ON commandes.NO_ACHETEUR = acheteurs.NO_ACHETEUR 
-JOIN 
-    adresses ON acheteurs.NO_Adresse = adresses.NO_adresse
-JOIN 
-    clients ON adresses.code_client = clients.CODE_CLIENT 
-JOIN 
-    vendeurs ON vendeurs.no_vendeur = commandes.no_vendeur
-JOIN 
-    employes ON vendeurs.no_vendeur = employes.no_employe    
-WHERE 
-    extract(year from commandes.DATE_COMMANDE) = 2019
-GROUP BY 
-    adresses.pays,clients.SOCIETE,employes.nom,employes.prenom,extract(year from commandes.DATE_COMMANDE)
-HAVING 
-    COUNT(commandes.NO_COMMANDE) > 23;
+--对于与供应商来自同一国家的销售员，显示国家和供应商。
+--按年份显示订单数量和销售数量，仅显示订单数量超过600的记录。
 
-
-
-select vendeurs.pays,
-       employes.nom||' '||employes.prenom vendeur,
-       sum(port)      
-from employes
-     join vendeurs on employes.no_employe = vendeurs.no_vendeur
-     join commandes USING(no_vendeur)
-     join details_commandes USING(no_commande)
-where extract(year from  commandes.date_commande)=2019
-  and extract(month from  commandes.date_commande)=5
-group by vendeurs.pays,employes.nom, employes.prenom     
-having sum(port)> 80000;
+SELECT
+    VN.PAYS,
+    FO.SOCIETE,
+    EM.NOM || ' ' || UPPER(EM.PRENOM) VENDEUR,
+    EXTRACT(YEAR FROM CO.DATE_COMMANDE),
+    SUM(DC.QUANTITE),
+    COUNT(DISTINCT CO.NO_COMMANDE) NB_COMMANDES
+FROM EMPLOYES EM
+JOIN VENDEURS VN ON VN.NO_VENDEUR = EM.NO_EMPLOYE
+JOIN COMMANDES CO ON CO.NO_VENDEUR = VN.NO_VENDEUR
+JOIN DETAILS_COMMANDES DC ON DC.NO_COMMANDE = CO.NO_COMMANDE
+JOIN PRODUITS PR ON PR.REF_PRODUIT = DC.REF_PRODUIT
+JOIN FOURNISSEURS FO ON FO.NO_FOURNISSEUR = PR.NO_FOURNISSEUR
+    AND FO.PAYS = VN.PAYS
+GROUP BY
+    FO.SOCIETE,
+    VN.PAYS,
+    EM.NOM,
+    EM.PRENOM,
+    EXTRACT(YEAR FROM CO.DATE_COMMANDE)
+HAVING COUNT(DISTINCT CO.NO_COMMANDE) > 600
+ORDER BY EXTRACT(YEAR FROM CO.DATE_COMMANDE), NB_COMMANDES;
 
 
-SELECT em1.nom||' '||em1.prenom as employés_A, em1.FONCTION, em2.nom||' '||em2.prenom as employés_B_gérés_par_A, em3.nom||' '||em3.prenom as employés_C_gérés_par_B
-from EMPLOYES em1
-left join employes em2 on em1.NO_EMPLOYE = em2.REND_COMPTE
-left join employes em3 on em2.NO_EMPLOYE = em3.REND_COMPTE
-order by 2, 1, 3, 4;
+--练习 6
+
+--对于同一供应商的“Desserts”类别的产品，显示那些库存单位低于该供应商“Desserts”类别产品平均库存的产品的供应商、产品和库存单位。
+--按供应商升序和库存单位降序排序。
+
+SELECT
+    NOM_CATEGORIE,
+    SOCIETE FOURNISSEUR,
+    NOM_PRODUIT,
+    UNITES_STOCK
+FROM PRODUITS PR1
+JOIN CATEGORIES CA ON PR1.CODE_CATEGORIE = CA.CODE_CATEGORIE
+JOIN FOURNISSEURS FR ON FR.NO_FOURNISSEUR = PR1.NO_FOURNISSEUR
+WHERE UNITES_STOCK > (
+    SELECT AVG(PR2.UNITES_STOCK)
+    FROM PRODUITS PR2
+    WHERE PR1.NO_FOURNISSEUR = PR2.NO_FOURNISSEUR
+)
+AND NOM_CATEGORIE = 'Desserts'
+ORDER BY SOCIETE, UNITES_STOCK DESC;
+
+
+--练习 7
+
+--对于法国的供应商，按年份和月份显示订单数量和销售数量。
+--计算运费在年度运费总和中的百分比，以及年度累计销售数量。
+
+SELECT
+    FO.PAYS,
+    CO.ANNEE,
+    CO.MOIS,
+    SUM(DC.QUANTITE) QUANTITES,
+    ROUND(SUM(DC.QUANTITE) * 100 /
+        SUM(SUM(DC.QUANTITE)) OVER (PARTITION BY ANNEE), 2) "%" ,
+    SUM(SUM(DC.QUANTITE)) OVER (PARTITION BY ANNEE ORDER BY MOIS) "Somme cumulative"
+FROM COMMANDES CO
+JOIN DETAILS_COMMANDES DC ON DC.NO_COMMANDE = CO.NO_COMMANDE
+JOIN PRODUITS PR ON PR.REF_PRODUIT = DC.REF_PRODUIT
+JOIN FOURNISSEURS FO ON FO.NO_FOURNISSEUR = PR.NO_FOURNISSEUR
+    AND FO.PAYS = 'France'
+JOIN CATEGORIES CA ON PR.CODE_CATEGORIE = CA.CODE_CATEGORIE
+GROUP BY FO.PAYS, ANNEE, MOIS;

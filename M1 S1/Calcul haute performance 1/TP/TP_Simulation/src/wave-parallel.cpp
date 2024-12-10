@@ -8,7 +8,14 @@
 //! \brief calcul du champ de pression initial
 //! \param[out] pressure0 champ de pression au temps time
 //! \param[out] pressure1 champ de pression au temps time+dt
+
 void initial_conditions( FunctionSpace::Element & pressure0, FunctionSpace::Element & pressure1 );
+
+// 处理周期性边界条件
+void apply_periodic_boundary_conditions(FunctionSpace::Element &pressure, const GridStructured &grid);
+
+// 边界数据交换
+void exchange_boundary_data(FunctionSpace::Element &pressure, const GridStructured &grid);
 
 int main(int argc, char *argv[]) {
     //------------------------------------------------//
@@ -84,72 +91,26 @@ int main(int argc, char *argv[]) {
         //------------------------------------------------//
         // compute solution at current time
         //------------------------------------------------//
-        for (int i = 1; i < space.nLocalDofByDirection(0) - 1; ++i) {
-            for (int j = 1; j < space.nLocalDofByDirection(1) - 1; ++j) {
+        exchange_boundary_data(pressure1, grid);
+
+        //------------------------------------------------//
+        // compute solution at current time
+        //------------------------------------------------//
+        double beta_x = C * dt / grid.delta(0);
+        double beta_y = C * dt / grid.delta(1);
+        int nx = space.nLocalDofByDirection(0);
+        int ny = space.nLocalDofByDirection(1);
+
+        for (int i = 1; i < nx - 1; ++i) {
+            for (int j = 1; j < ny - 1; ++j) {
                 pressure(i, j) = -pressure0(i, j)
-                                + 2.0 * (1 - beta_x * beta_x - beta_y * beta_y) * pressure1(i, j)
-                                + beta_x * beta_x * (pressure1(i - 1, j) + pressure1(i + 1, j))
-                                + beta_y * beta_y * (pressure1(i, j - 1) + pressure1(i, j + 1));
+                                 + 2 * (1 - beta_x * beta_x - beta_y * beta_y) * pressure1(i, j)
+                                 + beta_x * beta_x * (pressure1(i - 1, j) + pressure1(i + 1, j))
+                                 + beta_y * beta_y * (pressure1(i, j - 1) + pressure1(i, j + 1));
             }
         }
 
-        //------------------------------------------------//
-        // apply periodic boundary conditions
-        //------------------------------------------------//
-        for (int j = 1; j < space.nLocalDofByDirection(1) - 1; ++j) {
-            pressure(0, j) = pressure1(space.nLocalDofByDirection(0) - 2, j);
-            pressure(space.nLocalDofByDirection(0) - 1, j) = pressure1(1, j);
-        }
-
-        for (int i = 1; i < space.nLocalDofByDirection(0) - 1; ++i) {
-            pressure(i, 0) = pressure1(i, space.nLocalDofByDirection(1) - 2);
-            pressure(i, space.nLocalDofByDirection(1) - 1) = pressure1(i, 1);
-        }
-
-        //------------------------------------------------//
-        // MPI communication for ghost cells
-        //------------------------------------------------//
-
-        int left_neighbor = grid.neighbor(0, -1);
-        int right_neighbor = grid.neighbor(0, 1);
-        int bottom_neighbor = grid.neighbor(1, -1);
-        int top_neighbor = grid.neighbor(1, 1);
-
-        MPI_Status status;
-
-        if (left_neighbor != MPI_PROC_NULL) {
-            MPI_Sendrecv(
-                &pressure1(1, 0), space.nLocalDofByDirection(1), MPI_DOUBLE, left_neighbor, 0,
-                &pressure1(0, 0), space.nLocalDofByDirection(1), MPI_DOUBLE, left_neighbor, 0,
-                MPI_COMM_WORLD, &status
-            );
-        }
-
-        if (right_neighbor != MPI_PROC_NULL) {
-            MPI_Sendrecv(
-                &pressure1(space.nLocalDofByDirection(0) - 2, 0), space.nLocalDofByDirection(1), MPI_DOUBLE, right_neighbor, 0,
-                &pressure1(space.nLocalDofByDirection(0) - 1, 0), space.nLocalDofByDirection(1), MPI_DOUBLE, right_neighbor, 0,
-                MPI_COMM_WORLD, &status
-            );
-        }
-
-        if (bottom_neighbor != MPI_PROC_NULL) {
-            MPI_Sendrecv(
-                &pressure1(0, 1), space.nLocalDofByDirection(0), MPI_DOUBLE, bottom_neighbor, 0,
-                &pressure1(0, 0), space.nLocalDofByDirection(0), MPI_DOUBLE, bottom_neighbor, 0,
-                MPI_COMM_WORLD, &status
-            );
-        }
-
-        if (top_neighbor != MPI_PROC_NULL) {
-            MPI_Sendrecv(
-                &pressure1(0, space.nLocalDofByDirection(1) - 2), space.nLocalDofByDirection(0), MPI_DOUBLE, top_neighbor, 0,
-                &pressure1(0, space.nLocalDofByDirection(1) - 1), space.nLocalDofByDirection(0), MPI_DOUBLE, top_neighbor, 0,
-                MPI_COMM_WORLD, &status
-            );
-        }
-
-
+        apply_periodic_boundary_conditions(pressure, grid);
         //------------------------------------------------//
         // export solutions on the disk
         //------------------------------------------------//
@@ -190,4 +151,56 @@ void initial_conditions( FunctionSpace::Element & pressure0, FunctionSpace::Elem
                     pressure1(i,j) = pressure0(i,j);
                 }
         }
+}
+
+
+///////////////
+
+
+void apply_periodic_boundary_conditions(FunctionSpace::Element &pressure, const GridStructured &grid) {
+    int nx = grid.nLocalPoints(0);
+    int ny = grid.nLocalPoints(1);
+
+    for (int j = 0; j < ny; ++j) {
+        pressure(0, j) = pressure(nx - 2, j);
+        pressure(nx - 1, j) = pressure(1, j);
+    }
+
+    for (int i = 0; i < nx; ++i) {
+        pressure(i, 0) = pressure(i, ny - 2);
+        pressure(i, ny - 1) = pressure(i, 1);
+    }
+}
+
+void exchange_boundary_data(FunctionSpace::Element &pressure, const GridStructured &grid) {
+    int nx = grid.nLocalPoints(0);
+    int ny = grid.nLocalPoints(1);
+
+    double *sendBufferTop = new double[nx];
+    double *recvBufferTop = new double[nx];
+    double *sendBufferBottom = new double[nx];
+    double *recvBufferBottom = new double[nx];
+
+    for (int i = 0; i < nx; ++i) {
+        sendBufferTop[i] = pressure(i, ny - 2);
+        sendBufferBottom[i] = pressure(i, 1);
+    }
+
+    MPI_Request requests[4];
+    MPI_Isend(sendBufferTop, nx, MPI_DOUBLE, grid.neighbour(NeighbourPosition::Top), 0, MPI_COMM_WORLD, &requests[0]);
+    MPI_Irecv(recvBufferTop, nx, MPI_DOUBLE, grid.neighbour(NeighbourPosition::Top), 0, MPI_COMM_WORLD, &requests[1]);
+    MPI_Isend(sendBufferBottom, nx, MPI_DOUBLE, grid.neighbour(NeighbourPosition::Bottom), 1, MPI_COMM_WORLD, &requests[2]);
+    MPI_Irecv(recvBufferBottom, nx, MPI_DOUBLE, grid.neighbour(NeighbourPosition::Bottom), 1, MPI_COMM_WORLD, &requests[3]);
+
+    MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
+
+    for (int i = 0; i < nx; ++i) {
+        pressure(i, 0) = recvBufferBottom[i];
+        pressure(i, ny - 1) = recvBufferTop[i];
+    }
+
+    delete[] sendBufferTop;
+    delete[] recvBufferTop;
+    delete[] sendBufferBottom;
+    delete[] recvBufferBottom;
 }

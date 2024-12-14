@@ -1,8 +1,5 @@
 # C++ 错误处理、异常机制及现代C++（C++11、C++14、C++17）功能详解
 
-**作者：Vincent Chabannes**  
-**邮箱：vincent.chabannes@math.unistra.fr**
-
 ---
 
 ## 目录

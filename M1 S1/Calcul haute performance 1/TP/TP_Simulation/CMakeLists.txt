@@ -12,5 +12,6 @@ find_package(HDF5 REQUIRED)
 add_executable(wave_simulation src/wave-parallel.cpp)
 
 target_include_directories(wave_simulation PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
 # 链接库
 target_link_libraries(wave_simulation PRIVATE MPI::MPI_C HDF5::HDF5)

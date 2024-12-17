@@ -4,5 +4,5 @@ mod ex6;
 mod ex7;
 
 fn main() {
-    ex5::run();
+    ex6::run();
 }

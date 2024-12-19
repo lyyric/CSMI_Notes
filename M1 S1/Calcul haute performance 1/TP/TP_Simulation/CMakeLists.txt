@@ -1,17 +1,21 @@
-cmake_minimum_required(VERSION 3.15)
-project(wave_simulation)
+cmake_minimum_required (VERSION 3.21)
+# set the project name
+project( MonProjet )
 
-# 设置 C++ 标准
-set(CMAKE_CXX_STANDARD 17)
+if(NOT CMAKE_BUILD_TYPE )
+  set( CMAKE_BUILD_TYPE Release CACHE STRING "Choix du type de build" FORCE)
+endif ()
 
-# 查找 MPI 和 HDF5
+# specify the C++ standard
+set( CMAKE_CXX_STANDARD 17)
+set( CMAKE_CXX_STANDARD_REQUIRED True)
+
 find_package(MPI REQUIRED)
+message(STATUS "Run: ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} ${MPIEXEC_PREFLAGS} EXECUTABLE ${MPIEXEC_POSTFLAGS} ARGS")
+
+set(HDF5_PREFER_PARALLEL TRUE)
 find_package(HDF5 REQUIRED)
 
-# 添加源文件
-add_executable(wave_simulation src/wave-parallel.cpp)
-
-target_include_directories(wave_simulation PRIVATE ${CMAKE_SOURCE_DIR}/src)
-
-# 链接库
-target_link_libraries(wave_simulation PRIVATE MPI::MPI_C HDF5::HDF5)
+add_executable(wave-parallel wave-parallel.cpp)
+target_link_libraries(wave-parallel PUBLIC MPI::MPI_CXX hdf5::hdf5)
+target_include_directories(wave-parallel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

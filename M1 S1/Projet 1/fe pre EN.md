@@ -6,8 +6,6 @@
 - Hello everyone, I’m Yehua. I’m delighted to present my project on solving a Poisson-type partial differential equation (PDE) in two dimensions using the Finite Element Method (FEM).
 - Today’s presentation will cover the project’s motivation, mathematical modeling, numerical implementation, and performance analysis.
 - Through this project, I aim to demonstrate the importance of combining mathematical methods and programming techniques in modern scientific computing.
-- The project encompasses the entire process—from mesh generation to numerical solution—and integrates modern software engineering practices such as modular C++ design, Docker, and GitHub Actions.
-- Let’s start with the motivation and objectives of the project.
 
 ---
 
@@ -22,7 +20,6 @@
   4. Present the C++ implementation details.
   5. Discuss the results and performance analysis.
   6. Conclude and talk about future work.
-- Now, let’s begin with the project’s background and objectives.
 
 ---
 

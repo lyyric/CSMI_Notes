@@ -700,16 +700,16 @@ This method provides a precise, cross-platform way to measure the performance of
 
 ## 收敛
 
-After obtaining the solution vector, the function `computeMaxValue` is called to extract the maximum value of \( u \) for that mesh. Here’s a detailed explanation of this step:
+After obtaining the solution vector, the function `computeMaxValue` is called to extract the maximum value of $u$ for that mesh. Here’s a detailed explanation of this step:
 
 1. **Obtaining the Solution Vector**  
-   After solving the Poisson equation via `PoissonSolver::solve()`, the function returns a `std::vector<double>` where each entry represents the computed numerical solution \( u \) at a node in the mesh. For example, the vector might look like:
+   After solving the Poisson equation via `PoissonSolver::solve()`, the function returns a `std::vector<double>` where each entry represents the computed numerical solution $u$ at a node in the mesh. For example, the vector might look like:
    ```cpp
    std::vector<double> solution = { u_0, u_1, u_2, ..., u_N };
    ```
 
 2. **Purpose of computeMaxValue**  
-   The goal of `computeMaxValue` is to traverse the solution vector and determine the maximum value among all \( u \) values. This maximum value is used as a simple convergence indicator. By comparing these maximum values from different meshes, one can observe whether the solution stabilizes (i.e., converges) as the mesh is refined.
+   The goal of `computeMaxValue` is to traverse the solution vector and determine the maximum value among all $u$ values. This maximum value is used as a simple convergence indicator. By comparing these maximum values from different meshes, one can observe whether the solution stabilizes (i.e., converges) as the mesh is refined.
 
 3. **Using std::max_element**  
    Inside `computeMaxValue`, the Standard Template Library (STL) function `std::max_element` is used. Here’s how it works step by step:
@@ -736,7 +736,7 @@ After obtaining the solution vector, the function `computeMaxValue` is called to
 
 4. **Significance and Application**  
    - **Convergence Analysis:**  
-     By comparing the maximum \( u \) values across different mesh densities, you can check for convergence. If, as you refine the mesh, the maximum \( u \) value approaches a constant, it indicates that the numerical solution is converging.
+     By comparing the maximum $u$ values across different mesh densities, you can check for convergence. If, as you refine the mesh, the maximum $u$ value approaches a constant, it indicates that the numerical solution is converging.
      
    - **Quality Check:**  
      The maximum value can also serve as a quick check for unexpected anomalies in the solution. For example, if the maximum value varies significantly between meshes, it might indicate issues in the discretization or solver.
@@ -747,7 +747,7 @@ After obtaining the solution vector, the function `computeMaxValue` is called to
 
 - **Step 1:** The solution vector is computed and returned by `PoissonSolver::solve()`.
 - **Step 2:** The `computeMaxValue` function uses `std::max_element` to iterate over the vector.
-- **Step 3:** The iterator returned by `std::max_element` is dereferenced to obtain the maximum \( u \) value.
+- **Step 3:** The iterator returned by `std::max_element` is dereferenced to obtain the maximum $u$ value.
 - **Purpose:** This maximum value is then used to assess convergence as different meshes yield increasingly refined approximations of the solution.
 
 This detailed process ensures that convergence is monitored effectively by using a simple yet powerful STL algorithm.

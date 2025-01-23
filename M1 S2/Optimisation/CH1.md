@@ -1,0 +1,369 @@
+# Chapitre 1 : Introduction  
+
+## I Exemples de problèmes d'optimisation  
+
+### Problème du voyageur de commerce  
+
+Un représentant doit visiter $N$ villes en un temps minimal, en passant une seule fois par ville.  
+
+$t_{ij} = \text{temps de parcours entre la ville } i \text{ et la ville } j$  
+
+$$
+\min_{\sigma \in \Sigma_N} \sum_{i=1}^{N-1} t_{\sigma(i)\sigma(i+1)}
+$$
+
+$\text{card}(\Sigma_N) = N!$  
+
+→ optimisation discrète difficile ($\text{NP-difficile}$)  
+
+### Problème de transport optimal  
+
+Transport de minerais entre $N$ mines et $M$ usines  
+
+**Données** :  
+$C_{ij}$ : coût de transport entre la mine $i$ et l’usine $j$ (par unité de minerai)  
+$P_{ij}$ : quantité de minerai transportée entre la mine $i$ et l’usine $j$  
+
+**Minimise le coût de transport**  (Problème de Kantorovitch)
+$$
+\min_{P \in M_{N,M}(\mathbb{R})} \sum_{i=1}^N \sum_{j=1}^M C_{ij} P_{ij}
+$$
+
+**Sous contraintes** :  
+$$
+\sum_{j=1}^M P_{ij} = a_i \quad \text{quantité de minerai produite par la mine } i
+$$
+$$
+\sum_{i=1}^N P_{ij} = b_j \quad \text{quantité de minerai nécessaire à l’usine } j
+$$
+
+→ optimisation discrète sous contrainte  
+
+### Analyse de données : réseaux de neurones  
+
+Données $(x_i, y_i)_{i=1}^N \in \mathbb{R}^n \times \mathbb{R}^m$  
+
+On cherche une fonction $f_\theta(x)$ qui approche au mieux les données : $f_\theta(x) \simeq y$  
+
+$f_\theta$ est une fonction paramétrée $\theta \in \mathbb{R}^p$  
+
+On détermine $\Theta$ de sorte à ce que soit minimal (écart quadratique moyen) :  
+$$
+\frac{1}{N} \sum_{i=1}^N \|y_i - f_\theta(x_i)\|^2
+$$
+
+**Régression linéaire** :  
+$$
+f_\theta(x) = Wx + b \quad \text{avec } W \in M_{m,n}(\mathbb{R}), b \in \mathbb{R}^m
+$$  
+$$
+\theta = (W, b) \in \mathbb{R}^{m \times n + m}
+$$
+Réseaux de neurones  
+$$
+f_\theta(x) = g_k \circ \dots \circ g_1(x)
+$$  
+avec  
+$$
+g_i(x) = \sigma(W_i x + b_i)
+$$  
+
+$\sigma$ : fonction non linéaire appliquée composante par composante  
+
+→ problème d’optimisation continu  
+
+### Problème de Dido : type isopérimétrique  
+
+Déterminer le domaine $\Omega$ le plus grand possible à périmètre fixé  
+$$
+\max_{\Omega \subset \mathbb{R}^2, \, \text{Pér}(\Omega) = l} \text{ Aire}(\Omega)
+$$
+
+Hypothèses : côté rivière, les bords sont fixés (en $a$ et $b$)  
+Frontière est le graphe d’une fonction  
+
+$y : [a, b] \to \mathbb{R}$  
+
+$$
+\max_{y \in V} \int_a^b y(x) \, dx
+$$
+
+avec  
+$$
+V = \left\{ y \in \mathcal{L}^2((a, b), \mathbb{R}) \, \middle| \, \int_a^b \sqrt{1 + y'(x)^2} \, dx = l \right\}
+$$
+
+→ optimisation en dimension infinie
+
+### Minimisation d'énergie  
+
+**Inconnue** : $u(x)$, déplacement vertical d’une peau de tambour  
+
+**Donnée** : $f(x)$, force normale exercée sur le tambour (verticale)  
+
+$$
+\min_{u \in H_0^1(\Omega)} \int_\Omega \left( \|\nabla u(x)\|^2 - f(x) u(x) \right) dx
+$$
+$$
+\text{Énergie élastique} - \text{travail de la force } f
+$$
+
+Avec  
+$$
+H_0^1(\Omega) = \{ u \in L^2(\Omega) \mid u' \in L^2(\Omega) \text{ et } u_{|\partial \Omega} = 0 \}
+$$  
+(espace de Sobolev)  
+
+## II Vocabulaire  
+
+$V$ : espace vectoriel normé, $K \subset V$, $J : K \to \mathbb{R}$  
+
+**Problème de minimisation** :  
+$$
+\min_{x \in K} J(x)
+$$
+$J$ : fonction coût, critère, objectif  
+
+- $K = V$ : problème sans contrainte  
+- $K \subsetneq V$ : problème avec contrainte  
+
+> [!definition]
+> - $J$ admet un **minimum global** $\bar{x} \in K$, si $\forall x \in K, J(x) \geq J(\bar{x})$  
+> 
+> On note :  
+> $$
+> \inf_K J = \min_K J \quad \text{et} \quad \bar{x} = \arg\min_{x \in K} J(x)
+> $$  
+> 
+> $\bar{x}$ est appelé minimum de $J$ sur $K$.  
+> 
+> - $J$ admet un **minimum local** $\bar{x} \in K$, si $\exists \varepsilon > 0$, $\forall x \in K \cap B(\bar{x}, \varepsilon), J(x) \geq J(\bar{x})$ 
+
+> [!remark]
+> $J$ admet un minimum si et seulement si $(-J)$ admet un maximum en $\bar{x}$.  
+
+**Infimum et suite minorante** : problème plus général.  
+
+Pas toujours de minimum :  
+$$
+\inf_{x \in V} J(x)
+$$  
+Exemple : $x \mapsto e^x$ n’a pas de minimum sur $\mathbb{R}$.  
+
+C'est-à-dire trouver l'infimum de $\{J(x) \mid x \in K\} \subset \mathbb{R}$.  
+
+→ Toujours une solution notée $\inf J \in [-\infty, +\infty]$.  
+
+**Prop.** Tout sous-ensemble $A \subset \mathbb{R}$ admet une borne inférieure (infimum = plus grand des minorants) dans $[- \infty, +\infty[$.  
+
+Cet infimum $a = \inf A$ est caractérisé par :  
+- $a$ est un minorant de $A$, et  
+- $\exists (y_n)$ suite dans $A$, $y_n \to a$.  
+
+**Déf.** Il existe toujours une suite $(x_n)$ de $K$, appelée suite minorante, tq  
+$$
+J(x_n) = y_n \quad \longrightarrow \quad \bar{J} = \inf_{x \in K} J(x)
+$$
+
+**Rem.** Appliquons la caractérisation à $\{J(x) \mid x \in K\}$ :  
+$$
+\exists (y_n) \quad \text{suite dans } \{J(x) \mid x \in K\}, \quad y_n \to \bar{J}
+$$
+$$
+\Rightarrow \exists (x_n), \quad J(x_n) \to \bar{J}
+$$
+
+**Question générale :**  
+- $(x_n)$ converge-t-elle ? (existence et unicité)  
+- Comment construire explicitement $(x_n)$ ? (méthodes numériques)  
+
+## III Calcul différentiel  
+
+### 1) Différentiabilité  
+
+> [!definition]
+> $E, F$ espace vectoriel normé réel, $U \subset E$ ouvert et $f : U \to F$.  
+> 
+> 1. $f$ est différentiable en $x \in U$, s’il existe une application linéaire continue $Df(x) \in \mathcal{L}(E, F)$ telle que :  
+> $$
+> f(x + h) = f(x) + Df(x)(h) + o(\|h\|) \quad \text{quand } \|h\| \to 0.
+> $$
+> 2. $f$ est $\mathcal{C}^1$ sur $U$ si $f$ est différentiable en tout $x \in U$ et  
+> $$
+> Df : x \in U \mapsto Df(x) \in \mathcal{L}(E, F) \text{ continue.}
+> $$
+
+**Rappel** : $o(\|h\|) = \|h\| \epsilon(\|h\|)$ avec $\epsilon(\|h\|) = \frac{o(\|h\|)}{\|h\|} \to 0 \quad \text{quand } \|h\| \to 0.$  
+
+Si $f$ est différentiable en $x \in U$, on peut définir les dérivées directionnelles suivant un vecteur $h \in E$ fixé :  
+
+$$
+\frac{\partial f}{\partial h}(x) = \lim_{t \to 0} \frac{f(x + t h) - f(x)}{t}
+$$
+$$
+= \lim_{t \to 0} \frac{Df(x)(t h) + o(t \|h\|)}{t}
+$$
+$$
+= \lim_{t \to 0} Df(x)(h) + \|h\| \frac{o(t)}{t}
+$$
+$$
+= Df(x)(h)
+$$  
+$f \in \mathcal{C}^1 \Rightarrow f$ différentiable  
+$f$ différentiable $\Rightarrow f \in \mathcal{C}^0$ (continue)  
+
+$f$ différentiable $\Rightarrow f$ admet des dérivées directionnelles dans toutes les directions  
+
+**Exemple :**  
+$$
+f(x, y) = 
+\begin{cases} 
+\frac{x^3}{x^2 + y} & \text{si } x \neq -y \\ 
+0 & \text{si } x = -y 
+\end{cases}
+$$  
+
+$f$ n’est pas continue en $0$, mais admet des dérivées directionnelles dans toutes les directions.  
+
+En coordonnées polaires :  
+$$
+\begin{cases} 
+x = r \cos\theta \\ 
+y = r \sin\theta 
+\end{cases}
+$$
+$$
+f(x, y) = \frac{r^3 \cos^3\theta}{r (\cos\theta + \sin\theta)} = r^2 \frac{\cos^3\theta}{\cos\theta + \sin\theta}
+$$
+Pour tout $r > 0$, on a  
+$$
+\frac{\cos^3\theta}{\cos\theta + \sin\theta} \to +\infty
+$$  
+donc $f$ n’est pas bornée au voisinage de $(0, 0)$.  
+Elle ne peut pas être continue.  
+
+Soit $h = (h_1, h_2) \in \mathbb{R}^2$. On suppose que $h_1 \neq -h_2$.  
+$$
+\frac{f(th_1, th_2) - f(0, 0)}{t} = \frac{1}{t} \left( \frac{(t h_1)^3}{t h_1 + t h_2} - 0 \right)
+$$
+$$
+= t \left( \frac{h_1^3}{h_1 + h_2} \right) \to 0 \quad \text{quand } t \to 0.
+$$
+
+Donc $\frac{\partial f}{\partial h}(0, 0)$ existe.  
+
+Si $h_1 = -h_2$,  
+$$
+\frac{f(th_1, th_2) - f(0, 0)}{t} = \frac{0 - 0}{t} = 0.
+$$
+$$
+\forall t > 0, \quad \text{donc } \frac{\partial f}{\partial h}(0, 0) \text{ existe.}
+$$
+
+**Rmq.** $f$ est deux fois différentiable en $x \in U$ si $f$ est différentiable sur un voisinage de $x$ et $Df : E \to \mathcal{L}(E, F)$ est différentiable en $x$.  
+
+La différentielle seconde :  
+$$
+D^2f(x) \in \mathcal{L}(E, \mathcal{L}(E, F)) \simeq \mathcal{L}(E \times E, F).
+$$
+
+On note :  
+$$
+D^2f(x)(h, k) = D^2f(x)(h)(k), \text{ et on a : }
+$$
+$$
+Df(x + h) = Df(x) + D^2f(x)(h) + o(\|h\|).
+$$
+
+**Prop. (Taylor-Young)** : Si $f$ est deux fois différentiable, alors :  
+$$
+f(x + h) = f(x) + Df(x)(h) + \frac{1}{2} D^2f(x)(h, h) + o(\|h\|^2) \quad \text{quand } \|h\| \to 0.
+$$  
+**Rappel** :  
+1. $l : E \to F$ linéaire et continue si $\exists M > 0$, $\|l(x)\|_F \leq M \|x\|_E \quad \forall x \in E$.  
+2. $b : E \times E \to F$ bilinéaire et continue si $\exists M > 0$, $\|b(x, y)\|_F \leq M \|x\|_E \|y\|_E \quad \forall x, y \in E$.  
+
+### 2) Fonctions à valeurs réelles
+
+Soit $V = \mathbb{R}^m$ ou un espace de Hilbert, muni d’un produit scalaire $\langle \cdot, \cdot \rangle$.  
+Soit $f : V \to \mathbb{R}$.  
+
+**Déf.**  
+Si $f$ est différentiable en $x$,  
+$$
+Df(x) \in \mathcal{L}(V, \mathbb{R}) \simeq V',
+$$  
+le théorème de Riesz assure qu’il existe $z \in V$ tel que  
+$$
+\forall y \in V, \, Df(x)(y) = \langle z, y \rangle.
+$$  
+$z$ est appelé **gradient** de $f$ en $x$, noté $z = \nabla f(x)$.  
+
+**Exemple :**  
+$$
+f(x) = \|x\|^2
+$$
+
+Pour tout $h \in V$,  
+$$
+f(x + h) = \|x + h\|^2 = \|x\|^2 + 2 \langle x, h \rangle + \|h\|^2
+$$
+$$
+= f(x) + L(h) + R(h),
+$$  
+où $L(h) = 2 \langle x, h \rangle$ est linéaire et continue, car  
+$$
+|L(h)| = |2 \langle x, h \rangle| \leq 2 \|x\| \|h\| \quad \text{(Cauchy-Schwarz)}.
+$$
+
+$R(h) = \|h\|^2$ vérifie $\frac{R(h)}{\|h\|} = \|h\| \to 0 \quad \text{quand } \|h\| \to 0.$  
+
+Donc $f$ est différentiable en $x \in V$ et  
+$$
+Df(x)(h) = L(h) = 2 \langle x, h \rangle.
+$$
+
+Ainsi, $\nabla f(x) = 2x$.  
+
+**Rmq.** On peut aussi introduire la Hessienne :  
+$$
+Hf(x) = \nabla^2 f(x) \in \mathcal{L}(V, V)
+$$
+$$
+D^2f(x)(h, h) = \langle \nabla^2 f(x) h, h \rangle.
+$$
+
+**Rmq. (Formule de Taylor-Young)**  
+Si $f$ est deux fois différentiable en $x \in V$, alors :  
+$$
+f(x + h) = f(x) + \langle \nabla f(x), h \rangle + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle + o(\|h\|^2).
+$$
+
+#### Cas particulier : dimension finie
+$V = \mathbb{R}^n$  
+
+**Déf. (Dérivées partielles)**  
+1. $f$ admet une dérivée partielle d’indice $i \in \{1, \dots, n\}$ si $f$ admet une dérivée directionnelle suivant $e_i$. On note $\partial_i f(x)$ cette dérivée.  
+2. $f$ est $\mathcal{C}^k$ si toutes les dérivées partielles existent jusqu’à l’ordre $k$ et sont continues.  
+
+**Rmq.** Si $f$ est différentiable en $x$, alors :  
+$$
+Df(x)(h) = \sum_{i=1}^n \partial_i f(x) h_i = \langle \nabla f(x), h \rangle,
+$$
+avec  
+$$
+\nabla f(x) = (\partial_i f(x))_{1 \leq i \leq n} \in \mathbb{R}^n.
+$$
+
+Si $f$ est deux fois différentiable en $x$, alors :  
+$$
+D^2f(x)(h, h) = \sum_{i=1}^n \sum_{j=1}^n \partial_{ij}^2 f(x) h_i h_j,
+$$
+avec  
+$$
+\nabla^2 f(x) = (\partial_{ij}^2 f(x))_{1 \leq i, j \leq n}.
+$$
+Ainsi :  
+$$
+D^2f(x)(h, h) = \langle \nabla^2 f(x) h, h \rangle.
+$$  

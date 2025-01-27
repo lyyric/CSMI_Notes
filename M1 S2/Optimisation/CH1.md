@@ -366,4 +366,428 @@ $$
 Ainsi :  
 $$
 D^2f(x)(h, h) = \langle \nabla^2 f(x) h, h \rangle.
+$$
+
+**Prop (Taylor-Intégral)**  
+
+$f : U \subseteq E \to F$ et soit $[x, x+h]$ un intervalle inclus dans $U$.  
+
+- Si $f \in \mathcal{C}^1$,  
+$$ 
+f(x+h) = f(x) + \int_0^1 Df(x + t h)(h) \, dt 
+$$
+
+- Si $f \in \mathcal{C}^2$,  
+$$ 
+f(x+h) = f(x) + Df(x)(h) + \int_0^1 (1-t) D^2f(x + t h)(h, h) \, dt 
+$$
+
+**Prop (Taylor-Lagrange)**  
+
+$f : U \subseteq E \to \mathbb{R}$ différentiable  
+et $[x, x+h] \subset U$. Alors $\exists s \in ]0, 1[$,  
+$$ 
+f(x+h) = f(x) + Df(x + s h)(h) 
+$$
+
+- Si $f \in \mathcal{C}^1$ et deux fois différentiable :  
+  $\exists s \in ]0, 1[$,  
+$$ 
+f(x+h) = f(x) + Df(x)(h) + \frac{1}{2} D^2f(x + s h)(h, h) 
 $$  
+
+### 3)  Analyse convexe 
+
+Pour simplifier les notations, $V = \mathbb{R}^n$ ou Hilbert.  
+Toutes les définitions et propositions s'étendent à $V$ evn.  
+
+**Déf :** $K \subset V$ est convexe si $\forall x, y \in K$,  
+$\forall \theta \in [0, 1], \theta x + (1-\theta) y \in K$.  
+
+*(Schéma d'une courbe convexe $K$ avec deux points $x, y$ et le segment entre eux inclus dans $K$.)*  
+
+![[Pasted image 20250127134829.png]]
+
+**Déf :**  
+$f : K \subset V \to \mathbb{R}$ avec $K$ convexe non vide.  
+$f$ est convexe si $\forall x, y \in K$, $\forall \theta \in [0, 1]$,  
+$$ 
+f(\theta x + (1-\theta)y) \leq \theta f(x) + (1-\theta) f(y) 
+$$
+
+$f$ est strictement convexe si l'inégalité est stricte dès que $x \neq y$ et $\theta \in ]0, 1[$.  
+
+*"f est en dessous de ses cordes"*  
+
+![[Pasted image 20250127135325.png|400]]
+
+**Remarque (régularité)**  
+
+En dimension finie, $f$ convexe 
+$\implies$ $f$ localement Lipschitzienne (Lipschitzienne sur tout compact).  
+$\implies$ (Théorème de Rademacher) $f$ est différentiable p.p.  
+
+$\implies$ $f$ est continue sur $\mathring{K}$.  
+
+**Exemples :**  
+
+- $f : \mathbb{R} \to \mathbb{R}$  
+  $x \mapsto x^2$  
+  *(continue sur $\mathbb{R}$)*  
+
+![[Pasted image 20250127140737.png|300]]
+
+- $f : [0, 1] \subset \mathbb{R} \to \mathbb{R}$  
+$$
+x \mapsto  
+\begin{cases}  
+0 & \text{si } x \in ]0, 1[, \\  
+1 & \text{si } x = 0 \text{ ou } x = 1.  
+\end{cases}  
+$$  
+  *(continue sur $\mathring{[0, 1]} = ]0, 1[$)*  
+
+![[Pasted image 20250127140757.png|300]]
+
+En dimension infinie, $f$ convexe $\not\Rightarrow$ $f$ continue sur $\mathring{K}$.  
+Il existe des formes linéaires (fonctions convexes) non continues.  
+
+**Remarque :** $f$ est convexe si l'épigraphe de $f$,  
+$$ \{ (x, y) \in K \times \mathbb{R} \mid y \geq f(x) \} \subset K \times \mathbb{R}, $$
+est convexe.  
+
+![[Pasted image 20250127141005.png|300]]
+
+$f$ convexe $\Rightarrow$ les sous-ensembles de niveaux de $f$,  
+$$ \{ x \in K \mid f(x) \leq \alpha \}, $$
+sont convexes.  
+
+![[Pasted image 20250127141022.png|300]]
+
+Contre-exemple 
+
+![[Pasted image 20250127141115.png|300]]
+
+un graphe non convexe et ses ensembles de niveaux sont convexe (egaux soit à $\varnothing, \mathbb{R}_-,\mathbb{R}$)
+
+**Prop (Caractérisation de la convexité pour $f$ différentiable)**  
+
+$f : U \subset V \to \mathbb{R}$ différentiable et $K \subset U$ convexe non vide.  
+
+On a les équivalences entre :  
+
+(i) $f$ est convexe sur $K$,  
+
+(ii) $\forall x, y \in K$,  
+$$ 
+f(y) \geq f(x) + (\nabla f(x), y - x), 
+$$
+(iii) $\forall x, y \in K$,  
+$$ 
+(\nabla f(y) - \nabla f(x), y - x) \geq 0. 
+$$
+
+*Les mêmes équivalences valent pour le cas strictement convexe en remplaçant $\geq$ par $>$ et en supposant $x \neq y$.*  
+
+**Prop (Caractérisation pour $f \in \mathcal{C}^1$ deux fois différentiable)**  
+
+Avec les mêmes notations, $f \in \mathcal{C}^1$ deux fois différentiable.  
+
+On a l'équivalence :  
+
+(i) $f$ convexe sur $K$,  
+(iv) $\forall x \in K, \nabla^2 f(x)$ est (semi-définie) positive,  c'est-à-dire $\forall h \in V, (\nabla^2 f(x)h, h) \geq 0$.  
+
+Dans le cas strictement convexe, on a $(i) \Rightarrow (iv)$ , $(\nabla^2 f(x))$ définie positive, mais la réciproque est fausse $(i) \not\Rightarrow (iv)$.  
+
+**Remarque :**  
+- (ii) $f$ est au-dessus de son hyperplan tangent.  
+
+![[Pasted image 20250127142625.png|500]]
+
+- (iii) $\nabla f(x)$ est monotone.  
+
+En dimension 1 :  
+$$
+f'(y) - f'(x)(y - x) \geq 0 \quad \forall x, y \implies f' \text{ est croissante.} 
+$$
+
+- (iv) En dimension 1 :  
+$$ 
+f''(x) \geq 0. 
+$$
+
+**Preuve :** (cas convexe)  
+
+$(i) \implies (ii)$  
+$\forall x, y \in K, \forall \theta \in ]0, 1[$,  
+$$ 
+f(\theta x + (1-\theta) y) \leq \theta f(x) + (1-\theta) f(y). 
+$$
+On a :  
+$$ 
+f(y + \theta (x-y)) - f(y) \leq \theta (f(x) - f(y)). 
+$$
+
+En divisant par $\theta$, on obtient :  
+$$ 
+\frac{f(y + \theta (x-y)) - f(y)}{\theta} \leq f(x) - f(y). 
+$$
+
+En faisant tendre $\theta \to 0^+$, on a :  
+$$ 
+\frac{\partial f}{\partial (x-y)}(y) = (\nabla f(y), x-y). 
+$$
+
+Donc $\forall x, y \in K$,  
+$$ 
+(\nabla f(y), x-y) + f(y) \leq f(x). 
+$$
+
+$(ii) \implies (iii)$  
+$\forall x, y \in K$,  
+$$ 
+f(y) \geq f(x) + (\nabla f(x), y-x), 
+$$
+$$ 
+f(x) \geq f(y) + (\nabla f(y), x-y). 
+$$
+
+En sommant, on obtient :  
+$$ 
+f(x) + f(y) \geq f(x) + f(y) + (\nabla f(x) - \nabla f(y), y-x), 
+$$
+$$ 
+0 \geq (\nabla f(x) - \nabla f(y), y-x), 
+$$
+$$ 
+0 \leq (\nabla f(y) - \nabla f(x), y-x). 
+$$
+
+$(iii) \implies (ii)$  
+On définit :  
+$$ 
+\phi(t) = f(x + t(y-x)), \quad \phi : [0, 1] \to \mathbb{R}. 
+$$
+$\phi$ est dérivable car composée de fonctions différentiables.  
+$$ 
+\phi'(t) = Df(x + t(y-x))(y-x) = (\nabla f(x + t(y-x)), y-x). 
+$$
+
+$$ 
+\phi'(t) - \phi'(0) = (\nabla f(x + t(y-x)), y-x) - (\nabla f(x), y-x), 
+$$
+$$ 
+= \frac{1}{t} ( \nabla f(x + t(y-x)) - \nabla f(x), t(y-x) ) \geq 0 \quad \text{(d'après (ii))}. 
+$$
+$\forall t \in [0, 1]$,  
+
+on applique le théorème des accroissements finis :  
+$\exists s \in ]0, 1[$,  
+$$ 
+\phi(1) - \phi(0) = \phi'(s) \geq \phi'(0),
+$$  
+$$ 
+\implies f(y) - f(x) \geq (\nabla f(x), y-x). 
+$$
+
+$(ii) \implies (i)$  
+On a $\forall x, y \in K, \forall \theta \in [0, 1]$,  
+$$ 
+f(y) \geq f(\theta x + (1-\theta)y) + (\nabla f(\theta x + (1-\theta)y), y - (\theta x + (1-\theta)y)), 
+$$
+$$ 
+f(x) \geq f(\theta x + (1-\theta)y) + (\nabla f(\theta x + (1-\theta)y), x - (\theta x + (1-\theta)y)). 
+$$
+
+On multiplie la première équation par $(1-\theta)$ et la seconde par $\theta$, puis on somme.  
+
+$f \in \mathcal{C}^2$, $f$ deux fois différentiable.  
+
+$(ii) \implies (iv)$  
+Soit $x \in K$ et $h \in V$. D’après la formule de Taylor à l’ordre 2 :  
+$$
+0\leq f(x + th) - f(x) - (\nabla f(x), th) = \frac{t^2}{2} (\nabla^2 f(x)h, h) + o(\|th\|²) \quad (t \to 0).
+$$
+
+Donc $\forall t > 0$,  
+$$ 
+0 \leq \frac{1}{2} (\nabla^2 f(x)h, h) + o(1) \quad (t \to 0). 
+$$
+
+En divisant par $t^2 > 0$ et en faisant tendre $t \to 0$, on obtient :  
+$$ 
+0 \leq \frac{1}{2} (\nabla^2 f(x)h, h). 
+$$
+
+$(iv) \implies (ii)$  
+Soit $x, y \in K$. D’après la formule de Taylor-Lagrange à l’ordre 2 :  
+$$
+f(y) = f(x) + (\nabla f(x), y - x) + \frac{1}{2} (\nabla^2 f(x + s(y - x))(y - x), y - x),
+$$
+avec $s \in [0, 1]$.  
+
+Donc :  
+$$
+f(y) - f(x) - (\nabla f(x), y - x) \geq 0.
+$$
+
+**Remarque :** $(i) \implies (ii)$  
+Dans le cas strictement convexe, on montre que les pentes sont strictement croissantes :  
+$$ 0 < \theta < \omega < 1, $$  
+$$ \frac{f(x + \theta(y - x)) - f(x)}{\theta} < \frac{f(x + \omega(y - x)) - f(x)}{\omega} < \frac{f(y) - f(x)}{1}. $$  
+![[Pasted image 20250127150641.png]]
+
+**Remarque : (fonction quadratique)**  
+$f : \mathbb{R}^n \to \mathbb{R},$  
+$$ f(x) = \frac{1}{2}(Ax, x) - (b, x), $$  
+avec $A \in S_n(\mathbb{R})$ et $b \in \mathbb{R}^n$.  $f$ est-elle convexe ?  
+
+- $f$ est polynomiale dans $\ell^2$,  
+$$ 
+f(x) = \frac{1}{2} \sum_{i,j=1}^n A_{ij}x_i x_j - \sum_{i=1}^n b_i x_i. 
+$$
+
+**Calcul des $\nabla f$ et $\nabla^2 f$ :**  
+
+$$
+f(x + h) = \frac{1}{2}(A(x+h), x+h) - (b, x+h),
+$$
+$$
+= \frac{1}{2} \left[ (Ax, x) + (Ax, h) + (Ah, x) + (Ah, h) \right] - \left[ (b, x) + (b, h) \right],
+$$
+$$
+= f(x) + (Ax, h) - (b, h) + \frac{1}{2}(Ah, h),
+$$
+$$
+= f(x) + (Ax-b, h) + \frac{1}{2}(Ah, h).
+$$
+
+Par identification :  
+$$
+\nabla f(x) = Ax - b, \quad \nabla^2 f(x) = A.
+$$
+
+Pour $n = 1$ :  
+$$
+f(x) = \frac{1}{2}ax^2 - bx, \quad f'(x) = ax - b, \quad f''(x) = a.
+$$
+
+**Conclusion :**  
+$f$ est convexe 
+$\iff \forall x \in \mathbb{R}^n, \nabla^2 f(x) = A$ est (semi-définie) positive,  
+$\iff A$ est (semi-définie) positive.  
+
+$f$ strictement convexe :  $\iff$ $A$ définie positive (d'après (iii)(iv))
+
+$$
+\forall x \neq y, \quad (\nabla f(x) - \nabla f(y), x-y) > 0,
+$$
+$$
+\iff (Ax - b) - (Ay - b), x-y > 0,
+$$
+$$
+\iff (A(x-y), x-y) > 0.
+$$
+
+**Définition :**  
+$f : K \subset V \to \mathbb{R}$ avec $K$ convexe non vide.  
+$f$ est dite $\alpha$-convexe si :  
+$$
+\forall x, y \in K, \forall \theta \in [0, 1],
+$$
+$$
+f(\theta x + (1-\theta)y) \leq \theta f(x) + (1-\theta)f(y) - \frac{\alpha}{2} \theta (1-\theta)\|x-y\|^2 ,
+$$
+$\alpha > 0$ .
+
+![[Pasted image 20250127152312.png|400]]
+la fonction $\alpha$-convexe avec son écart quantifié par $\theta f(x) + (1-\theta)f(y) -\frac{\alpha}{2} \theta (1-\theta) \|x-y\|^2$, un polynôme de degré 2 en $\theta$.
+
+**Remarque :**  
+$f \alpha$-convexe $\implies f$ est strictement convexe.  
+*La $\alpha$-convexité « quantifie » la stricte convexité.*  
+
+**Proposition :**  
+$f$ est $\alpha$-convexe si et seulement si  
+$$
+g(x) = f(x) - \frac{\alpha}{2} \|x\|^2 \quad \text{est convexe.}
+$$
+
+**Preuve :**  
+$$
+\theta g(x) + (1-\theta) g(y) = \theta f(x) + (1-\theta) f(y) - \frac{\alpha}{2} \left( \theta \|x\|^2 + (1-\theta) \|y\|^2 \right),
+$$
+$$
+g(\theta x + (1-\theta)y) = f(\theta x + (1-\theta)y) - \frac{\alpha}{2} \| \theta x + (1-\theta)y \|^2.
+$$
+
+Donc :  
+$$
+\theta g(x) + (1-\theta) g(y) - g(\theta x + (1-\theta)y)  
+= \theta f(x) + (1-\theta) f(y) - f(\theta x + (1-\theta)y) - \frac{\alpha}{2}C,
+$$  
+avec :  
+$$
+C = \theta (1-\theta) \|x\|^2 + (1-\theta)(1-\theta) \|y\|^2 - 2\theta (1-\theta) (x, y),
+$$
+$$
+= \theta (1-\theta) \left[ \|x\|^2 + \|y\|^2 - 2(x, y) \right],
+$$
+$$
+= \theta (1-\theta) \|x - y\|^2.
+$$
+
+**Proposition :**  
+Si $f$ est différentiable,  
+$f : U \subset V \to \mathbb{R}$ différentiable,  
+$K \subset U$ convexe non vide.  
+
+On a les équivalences :  
+(i) $f$ est $\alpha$-convexe sur $K$,  
+(ii) $\forall x, y \in K, \, f(y) \geq f(x) + \langle \nabla f(x), y-x \rangle + \alpha \|x-y\|^2,$  
+(iii) $\forall x, y \in K, \, (\nabla f(y) - \nabla f(x), y-x) \geq \alpha \|y-x\|^2,$  
+
+Si $f$ est deux fois différentiable :  
+(iv) $\forall x \in K, \, \forall h \in V, \, (\nabla^2 f(x)h, h) \geq \alpha \|h\|^2.$  
+
+**Preuve :**  
+Découle des caractérisations sur $g$ convexe, sachant que  
+$$
+\nabla g(x) = \nabla f(x) - \alpha x.
+$$
+
+**Exemple :** (fonction quadratique dans $\mathbb{R}^n$)  
+$A$ symétrique définie positive de valeurs propres $0 < \lambda_1 \leq \ldots \leq \lambda_n$.  
+Alors  
+$$
+(Ah, h) \geq \lambda_1 \|h\|^2.
+$$
+
+$f$ strictement convexe $\iff A$ définie positive $\iff f$ est $\lambda_1$-convexe.  
+
+**Preuve de (Exemple)**  
+
+Soit $A = P D P^T$ avec $P \in O_n(\mathbb{R})$ et $D = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$.  
+
+$$
+(Ah, h) = (PDP^T h, h) = (DP^T h, P^T h),
+$$
+$$
+= \sum_{i=1}^n \lambda_i \left( (P^T h)_i \right)^2,
+$$
+$$
+\geq \lambda_1 \sum_{i=1}^n \left( (P^T h)_i \right)^2,
+$$
+$$
+= \lambda_1 \|P^T h\|^2.
+$$
+Comme $P \in O_n(\mathbb{R})$,  
+$$
+\|P^T h\|^2 = \|h\|^2.
+$$
+Donc :  
+$$
+(Ah, h) \geq \lambda_1 \|h\|^2.
+$$
+

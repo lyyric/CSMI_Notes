@@ -192,7 +192,7 @@ $$
 > $$
 > Df : x \in U \mapsto Df(x) \in \mathcal{L}(E, F) \text{ continue.}
 > $$
-
+nn             m
 **Rappel** : $o(\|h\|) = \|h\| \epsilon(\|h\|)$ avec $\epsilon(\|h\|) = \frac{o(\|h\|)}{\|h\|} \to 0 \quad \text{quand } \|h\| \to 0.$  
 
 Si $f$ est différentiable en $x \in U$, on peut définir les dérivées directionnelles suivant un vecteur $h \in E$ fixé :  
@@ -394,7 +394,7 @@ $$
   $\exists s \in ]0, 1[$,  
 $$ 
 f(x+h) = f(x) + Df(x)(h) + \frac{1}{2} D^2f(x + s h)(h, h) 
-$$  
+$$
 
 ### 3)  Analyse convexe 
 

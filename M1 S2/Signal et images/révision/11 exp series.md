@@ -384,8 +384,8 @@ decomposer_bad.compute_approximations(f_bad, [5, 11], True);
 Legendre 多项式在区间 $[-1, 1]$ 上递归定义为：
 $$
 \begin{aligned}
-nP_n(x) &= (2n-1)x\,P_{n-1}(x) - (n-1)\,P_{n-2}(x),\$$1mm]
-P_0(x)&=1,\$$1mm]
+nP_n(x) &= (2n-1)x\,P_{n-1}(x) - (n-1)\,P_{n-2}(x),\\
+P_0(x)&=1,\\
 P_1(x)&=x.
 \end{aligned}
 $$

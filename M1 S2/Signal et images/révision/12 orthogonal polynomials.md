@@ -128,6 +128,7 @@ plt.show()
 
 print(len(x), len(w))
 ```
+
 ```
 离散化点: [ ... ]  # 输出的具体数值
 50 50
@@ -149,6 +150,7 @@ for n in range(2, n_poly):
 
 print(basis.shape)
 ```
+
 ```
 (19, 50)
 ```

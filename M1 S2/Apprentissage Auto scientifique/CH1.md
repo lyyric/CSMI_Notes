@@ -398,3 +398,250 @@ $$
 **Remarque :**  
 L’espérance $\hat{\theta}$ est la solution du problème de pénalisation ridge.  
 
+
+Continuez à penser à pénalisation : 
+$$
+J(\theta) = \frac{1}{m} \| Y - A\theta \|^2 + \lambda \| \theta \|^2
+$$
+$$
+\hat{\theta} = \arg\min_{\theta} J(\theta) = \left( \frac{1}{m} A^T A + 2\lambda I d \right)^{-1} A^T Y
+$$
+
+**Interprétation probabiliste**
+
+$$
+p(\theta) \sim \mathcal{N}(0, \alpha^2 I d)
+$$
+$$
+p(\theta | y_1, \dots, y_m, x_1, \dots, x_m) = \frac{p(y_1, \dots, y_m | \theta) p(\theta)}{p(y_1, \dots, y_m)}
+$$
+
+**Remarque (principe du maximum de vraisemblance)**
+
+$$
+\hat{\theta} = \arg\max_{\theta} \ln p(\theta | y_1, \dots, y_n, x_1, \dots, x_n)
+$$
+$$
+= \arg\max_{\theta} \ln p(y_1, \dots, y_n | x_1, \dots, x_n, \theta) + \ln p(\theta) - \ln p(y_1, \dots, y_n | x_1, \dots, x_n)
+$$
+$$
+= \arg\max_{\theta} -\frac{n}{2} \ln (2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{i=1}^{n} (y_i - f(x_i, \theta))^2
+$$
+$$
++ \ln\left[ \frac{1}{(2\pi\alpha^2)^{p/2}} \exp \left( -\frac{1}{2\alpha^2} \|\theta\|^2 \right)\right]
+$$
+
+
+$$
+\hat{\theta} = \arg\max_{\theta} -\frac{n}{2} \ln (2\pi\sigma^2)
+$$
+$$
+-\frac{1}{2\sigma^2} \sum_{i=1}^{n} (y_i - f_{\theta}(x_i))^2
+$$
+
+$$
+-\frac{p}{2} \ln (2\pi\alpha^2)
+$$
+
+$$
+-\frac{1}{2\alpha^2} \|\theta\|^2
+$$
+
+$\implies$ même problème qu’initialement.
+
+### 6) Régression à noyaux
+
+$$
+J(\theta) = \frac{1}{n} \sum_{i=1}^{n} (y_i - (\theta, \phi(x_i)))^2 + \lambda \|\theta\|^2
+$$
+
+**On montre**  
+$$
+\hat{\theta} \in \text{Vect}(\phi(x_i)) \subset \mathbb{R}^p
+$$
+On note
+$$
+\hat{\theta} = \sum_{i=1}^{n} \alpha_i \phi(x_i), \quad \alpha_i \in \mathbb{R}
+$$
+On a alors
+$$
+f_{\hat{\theta}}(x) = \langle \hat{\theta}, \phi(x) \rangle
+$$
+$$
+= \sum_{i=1}^{n} \alpha_i \langle \phi(x_i), \phi(x) \rangle
+$$
+
+En restreignant le problème à $\text{Vect}(\phi(x_i))$, on a
+$$
+J(\theta) = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \sum_{j=1}^{n} \alpha_j \langle \phi(x_j), \phi(x_i) \rangle \right)^2
+$$
+$$
++ \lambda \left\| \sum_{j=1}^{m} \alpha_j \phi(x_j) \right\|^2
+$$
+Avec
+$$
+\theta = \sum_{j=1}^{n} \alpha_j \phi(x_j)
+$$
+
+**Problème de régression à noyau**  
+
+$$
+\widetilde{J} (\alpha) = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \sum_{j=1}^{n} \langle \phi(x_j), \phi(x_i) \rangle \alpha_j \right)^2
+$$
+$$
++ \lambda \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \langle \phi(x_i), \phi(x_j) \rangle \alpha_j
+$$
+$$
+= \frac{1}{n} \| Y - K\alpha \|^2 + \lambda (\alpha, K\alpha)
+$$
+Avec  
+$$
+K = \left( \langle \phi(x_i), \phi(x_j) \rangle \right)_{1 \leq i, j \leq n} \in M_n(\mathbb{R})
+$$
+
+**Solution du problème :**  
+
+$$
+\hat{\alpha} = \frac{1}{n} (K^T K + \lambda K)^{-1} K^T Y
+$$
+
+$$
+\hat{\theta} = \sum_{i=1}^{m} \hat{\alpha}_i \phi(x_i)
+$$
+$$
+= A^T \hat{\alpha}
+$$
+
+**Remarque :**  
+
+Pour définir le problème, il suffit de connaître  
+$$
+\langle \phi(x), \phi(y) \rangle = k(x, y)
+$$
+
+$\implies$ pas besoin de connaître $\phi(x)$. Il suffit de connaître $k(x, y)$.  (kernel trick)
+
+**Remarque :**  
+
+- $k$ est un noyau défini positif $\iff$ 
+$(k(x_i, x_j))_{1 \leq i, j \leq n}$ est symétrique et définie positive $\forall (x_i)_{i=1}^{n} \in \mathcal{X}$, $\forall n \in \mathbb{N}^*$
+
+- (Théorème d'Aronszajn) $k$ noyau défini positif  
+$\iff \exists H$, espace de Hilbert, $\exists \phi : \mathcal{X} \to H$ , tel que  
+$$
+\langle \phi(x), \phi(y) \rangle = k(x, y)
+$$
+- 
+$$
+f_{\hat{\theta}}(x) = \sum_{j=1}^{n} \hat{\alpha}_j \langle \phi(x_j), \phi(x) \rangle
+$$
+$$
+= \sum_{j=1}^{n} \hat{\alpha}_j k(x_j, x)
+$$
+$$
+\in \text{Vect} \left( k(x_i, \cdot) \right)
+$$
+
+
+**Exemple :**  
+
+1. **Noyau gaussien (RBF Kernel)**  
+
+$$
+k(x, y) = \exp \left( -\frac{\| x - y \|^2}{2\sigma^2} \right)
+$$
+$$
+\Rightarrow f_{\hat{\theta}}(x) = \sum_{j=1}^{m} \hat{\alpha}_j \exp \left( -\frac{\| x - x_j \|^2}{2\sigma^2} \right)
+$$
+
+2. **Noyau linéaire (Produit scalaire classique)**  
+
+$$
+k(x_i, y_j) = \langle x_i, y_j \rangle_{\mathbb{R}^d}
+$$
+$$
+\implies f_{\hat{\theta}}(x) = \sum_{j=1}^{n} \hat{\alpha}_j \langle x_j, y \rangle
+$$
+$$
+= \left\langle \sum_{j=1}^{n} \hat{\alpha}_j x_j, y \right\rangle
+$$
+$$
+= \langle \hat{\theta}, y \rangle
+$$
+
+**(Régression linéaire)**
+
+## II) Réseaux de neurones
+
+**Définition :**  
+Une couche d’un **réseau de neurones** :
+$$
+l_i(z) = \sigma (A_i z + b_i)
+$$
+est la composée d’une fonction affine avec  
+$$
+A_i \in M_{d_i, d_{i-1}} (\mathbb{R}) \quad \text{et} \quad b_i \in \mathbb{R}^{d_i}
+$$
+et d’une **fonction non linéaire**, fonction d’activation $\sigma : \mathbb{R} \to \mathbb{R}$, appliquée composante par composante.
+
+Un réseau de neurones est la composée de $p$ couches :
+$$
+f_{\theta}(x) = l_p \circ \dots \circ l_1(x)
+$$
+avec
+$$
+\theta = (A_1, b_1, \dots, A_p, b_p)
+$$
+
+- **$p$** : profondeur du réseau (**depth**)  
+- **$d_i$** : largeur de couches (**width**)
+
+**Remarque : Fonctions d’activation**  
+
+- **ReLU** :  
+$$
+\text{ReLU}(x) = \max(0, x) = x_+ \quad \in \mathbb{R}_+
+$$
+
+- **Softplus** :  
+$$
+\text{softplus}(x) = \ln(1 + e^{-x}) \quad \in \mathbb{R}_+
+$$
+
+- **Tanh** :  
+$$
+\tanh(x) \in [-1,1]
+$$
+
+- **Sigmoïde** :  
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}} \quad \in [0,1]
+$$
+
+---
+
+### 解析：
+这一部分介绍了神经网络的 **参数表示** 和 **激活函数**：
+- **参数 $\theta$**：包含所有层的权重矩阵 $A_i$ 和偏置向量 $b_i$。
+- **深度（Depth）$p$**：神经网络的层数。
+- **宽度（Width）$d_i$**：每一层的神经元数量。
+
+**常见的激活函数**：
+1. **ReLU（整流线性单元）**：
+   - 作用：抑制负值，保留正值。
+   - 优点：计算简单，不易饱和，有效缓解梯度消失问题。
+   - 常用于 **隐藏层**。
+
+2. **Softplus**：
+   - 平滑版本的 ReLU，适用于某些特殊情况。
+   - 计算比 ReLU 更复杂，较少使用。
+
+3. **Tanh（双曲正切函数）**：
+   - 归一化到 $[-1,1]$，适用于中心化数据。
+   - 比 Sigmoid 更对称，梯度更大，收敛更快。
+
+4. **Sigmoïde（S 型函数）**：
+   - 归一化到 $[0,1]$，常用于 **二分类问题的输出层**。
+   - 缺点：容易出现梯度消失。
+
+这些激活函数赋予神经网络 **非线性能力**，是深度学习的关键组成部分。

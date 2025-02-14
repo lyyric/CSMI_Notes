@@ -620,7 +620,8 @@ $$
 
 ---
 
-### 解析：
+**解析：**
+
 这一部分介绍了神经网络的 **参数表示** 和 **激活函数**：
 - **参数 $\theta$**：包含所有层的权重矩阵 $A_i$ 和偏置向量 $b_i$。
 - **深度（Depth）$p$**：神经网络的层数。
@@ -645,3 +646,117 @@ $$
    - 缺点：容易出现梯度消失。
 
 这些激活函数赋予神经网络 **非线性能力**，是深度学习的关键组成部分。
+
+
+**Remarque (rétropropagation) :** Calculer le gradient de la fonction  
+
+$$
+J(\theta) = \frac{1}{n} \sum_{i=1}^{m} (y_i - f_{\theta}(x_i))^2
+$$
+
+On a  
+
+$$
+\nabla_{\theta} J(\theta) = \frac{2}{n} \sum_{i=1}^{m} (y_i - f_{\theta}(x)) \nabla_{\theta} f_{\theta}(x_i)
+$$
+
+$\nabla_{\theta} f_{\theta}(x_i)$ **Gradient du réseau de neurones par rapport à** $\theta$
+
+
+**Rappel :**  
+
+$$
+f_{\theta}(x) = l_p \circ l_{p-1} \circ \dots \circ l_1 (x)
+$$
+
+**Notant**  
+
+$$
+z_1 = l_1(x), \quad z_2 = l_2 \circ l_1 (x), \quad z_k = l_k \circ \dots \circ l_1 (x),
+$$
+
+$$
+\text{Jac } f_{\theta}(x) = \text{Jac } l_p (z_{p-1}) \text{Jac } l_{p-1} (z_{p-2}) \dots \text{Jac } l_2 (z_1) \text{Jac } l_1 (x)
+$$
+
+Du fait que  
+
+$$
+\text{Jac }(g \circ h)(x) = \text{Jac } g (h(x)) \text{Jac } h(x)
+$$
+
+D'où  
+
+$$
+\text{Jac } f_{\theta}(x)^{T} = \text{Jac } l_p (z_{p-1})^{T} \text{Jac } l_{p-1} (z_{p-2})^{T} \dots \text{Jac } l_2 (z_1)^{T} \text{Jac } l_1 (x)^{T}
+$$
+
+$$
+= \left( \begin{array}{c}
+\partial_{\theta_2} f_{\theta}(x) \\
+1 \\
+\partial_{\theta_1} f_{\theta}(x)
+\end{array} \right)
+$$
+$$
+f_{\theta}(x) = f(\theta, x)
+$$
+$$
+= f(\theta^{(1)}, \theta^{(2)}, \theta^{(p)}, x)
+$$
+
+**Calcul de droite à gauche ou de gauche à droite**  
+
+Si $f_{\theta}(x) \in \mathbb{R}$, alors $l_p (z_{p-1}) \in \mathbb{R}$  
+
+$$
+\Rightarrow \quad l_{p-1} (z_{p-1})
+$$
+
+$$
+\Rightarrow \quad \text{Jac } l_p (z_{p-1})
+$$
+
+Si calcul de gauche à droite, les bulles de matrices sont  
+$$
+\theta^{(1)} \times z_1
+$$
+$$
+\theta^{(1)} \times z_2
+$$
+$$
+\theta^{(1)} \times z_3 \dots
+$$
+
+**Si calcul de droite à gauche**  
+
+$$
+z_{p-1} \times 1
+$$
+
+$$
+\text{puis} \quad z_p \times 1
+$$
+
+$$
+\text{puis} \quad z_{p-2} \times 1
+$$
+
+(plus intéressant)
+
+**Algorithme de rétropropagation**  
+
+- Calcul de $z_1, z_2$  
+- $z_i = l_i (z_{i-1})$  
+- Calcul du gradient de droite à gauche :  
+
+$$
+{(\text{Jac } l_p)} ^{T}
+$$
+$$
+\text{puis} \quad (\text{Jac } l_{p-1})^{T} (\text{Jac } l_p)^{T}
+$$
+$$
+\text{puis} \quad \dots
+$$
+

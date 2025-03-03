@@ -242,3 +242,481 @@ $\Rightarrow$ $|\theta^*_{\lambda} (\gamma)| = |\gamma| - \lambda$ (**shrinkage*
 
 - **Alternative** : à chaque itération, on effectue une étape de méthode de gradient  
   avec **pénalisation ridge**, puis on met à zéro les paramètres plus petits que $\lambda$.  
+
+re:
+
+$x_1, \dots, x_m$  
+$v_1, \dots, v_m$  
+
+**But :** déterminer $f_\theta$ tel que $x'(t) = f_\theta(x(t))$  
+
+$$
+\rightarrow \min \sum_{i=1}^{m} \| v_i - f_\theta(x_i) \|^2
+$$
+$$
+\rightarrow f_\theta : \text{réseau de neurones}
+$$
+
+**SINDy :**  
+$$
+f_\theta(x) = \sum_{h=1}^{n} \theta_h g_h(x)
+$$
+
+$$
+\{ x, x^2, x^3, \sin(2x), \dots, \exp(-x) \}.
+$$
+
+**Remarque :** (*régression symbolique*).  
+
+On considère l’arbre des expressions construites de  
+fonctions élémentaires ($x, \sin x, \exp x, \dots$) et des  
+opérateurs binaires ($+, \times$, min, max, …).  
+
+$$
+\theta_1 x^2 + \theta_2 \sin(\theta_3 x + \theta_4 \exp(-x))
+$$
+
+```txt
+	+
+θ1 / \ θ2
+  *   sin
+ / \    \
+x   x    +
+	  θ₃/ \ θ₄
+	  x   exp(-x)
+```
+
+**Méthode d’optimisation de type algorithme génétique ou renforcement.**  
+
+## III) Stabilité en temps  
+
+**Question :** une fois $f_\theta(x)$ appris, est-ce que la dynamique $x'(t) = f_\theta(x(t))$ a des bonnes propriétés en temps long quand on utilise le schéma numérique ?  
+
+### 1) Préserver des structures  
+
+**Systèmes hamiltoniens :** $x(t) \in \mathbb{R}^{2d}$ satisfait un système hamiltonien si  
+
+$$
+x'(t) = J \nabla H(x(t))
+$$
+
+avec $H : \mathbb{R}^{2d} \to \mathbb{R}$ (Hamiltonien) et  
+
+$$
+J =
+\begin{pmatrix}
+0 & \text{Id} \\
+-\text{Id} & 0
+\end{pmatrix}
+$$
+
+**Remarque :** $J$ est anti-symétrique ($J^T = -J$) et $J^2 = -\text{Id}$ ($J^{-1} = -J = J^T$).  
+
+Notant  
+$$
+x(t) =
+\begin{pmatrix}
+q(t) \\
+p(t)
+\end{pmatrix}
+\in \mathbb{R}^{2d}
+$$
+avec $q(t), p(t) \in \mathbb{R}^d$, on a  
+$$
+H(x) = H(q, p)
+$$
+
+et donc  
+$$
+\nabla H(x) =
+\begin{pmatrix}
+\nabla_q H(q, p) \\
+\nabla_p H(q, p)
+\end{pmatrix}.
+$$
+
+Le système se réécrit :  
+$$
+\begin{cases}
+q'(t) = \nabla_p H(q(t), p(t)) \\
+p'(t) = -\nabla_q H(q(t), p(t))
+\end{cases}
+$$
+
+**Exemple :** ($d = 1$)  
+
+$$
+H(q, p) = \frac{p^2}{2} + V(q)
+$$
+
+On a donc  
+
+$$
+\nabla H(q, p) =
+\begin{pmatrix}
+V'(q) \\
+p
+\end{pmatrix}
+$$
+
+Et donc  
+
+$$
+\begin{cases}
+q'(t) = p(t) \\
+p'(t) = -V'(q(t))
+\end{cases}
+$$
+
+$\implies$ Équations d'une particule soumise à une force  
+dérivant du potentiel $V$.  
+
+$q$ : position  
+$p$ : impulsion ($= m v$)  
+
+$$
+H(q, p) = \frac{p^2}{2} + V(q)
+$$
+
+- **énergie cinétique** (sous $\frac{p^2}{2}$)
+- **énergie potentielle** (sous $V(q)$)
+
+**Définition :** On appelle **flot** d'une équation différentielle l'application  
+
+$$
+\Phi_t : x(0) \in \mathbb{R}^{2d} \to x(t) \in \mathbb{R}^{2d}
+$$
+
+solution au champ $f$.  
+
+![[image.png]]
+
+Cette application vérifie :  
+
+$$
+\Phi_0 = \text{Id}
+$$
+$$
+\Phi_t \circ \Phi_s = \Phi_{t+s} \quad \forall t, s > 0
+$$
+
+(*propriété de semi-groupe*).  
+
+**Propriété :** Le flot $\Phi_t$ d'une équation hamiltonienne préserve :  
+
+- **Le Hamiltonien** :  
+  $$
+  H(\Phi_t(x_0)) = H(x_0) \quad \forall t
+  $$  
+- **La structure symplectique**, i.e.  
+  $$
+  \nabla \Phi_t(x_0)^T J \nabla \Phi_t(x_0) = J
+  $$
+- **Le volume** :  
+  $$
+  \text{vol} (\Phi_t(A)) = \text{vol} (A) \quad \forall t \geq 0.
+  $$
+
+**Preuve :** Hamiltonien  
+
+$$
+\frac{d}{dt} \left[ H(\Phi_t(x_0)) \right] = \frac{d}{dt} \left[ H(x(t)) \right]
+$$
+
+$$
+= \langle \nabla H(x(t)), x'(t) \rangle
+$$
+
+$$
+= \langle \nabla H(x(t)), J \nabla H(x(t)) \rangle
+$$
+
+$$
+\equiv 0 \quad \text{car } J \text{ antisymétrique}
+$$
+
+$$
+\left[ (a, J a) = (J a, a) = -(T a, a) = -(a, T a) \right]
+$$
+
+$$
+= 0 \quad \forall a
+$$
+
+**• Structure symplectique**  
+
+On a $\Phi_t(x_0) = x(t)$, donc  
+
+$$
+\frac{d}{dt} \Phi_t(x_0) = J \nabla H(\Phi_t(x_0))
+$$
+
+D’où  
+$$
+\frac{d}{dt} \nabla \Phi_t(x_0) = \nabla \frac{d}{dt} \Phi_t(x_0)
+$$
+$$
+= J \nabla^2 H(\Phi_t(x_0)) \nabla \Phi_t(x_0)
+$$
+
+On calcule ensuite  
+
+$$
+\frac{d}{dt} \left[ \nabla \Phi_t(x_0)^T J \nabla \Phi_t(x_0) \right]
+$$
+$$
+= \frac{d}{dt} \nabla \Phi_t(x_0)^T J \nabla \Phi_t(x_0) + \nabla \Phi_t(x_0)^T J \frac{d}{dt} \nabla \Phi_t(x_0)
+$$
+
+$$
+= \nabla \Phi_t(x_0)^T \nabla^2 H(x(t)) J^T J \nabla \Phi_t(x_0)
++ \nabla \Phi_t(x_0)^T J J \nabla^2 H(x(t)) \nabla \Phi_t(x_0)
+$$
+$$
+= 0
+$$
+
+**Donc**  
+$$
+\nabla \Phi_t(x_0)^T J \nabla \Phi_t(x_0) = \nabla \Phi_0(x_0)^T J \nabla \Phi_0(x_0)
+$$
+$$
+= \text{Id} J \text{Id}
+$$
+$$
+= J
+$$
+
+Encadré :  
+$$
+\Phi_0(x) = x
+$$
+$$
+\nabla \Phi_0(x) = \text{Id}
+$$
+
+**• Volume**  
+
+$A \subset \mathbb{R}^{2d}$  
+$$
+\text{vol}(\Phi_t(A))
+$$
+$$
+= \int_{\Phi_t(A)} dy
+$$
+$$
+= \int_A |\det \nabla \Phi_t(x)| dx
+$$
+par
+$$
+y = \Phi_t(x)
+$$
+$$
+dy = |\det \nabla \Phi_t(x)| dx
+$$
+
+![[image-1.png]]
+
+Or  
+$$
+\det(J) = \det (\nabla \Phi_t(x)^T J \nabla \Phi_t(x))
+$$
+
+$$
+\det(J) = \det(\nabla \Phi_t(x))^2 \det(J)
+$$
+$$
+\Rightarrow \det(\nabla \Phi_t(x))^2 = 1
+$$
+$$
+\Rightarrow |\det \nabla \Phi_t(x)| = 1
+$$
+
+On en déduit  
+
+$$
+\text{vol}(\Phi_t(A)) = \int_{\Phi_t(A)} dx = \text{vol}(A).
+$$
+
+**Remarque :** Inversement, il est possible de montrer que tout $t \mapsto \Phi_t$ avec $\Phi_t$  
+symplectique contient localement le flot d’un système Hamiltonien.  
+
+### **Schémas symplectiques**  
+
+**Propriété :** Le schéma numérique suivant est symplectique :  
+
+$$
+q_{n+1} = q_n + \Delta t \nabla_p H(q_{n+1}, p_n)
+$$
+
+$$
+p_{n+1} = p_n - \Delta t \nabla_q H(q_{n+1}, p_n)
+$$
+
+(*Schéma semi-implicite*), c’est-à-dire  
+
+$$
+(q_{n+1}, p_{n+1}) = \Phi_{\Delta t} (q_n, p_n)
+$$
+
+est une transformation symplectique.  
+
+**Remarque :**  
+
+$$
+H(q, p) = H_1(p) + H_2(q) \quad \text{(Hamiltonien séparable)}
+$$
+
+$$
+\nabla_p H(q, p) = \nabla H_1(p)
+$$
+$$
+\nabla_q H(q, p) = \nabla H_2(q)
+$$
+
+$$
+\Rightarrow q_{n+1} = q_n + \Delta t \nabla H_1(p_n)
+$$
+$$
+p_{n+1} = p_n - \Delta t \nabla H_2(q_{n+1})
+$$
+
+Le schéma a une résolution explicite.  
+
+**Preuve :** **Calcul de** $\nabla \Phi_{\Delta t}$  
+
+$$
+\nabla \Phi_{\Delta t} =
+\begin{pmatrix}
+\dfrac{\partial q_{n+1}}{\partial q_n} & \dfrac{\partial q_{n+1}}{\partial p_n} \\
+\dfrac{\partial p_{n+1}}{\partial q_n} & \dfrac{\partial p_{n+1}}{\partial p_n}
+\end{pmatrix}
+$$
+
+**Pour simplifier,**  
+induis le cas séparable  
+
+$$
+\frac{\partial q_{n+1}}{\partial q_n} = 1
+$$
+
+$$
+\frac{\partial q_{n+1}}{\partial p_n} = \Delta t \nabla^2 H_1(p_n)
+$$
+
+$$
+\frac{\partial p_{n+1}}{\partial q_n} = -\Delta t \nabla^2 H_2(q_{n+1}) \frac{\partial q_{n+1}}{\partial q_n}
+$$
+
+$$
+\frac{\partial p_{n+1}}{\partial p_n} = 1 - \Delta t \nabla^2 H_2(q_{n+1}) \frac{\partial q_{n+1}}{\partial p_n}
+$$
+
+Donc  
+
+$$
+\nabla \Phi_{\Delta t}(x) =
+\begin{pmatrix}
+1 & \Delta t \nabla^2 H_1(p_n) \\
+-\Delta t \nabla^2 H_2(q_{n+1}) & 1 - \Delta t^2 \nabla^2 H_2(q_{n+1}) \nabla^2 H_1(p_n)
+\end{pmatrix}
+$$
+
+On montre que  
+
+$$
+\nabla \Phi_{\Delta t}(x)^T J \nabla \Phi_{\Delta t}(x)
+$$
+$$
+=
+\begin{pmatrix}
+1 & -\Delta t \nabla^2 H_2 \\
+\Delta t \nabla^2 H_1 & 1 - \Delta t^2 \nabla^2 H_2 \nabla^2 H_1
+\end{pmatrix}
+\begin{pmatrix}
+-\Delta t \nabla^2 H_2 & 1 - \Delta t^2 \nabla^2 H_2 \nabla^2 H_1 \\
+-1 & -\Delta t \nabla^2 H_1
+\end{pmatrix}
+$$
+$$
+= J
+$$
+
+**Remarque :** les schémas symplectiques préservent le **volume**  
+(*comme dans le cas continu*).  
+
+![[image-2.png]]
+
+**Préserve le Hamiltonien ?**  
+
+Cas particulier ($d = 1$) :  
+$$
+H(q, p) = \frac{q^2}{2} + \frac{p^2}{2}
+$$
+
+(*Oscillateur harmonique*)  
+
+$$
+q_{n+1} = q_n + \Delta t p_n
+$$
+$$
+p_{n+1} = p_n - \Delta t q_{n+1}
+$$
+et  
+$$
+H(q_{n+1}, p_{n+1}) = \frac{1}{2} \left[ (q_n + \Delta t p_n)^2 + (p_n - \Delta t q_{n+1})^2 \right]
+$$
+$$
+= \frac{1}{2} \left[ q_n^2 + 2 \Delta t q_n p_n + \Delta t^2 p_n^2 + p_n^2 - 2 \Delta t p_n q_{n+1} + \Delta t^2 q_{n+1}^2 \right]
+$$
+$$
+= \frac{1}{2} (q_n^2 + p_n^2) + \Delta t p_n (q_n - q_{n+1}) + \frac{\Delta t^2}{2} q_{n+1}^2 + \frac{\Delta t^2}{2} p_{n}^2
+$$
+$$
+= H(q_n, p_n) - \Delta t^2 p_n^2 + \frac{\Delta t^2}{2} q_{n+1}^2 + \frac{\Delta t^2}{2} p_{n}^2
+$$
+$$
+= \frac{1}{2} H(q_n, p_n) + \frac{\Delta t^2}{2} (q_{n+1}^2 - p_n^2)
+$$
+On  
+$$
+q_{n+1} p_{n+1} = q_{n+1} (p_n - \Delta t q_{n+1})
+$$
+$$
+= q_{n+1} p_n - \Delta t q_{n+1}^2
+$$
+$$
+= (q_n + \Delta t p_n) p_n - \Delta t q_{n+1}^2
+$$
+$$
+= q_n p_n + \Delta t p_n^2 - \Delta t q_{n+1}^2
+$$
+
+Donc  
+$$
+H(q_{n+1}, p_{n+1}) = H(q_n, p_n) + \frac{\Delta t^2}{2} (q_n p_n - q_{n+1} p_{n+1})
+$$
+
+Soit  
+$$
+H(q_{n+1}, p_{n+1}) + \frac{\Delta t^2}{2} q_{n+1} p_{n+1} = H(q_n, p_n) + \frac{\Delta t^2}{2} q_n p_n = \tilde{H}(q_n, p_n)
+$$
+
+- **Préservation d’un Hamiltonien modifié !**  
+- **Garantie une stabilité en temps long.**  
+
+### **Hamiltonian Neural Network (HNN)**  
+
+- Détermine le champ de vecteurs sous la forme  
+
+$$
+f_\theta (x) = J \nabla H_\theta (x)
+$$
+
+  avec $H_\theta : \mathbb{R}^{2d} \to \mathbb{R}$, réseau de neurones.  
+
+- Utilisation d’un schéma symplectique pour la simulation de  
+
+$$
+x'(t) = J \nabla H_\theta (x)
+$$

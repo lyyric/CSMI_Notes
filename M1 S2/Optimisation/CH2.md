@@ -1,6 +1,6 @@
 # Chapitre 2 : Existence et unicité
 
-## I) Existence d’un minimum  
+## I Existence d’un minimum  
 
 **Théorème (Weierstrass)**  
 Soit $J : K \subset V \to \mathbb{R}$ Continue sur $K$ compact, alors $J$ admet un minimum.
@@ -619,4 +619,403 @@ $$
 \liminf \| x_n \| \geq \| 0 \| = 0
 $$
 
+"Il y a plus de suites convergentes au sens faible qu'au sens fort, donc il est plus contraignant d’être continu au sens faible qu’au sens fort."
 
+**Théorème : (Compacité séquentielle)**  
+$(x_n)$ une suite bornée dans $V$. On peut extraire une sous-suite qui converge au sens faible.  
+
+**Remarque :**  
+Autre formulation : $B(0, M)$ est séquentiellement compact pour la topologie faible.  
+
+
+**Preuve :**  
+On suppose que $V$ est séparable (l’ensemble $F$ est dense dans $V$).  
+Alors il existe une base hilbertienne $(e_i)_{i \in \mathbb{N}^*}$.  
+
+- $(e_i)$ est orthonormée : $(e_i, e_j) = \delta_{ij} \quad \forall i, j$.  
+- $\text{Vect}(e_i) = V$.  
+
+On a également, $\forall \mu \in V$,  
+$$
+\mu = \sum_{i=1}^{+\infty} (\mu, e_i) e_i, \quad ||\mu||^2 = \sum_{i=1}^{+\infty} |(\mu, e_i)|^2.
+$$
+
+$(x_n)$ étant bornée, $((x_n, e_i))_{n \in \mathbb{N}^*}$ est aussi bornée dans $\mathbb{R}$ car  
+$$
+|(x_n, e_i)| \leq ||x_n|| \cdot ||e_i|| = ||x_n|| \quad \forall i \in \mathbb{N}^*.
+$$
+
+On applique un procédé d’extraction diagonale :  
+
+- Soit $(x_{j_1(n)})$ une sous-suite de $(x_n)$ telle que $(x_{j_1(n)}, e_1)_{n}$ converge vers une limite notée $\alpha_1 \in \mathbb{R}$, avec $j_1 : \mathbb{N}^* \to \mathbb{N}^*$ croissante.  
+- Soit $(x_{j_2(n)})$ une sous-suite de $(x_{j_1(n)})$ telle que  
+$$
+(x_{j_2(n)}, e_2)
+$$
+converge vers une limite notée $\alpha_2 \in \mathbb{R}$, avec  
+$$
+j_2 : \mathbb{N}^* \to \mathbb{N}^* \text{ croissante}.
+$$
+- Soit $(x_{j_3(n)})$ une sous-suite de $(x_{j_2(n)})$ telle que  
+$$
+(x_{j_3(n)}, e_3)
+$$
+converge vers une limite notée $\alpha_3 \in \mathbb{R}$, avec  
+$$
+j_3 : \mathbb{N}^* \to \mathbb{N}^* \text{ croissante}.
+$$
+
+On considère ensuite $(x_{j_n}) = (y_n)$.  
+Soit $k \in \mathbb{N}^*$. À partir d’un rang $k$, $(x_{j_k(n)}, e_k)$ est une sous-suite de $(x_{j_{k-1}(n)}, e_k)$, donc $(x_{j_k(n)}, e_k)$ converge vers $\alpha_k$.  
+
+On montre que $(y_n)$ converge faiblement vers  
+$$
+\alpha = \sum_{i=1}^{+\infty} \alpha_i e_i.
+$$
+
+
+En effet, pour tout $N \in \mathbb{N}^*$,  
+
+$$
+\sum_{i=1}^{N} \alpha_i e_i
+$$
+
+On a :  
+$$
+||y_n|| \sum_{i=1}^{N} |\alpha_i| ||e_i||
+$$
+
+$$
+\leq M \sum_{i=1}^{N} |\alpha_i| ||e_i||
+$$
+
+(car $(x_n)$ est bornée)  
+
+$$
+\sum_{i=1}^{N} \alpha_i (y_n, e_i) \to \alpha_i.
+$$
+
+Donc on obtient la limite :  
+$$
+\left( \sum_{i=1}^{N} \alpha_i^2 \right)^{1/2} \leq M.
+$$
+
+$$
+\Rightarrow \left( \sum_{i=1}^{\infty} \alpha_i^2 \right)^{1/2} \leq M \Rightarrow \sum_{i=1}^{N} \alpha_i^2 \leq M^2.
+$$
+
+En prenant la limite $N \to \infty$, on obtient :  
+$$
+\sum_{i=1}^{\infty} \alpha_i^2 \leq M.
+$$
+
+Donc  
+$$
+\sum_{i=1}^{\infty} \alpha_i e_i
+$$  
+est bien défini et appartient à $V$.  
+
+**Convergence faible :**  
+Soit $u \in V$ et $N \in \mathbb{N}$,  
+
+$$
+| (y_n - \alpha, u) | = | (y_n - \alpha, u) |
+$$
+
+$$
+= | (y_n - \sum_{i=1}^{N} \alpha_i e_i, u) + (\sum_{i=N+1}^{\infty} \alpha_i e_i, u) |.
+$$
+
+$$
+\leq | (y_n - \sum_{i=1}^{N} \alpha_i e_i, u) | + | (\sum_{i=N+1}^{\infty} \alpha_i e_i, u) |.
+$$
+
+$$
+\leq \sum_{i=1}^{N} | u_i (y_n - \alpha, e_i) | + \sum_{i=N+1}^{\infty} |u_i e_i|.
+$$
+
+$$
+\leq ||y_n - \alpha|| \sum_{i=1}^{N} ||u_i|| ||y_n - \alpha, e_i|| + \sum_{i=N+1}^{\infty} |u_i|^2.
+$$
+
+On choisit $N \in \mathbb{N}^*$ de sorte que  
+$$
+\sum_{i=N+1}^{\infty} \mu_i^2 \leq \varepsilon.
+$$
+Puis, une fois $N$ fixé, on choisit $k \in \mathbb{N}^*$ de sorte que, pour $n \geq k$,  
+$$
+| (y_n, e_i) - (\alpha, e_i) | \leq \varepsilon \quad \forall i \in [1, N].
+$$
+
+$$
+| (y_n, u) - (\alpha, u) | \leq \varepsilon \left( \sum_{i=1}^{N} |u_i| + M + |u| \right).
+$$
+
+$$
+(y_n, u) \to (\alpha, u).
+$$
+
+**Remarque :** Si $V$ n’est pas séparable, on se place dans l’espace vectoriel engendré par $(x_n)$.
+
+### **Théorème :**  
+Soit $J: K \subset V \to \mathbb{R}$ semi-continue inférieurement (continue), convexe pour $K$ convexe fermé.  
+Si $K$ n’est pas borné, on suppose $J$ coercive.  
+Alors $J$ admet un minimum pour $K$.
+
+### **Preuve :**  
+Soit $(x_n)$ une suite minimisante :  
+$$
+J(x_n) \to \inf_K J.
+$$
+
+$(x_n)$ est bornée (soit parce que $K$ est borné, soit parce que $J$ est coercive).  
+
+On peut extraire une sous-suite faiblement convergente $(x_{n_k})$ de limite notée $x^* \in V$ (d’après la proposition précédente).  
+
+$J$ étant convexe et semi-continue inférieurement,  
+$$
+x^* \in K,
+$$
+car $K$ étant convexe et fermé, $K$ est fermé pour la topologie faible.
+
+$J$ étant convexe et SCI, elle est donc SCI pour la topologie faible.  
+
+Donc on a :  
+$$
+\liminf J(x_{n_k}) \geq J(x^*) \geq \inf_K J.
+$$
+$$
+= \lim J(x_{n_k})
+$$
+$$
+= \inf_K J.
+$$
+
+Donc  
+$$
+J(x^*) = \inf_K J.
+$$
+
+
+**Exemple :**  
+
+**Existence d’un minimiseur pour :**  
+
+$$
+J: L^2(J_0,1) \to \mathbb{R}
+$$
+
+$$
+f \mapsto \int_0^1 \rho f^2(t) dt - \int_0^1 g(t) f(t) dt.
+$$
+
+Soit  
+
+$$
+K = \{ f \in L^2(J_0,1) \mid \int_0^1 f(t) dt = 1 \}.
+$$
+
+$J$ est bien définie sur $L^2(J_0,1)$ :
+
+$$
+L^2(J_0,1) = \{ f: J_0,1 \to \mathbb{R} \mid \int_0^1 f^2(t) dt < \infty \}.
+$$
+
+Car  
+$$
+L^2(J_0,1) \subset L^1(J_0,1) \quad \left( \int_0^1 |f(t)| dt \leq \sqrt{\int_0^1 f^2(t) dt} \sqrt{\int_0^1 dt} = 1 \right).
+$$
+
+$$
+\Rightarrow J(f) \text{ est bien définie}.
+$$
+
+$J$ est **semi-continue inférieurement** (SCI) car elle est continue.  
+
+En effet, si  
+$$
+f_n \to f \text{ dans } L^2,
+$$
+
+$$
+\int_0^1 f_n^2(t) dt + g(t) f_n(t) \to 0.
+$$
+
+Alors  
+$$
+\int_0^1 f_n^2(t) + g(t) f_n(t) dt = ||f_n||^2 - \int_0^1 g f_n dt \to 0,
+$$
+
+car  
+$$
+| ||f_n|| - ||f|| | \leq || f_n - f ||.
+$$
+
+**Continuité de la norme :**  
+
+$$
+\left| \int_0^1 g f_n dt - \int_0^1 g f dt \right| \leq \int_0^1 |g| |f_n - f| dt \leq || g ||_{L^2} || f_n - f ||_{L^2}.
+$$
+
+D’où  
+$$
+J(f_n) \to J(f).
+$$
+
+$J$ est **convexe**. En effet,  
+
+$$
+F(t) = t^2 - t \text{ est convexe, car } F''(t) = 2 \geq 0.
+$$
+
+Donc  
+$$
+\forall f_1, f_2 \in L^2(J_0,1),
+$$
+
+$$
+F(\theta f_1 + (1-\theta) f_2) \leq \theta F(f_1) + (1-\theta) F(f_2), \quad \forall \theta \in [0,1].
+$$
+
+Donc, en intégrant, on a :
+
+$$
+J(\theta f_1 + (1-\theta) f_2) = \int_0^1 F(\theta f_1 (t) + (1-\theta) f_2 (t)) dt
+$$
+
+$$
+\leq \theta \int_0^1 F(f_1 (t)) dt + (1-\theta) \int_0^1 F(f_2 (t)) dt
+$$
+
+$$
+= \theta J(f_1) + (1-\theta) J(f_2).
+$$
+
+**$J$ est convexe.**  
+
+$$
+J(f) = \int_0^1 \rho f^2 (t) dt - \int_0^1 g (t) f (t) dt.
+$$
+
+$$
+= \mu || f ||_{L^2}^2 - (\beta, 1)_{L^2}^2 \geq \mu || f ||_{L^2}^2 - ||\beta||_{L^2} || f ||_{L^2}.
+$$
+
+Donc  
+$$
+J(f) \geq \varphi (|| f ||).
+$$
+avec $\varphi (t) = t^2 - t$ et  
+$$
+\lim_{t \to +\infty} \varphi (t) = +\infty.
+$$
+
+**$K$ est convexe :**  
+
+$$
+K = \{ f \in L^2 (J_0,1) \mid \int_0^1 f (t) dt = \alpha \}.
+$$
+
+$$
+\forall f_1, f_2 \in K, \forall \theta \in [0,1],
+$$
+
+$$
+\int_0^1 (\theta f_1 (t) + (1-\theta) f_2 (t)) dt = \theta \int_0^1 f_1 (t) dt + (1-\theta) \int_0^1 f_2 (t) dt.
+$$
+
+$$
+= \theta + (1-\theta) = 1.
+$$
+
+Donc  
+$$
+\theta f_1 + (1-\theta) f_2 \in K.
+$$
+
+**Remarque :** $K$ est un **espace affine**,  
+$$
+z + \{ g \in L^2 (J_0,1) \mid \int_0^1 g (t) dt = 0 \}.
+$$
+
+( **Espace vectoriel** )
+
+$K$ est fermé car image réciproque de $\{ 1 \}$ par les fonctions continues.  
+
+$$
+g: f \in L^2 (J_0,1) \to \int_0^1 t f (t) dt = (f, 1)_{L^2}
+$$
+
+$g$ est linéaire (ok).  
+
+$$
+| g (f) | = \left| \int_0^1 f (t) dt \right| \leq || 1 ||_{L^2} || f ||_{L^2} = \left( \int_0^1 1^2 dt \right)^{1/2} || f ||_{L^2}.
+$$
+
+$$
+g(f) = \frac{1}{\sqrt{3}} ||f||_{L^2} \quad \Rightarrow g \text{ est continue}.
+$$
+
+D’après le théorème, il existe un minimiseur.
+
+---
+
+## II. Unicité
+
+#### **Propriétés :**  
+Soit $J: K \subset V \to \mathbb{R}$.
+
+1) Si $J$ est convexe et $K$ convexe, alors tout minimum local est un minimum global. De plus, l’ensemble des minimiseurs forme un ensemble convexe.  
+
+2) Si $J$ est strictement convexe et $K$ convexe, alors il y a au plus un minimiseur. L’ensemble des minimiseurs est réduit à un singleton $\{ x^* \}$ ou est vide.
+
+### **Preuve :**  
+1) Soit $x^*$ un minimiseur local :  
+
+$$
+\exists \varepsilon > 0, \forall x \in B(x^*, \varepsilon),
+$$
+
+$$
+J(x) \geq J(x^*).
+$$
+
+Soit $y^* \in K$ et $\eta > 0$ tel que  
+
+$$
+\eta x^* + (1-\eta) y \in B(x^*, \delta).
+$$
+
+En prenant  
+
+$$
+\eta = \frac{\varepsilon}{2} \frac{1}{|| y - x^* ||} \Rightarrow || \eta x^* + (1 - \eta) y - x^* ||
+$$
+
+$$
+= || \eta (y - x^*) || = \eta || y - x^* || = \frac{\varepsilon}{2}.
+$$
+
+On a donc  
+
+$$
+J(x^*) \leq J(x^* + \eta (y - x^*)) \leq \eta J(y) + (1 - \eta) J(x^*).
+$$
+
+( **Convexité** )
+
+$$
+J(x^*) = \inf_{B(x^*, \varepsilon)} J.
+$$
+
+$$
+\Rightarrow \eta J(x^*) \leq \eta J(y) \Rightarrow J(x^*) \leq J(y).
+$$
+
+Donc l’ensemble des minimiseurs est un $K$ convexe.
+
+2. **Si $J$ est strictement convexe**, alors pour deux points minimaux distincts $x_1^*$ et $x_2^*$ dans $K$ et pour tout $\theta \in (0,1)$, on a  
+$$
+J\bigl(\theta x_1^* + (1 - \theta) x_2^*\bigr) \;<\; \theta\,J(x_1^*) \;+\; (1 - \theta)\,J(x_2^*).
+$$
+Étant donné que $x_1^*$ et $x_2^*$ sont tous deux des minima globaux, le membre de droite vaut $J(x_1^*)$ (ou $J(x_2^*$), ce qui contredit la définition même d’un minimum global. Par conséquent, il ne peut exister qu’un seul point minimal.

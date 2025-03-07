@@ -552,3 +552,477 @@ $$
 $$
 
 Ainsi, $A^T A$ est inversible si et seulement si $A$ est **de rang plein** ($\operatorname{rg} A = n$).
+
+## III. Conditions d'optimalité avec contraintes d'égalité
+
+On souhaite minimiser $J: V \to \mathbb{R}$ sur  
+
+$$
+K = \{ x \in V \mid h(x) = 0 \},
+$$
+
+avec $h: V \to \mathbb{R}^p$  
+
+$$
+x \mapsto (h_1(x), \dots, h_p(x))
+$$
+
+**Remarque :** (car $K$ est un sous-espace vectoriel).  
+
+Si $h_i(x) = \langle a_i, x \rangle$ alors  
+$$
+K = \{ x \in V \mid \langle a_i, x \rangle = 0, \quad \forall i \in I \}
+$$
+est un sous-espace vectoriel.
+
+$K$ est un ensemble convexe. Donc si $x^* \in K$ est un minimum local de $J$, alors  
+$$
+\langle \nabla J(x^*), z - x^* \rangle \geq 0 \quad \forall z \in K.
+$$
+Posons $y = z - x^*$, alors  
+$$
+\langle \nabla J(x^*), y \rangle \geq 0 \quad \forall y \in K.
+$$
+Or, en remplaçant $y$ par $-y$ (car $-y \in K$ si $K$ est un sous-espace vectoriel), on obtient :  
+$$
+\langle \nabla J(x^*), -y \rangle \geq 0.
+$$
+Ce qui implique :  
+$$
+\langle \nabla J(x^*), y \rangle = 0 \quad \forall y \in K.
+$$
+Donc :  
+$$
+\nabla J(x^*) \perp K.
+$$
+
+![[image-3.png|330x203]]
+
+Autrement dit, la projection de $\nabla J(x^*)$ sur $K$ est nulle.  
+
+**"La seule manière de faire décroître $J$, c'est de sortir de $K$"**  
+
+**Théorème des extrémas liés**  
+
+Soit $J, h_2, \dots, h_p \in \mathcal{C}^1(V)$.  
+
+Si $J$ admet un minimum local sur $K$ en $x^* \in K$  
+
+et si $\nabla h_2(x^*), \dots, \nabla h_p(x^*)$ forment une famille libre,  
+
+alors il existe $\lambda_2, \dots, \lambda_p \in \mathbb{R}$ tels que :
+**(Euler-Lagrange)**
+$$
+\nabla J(x^*) + \lambda_2 \nabla h_2(x^*) + \dots + \lambda_p \nabla h_p(x^*) = 0.
+$$
+$$
+h(x^*) = 0.
+$$
+
+$(\lambda_i)_{i \in \{2, \dots, p\}}$ : multiplicateurs de Lagrange.
+
+**Interprétation**
+$$
+\nabla J(x^*) \in \text{Vect} \left( \nabla h_i(x^*) \right)_{i \in \{2, \dots, p\}} = \left( \text{Vect} \left( \nabla h_i(x^*) \right)_{i \in \{2, \dots, p\}} \right)^\perp.
+$$
+$$
+= \left( \bigcap_{i=1}^{p} \text{Vect} \left( \nabla h_i(x^*) \right) \right)^\perp.
+$$
+$$
+= \left\{ h \in V \mid \langle \nabla h_i(x^*), h \rangle = 0, \quad \forall i \in \{2, \dots, p\} \right\}^\perp.
+$$
+*approximation linéaire de* $K = \{ x \in V \mid h_i(x) = 0 \}$.
+
+$\nabla J(x*)$ appartient à l'orthogonal de l'espace tangent à $K$.
+
+= l'espace normal à $K$.
+
+![[image-4.png|369x320]] ![[image-5.png|251x320]]
+
+Vect $\nabla h_2(x^*), \nabla h_2(x^*))$ forme un plan normal à $K$.
+
+**Preuve**  
+
+**Direction admissible en $x^*$**  
+Un $d \in V$ est admissible s'il existe une fonction $\eta : [0, \tau[ \to V$ de classe $\mathcal{C}^1$ telle que :
+
+$$
+\begin{cases}
+\eta(t) \in K, \quad \forall t \in [0, \tau[ \\
+\eta(0) = x^* \\
+\eta'(0) = d.
+\end{cases}
+$$
+![[image-6.png]]
+
+**Minimisation**  
+Si $x^*$ est un minimum local de $J$ sur $K$, alors pour toute direction admissible.
+
+En effet,  
+$$
+J(\eta(t)) \geq J(x^*) \quad \text{pour } t \text{ suffisamment petit}
+$$
+ce qui implique :
+$$
+J(\eta(0)) + \nabla J(\eta(0)) \cdot \eta'(0) + o(t) \geq J(x^*).
+$$
+
+$$
+\Rightarrow (\nabla J(x^*), d) + o(t) \geq 0
+$$
+$$
+\Rightarrow (\nabla J(x^*), d) \geq 0.
+$$
+
+Si $d$ et $-d$ sont admissibles, alors :
+
+$$
+(\nabla J(x^*), d) = 0.
+$$
+
+On montre que tout élément de  
+$$
+\bigcap_{i=1}^{p} \text{Vect}(\nabla h_i(x^*))^\perp
+$$
+$$
+= \left( \text{Vect}(\nabla h_i(x^*)) \right)^\perp
+$$
+est une direction admissible.
+
+Soit $d \in \left( \text{Vect}(\nabla h_i(x^*)) \right)^\perp$. On considère :
+$$
+\varphi :
+\begin{cases}
+\mathbb{R}^{p+1} \to \mathbb{R}^p \\
+(t, y_1, \dots, y_p) \mapsto h(x^* + t d + y_1 \nabla h_2(x^*) + \dots + y_p \nabla h_p(x^*))
+\end{cases}
+$$
+
+$$
+\varphi(0) = h(x^*) = 0
+$$
+
+$$
+\partial_t \varphi (t, y_2, \dots, y_p) = \text{Jac} \ h (x^* + t d + y_2 \nabla h_2(x^*) + \dots + y_p \nabla h_p(x^*)) d
+$$
+
+$$
+(\text{Jac} \ h \circ g = \text{Jac} \ h \circ \text{Jac} \ g)
+$$
+
+où  
+
+$$
+g : t \mapsto x^* + t d + y_2 \nabla h_2(x^*) + \dots + y_p \nabla h_p(x^*)
+$$
+
+$$
+\Rightarrow \partial_t \varphi (0) = \text{Jac} \ h (x^*) d
+$$
+
+$$
+= \begin{bmatrix}
+\nabla h_2 \\ 
+\vdots \\ 
+\nabla h_p
+\end{bmatrix} d
+$$
+
+$$
+= \begin{bmatrix}
+\langle \nabla h_2(x^*), d \rangle \\
+\vdots \\
+\langle \nabla h_p(x^*), d \rangle
+\end{bmatrix}
+= 0 \quad \text{(par définition de $d$)}
+$$
+
+$$
+\partial_{y_j} \varphi_i (t, y_2, \dots, y_p) = (\nabla h_i (x^* + t d + y_2 \nabla h_2(x^*) + \dots + y_p \nabla h_p(x^*)), \nabla h_j (x^*))
+$$
+
+$$
+\Rightarrow \partial_{y_j} \varphi_i (0) = (\nabla h_i (x^*), \nabla h_j (x^*))
+$$
+
+$$
+\Rightarrow \text{Jac}_y \varphi (0) = (\langle \nabla h_i(x^*), \nabla h_j(x^*) \rangle)
+$$
+
+$$
+= (\text{Jac} \ h(x^*)) (\text{Jac} \ h(x^*))^T
+$$
+
+$$
+\text{Jac}_y \varphi (0) \text{ est inversible car}
+$$
+
+$$
+\text{Im} \ \text{Jac} \ h(x^*)^T = \text{Im} \ \text{Jac} \ h(x^*) \text{Jac} \ h(x^*)^T
+$$
+
+$$
+\text{or} \quad \text{rg} \ \text{Jac} \ h(x^*)^T + \dim \ker \text{Jac} \ h(x^*)^T = p
+$$
+
+$$
+= p
+$$
+
+$$
+(\nabla h_i(x^*)) \text{ forment une famille libre}
+$$
+
+$$
+\Rightarrow \dim \ker \text{Jac} \ h(x^*)^T = 0
+$$
+
+$$
+\Rightarrow \ker \text{Jac} \ h(x^*) \text{Jac} \ h(x^*)^T = \{0\}
+$$
+
+*(Théorème du rang)*
+
+**D'après le théorème des fonctions implicites, il existe $y$ :**  
+$$
+O_1 \to O_2
+$$
+avec $O_1$ voisinage de $0 \in \mathbb{R}$  
+et $O_2$ voisinage de $0 \in \mathbb{R}^p$ .
+
+**Elle vérifie**  
+$$
+\eta(0) = x^*
+$$
+$$
+h(\eta(t)) = \varphi(t, y_2(t), \dots, y_p(t)) = 0, \quad \forall t \in O_1
+$$
+$$
+\eta'(0) = d + y_2'(0) \nabla h_2(x^*) + \dots + y_p'(0) \nabla h_p(x^*)
+$$
+$$
+= d.
+$$
+
+**Conclusion**  
+
+$$
+\forall d \in (\text{Vect} (\nabla h_i(x^*), i \in \{2, \dots, p\}))^\perp
+$$
+est une direction admissible, et $-d$ aussi.
+
+Donc,
+$$
+\nabla J(x^*) \perp \text{Vect} (\nabla h_i(x^*), i \in \{2, \dots, p\})^\perp.
+$$
+Donc,
+$$
+\nabla J(x^*) \in \left( \text{Vect} (\nabla h_i(x^*), i \in \{2, \dots, p\}) \right)^\perp.
+$$
+
+**Exemple**  
+
+$$
+J : \mathbb{R}^2 \to \mathbb{R}
+$$
+
+$$
+(x, y) \mapsto x^4 + y^4
+$$
+
+$$
+K = \{(x,y) \in \mathbb{R}^2 \mid x^2 + y^2 = 1\}.
+$$
+
+- $J$ est continue (car polynomiale) et $K$ est compact (car fermé borné en dimension finie). On a donc existence d'un minimum.  
+
+- $K = \{(x,y) \in \mathbb{R}^2 \mid h(x,y) = 0\}$ avec $h(x,y) = x^2 + y^2 - 1$.  
+
+$$
+\nabla h(x,y) =
+\begin{pmatrix}
+2x \\
+2y
+\end{pmatrix}
+$$
+
+$$
+= 0 \quad \text{si } (x,y) = (0,0).
+$$
+
+- Or, $(0,0)$ n’appartient pas à $K$.  
+
+- Donc $\nabla h(x,y) \neq 0$ pour tout $(x,y) \in K$.  
+
+**Les contraintes sont qualifiées en tout point $(x,y) \in K$.**
+
+- **Soit** $(x^*, y^*) \in K$ **un minimum local de** $J$ **sur** $K$.  
+
+- D'après le théorème des extrémas liés, les contraintes étant qualifiées en $(x^*, y^*)$, il existe $\lambda \in \mathbb{R}$ tel que :
+
+$$
+\begin{cases}
+\nabla J(x^*, y^*) + \lambda \nabla h(x^*, y^*) = 0 \\
+h(x^*, y^*) = 0
+\end{cases}
+$$
+
+avec $(x^*, y^*) \in K$.
+
+$$
+\begin{cases}
+\begin{pmatrix} 
+4 {x^*}^3 \\ 
+4 {y^*}^3 
+\end{pmatrix} 
++ \lambda
+\begin{pmatrix} 
+2 x^* \\ 
+2 y^* 
+\end{pmatrix} 
+= 0
+\\
+{x^*}^2 + {y^*}^2 = 1
+\end{cases}
+$$
+
+$\Rightarrow$
+
+$$
+\begin{cases}
+2 x^* (2 {x^*}^2 + \lambda) = 0 \\
+2 y^* (2 {y^*}^2 + \lambda) = 0 \\
+{x^*}^2 + {y^*}^2 = 1
+\end{cases}
+$$
+
+**On distingue les cas :**
+
+**1er cas : $x^* \neq 0$ et $y^* \neq 0$**  
+
+$$
+\begin{cases}
+2 {x^*}^2 + \lambda = 0 \\
+2 {y^*}^2 + \lambda = 0 \\
+{x^*}^2 + {y^*}^2 = 1
+\end{cases}
+$$
+$\iff$
+$$
+\begin{cases}
+{x^*}^2 = -\lambda /2 = 1/2 \\
+{y^*}^2 = -\lambda /2 = 1/2 \\
+-\lambda = 1
+\end{cases}
+$$
+$\Rightarrow$
+$$
+\begin{cases}
+x^* = \pm 1/\sqrt{2} \\
+y^* = \pm 1/\sqrt{2} \\
+\lambda = -1
+\end{cases}
+$$
+
+**2e cas : $x^* = 0$ et $y^* \neq 0$**  
+
+$$
+\begin{cases}
+x^* = 0 \\
+y^{*2} = -\lambda /2 \\
+y^{*2} = 1
+\end{cases}
+$$
+$\Rightarrow$
+$$
+\begin{cases}
+x^* = 0 \\
+y^* = \pm 1 \\
+\lambda = -2
+\end{cases}
+$$
+
+**3e cas : $x^* \neq 0$ et $y^* = 0$**  
+
+Par symétrie du problème,
+$$
+\begin{cases}
+x^* = \pm 1 \\
+y^* = 0 \\
+\lambda = -2
+\end{cases}
+$$
+
+**4e cas : $x^* = 0$ et $y^* = 0$**  
+
+**Impossible**, du fait que $x^{*2} + y^{*2} = 1$.
+
+**Les candidats possibles pour être un minimum sur $K$ sont :**  
+
+$$
+(x^*, y^*) \in \left\{ \left( \frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}} \right), \left( -\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}} \right), \left( \frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}} \right), \left( -\frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}} \right), (0,1), (0,-1), (1,0), (-1,0) \right\}
+$$
+
+On a :
+
+$$
+J \left( \frac{\pm 1}{\sqrt{2}}, \frac{\pm 1}{\sqrt{2}} \right) = \left( \frac{\pm 1}{\sqrt{2}} \right)^4 + \left( \frac{\pm 1}{\sqrt{2}} \right)^4 = \frac{1}{4} + \frac{1}{4} = \frac{1}{2}
+$$
+
+$$
+J(0, \pm 1) = 1
+$$
+
+$$
+J(\pm 1, 0) = 1
+$$
+
+**Conclusion :**  
+Les **minimiseurs** de $J$ sur $K$ sont :
+
+$$
+\left( \frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}} \right), \left( \frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}} \right), \left( -\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}} \right), \left( -\frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}} \right),\lambda = -1.
+$$
+
+**Remarque :**  
+$J(x,y) = x^4 + y^4$ est **strictement convexe**,  
+
+mais $K$ **n'est pas convexe**  
+
+$\Rightarrow$ **pas de l'unicité du minimum, a priori.**
+
+**Remarque (Multiplicateurs de Lagrange) $p = 1$**
+
+On considère un ensemble de contraintes paramétriques :
+
+$$
+K_c = \{ x \in V \mid h(x) = c \}.
+$$
+
+On note $x^*(c)$ la solution au problème de minimisation de $J$ sur $K_c$  
+(en supposant qu’elle existe et qu’elle est unique).
+
+On a donc :
+$$
+h(x^*(c)) = c.
+$$
+et en différentiant :
+$$
+(\nabla h(x^*(c)), x^{*'}(c)) = 1.
+$$
+**Puis :**  
+$$
+\frac{d}{dc} \left[ J(x^*(c)) \right] = (\nabla J(x^*(c)), x^{*'}(c))
+$$
+$$
+= -\lambda(c) (\nabla h(x^*(c)), x^{*'}(c))
+$$
+$$
+= -\lambda(c) \times 1
+$$
+
+*(extrema liés – on suppose les hypothèses sont vérifiées)*
+
+**Multiplicateur de Lagrange :** variation de $J$ à l’optimum lorsqu’on fait varier les contraintes.
+
+**Application en économie :** "valeur marginale".

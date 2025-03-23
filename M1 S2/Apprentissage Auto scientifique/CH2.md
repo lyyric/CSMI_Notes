@@ -720,3 +720,404 @@ $$
 $$
 x'(t) = J \nabla H_\theta (x)
 $$
+
+---
+
+$$
+(x_i, v_i)_{i=1,\dots,m}
+$$
+
+$f_0?$  
+
+$$
+\min \sum_{i=1}^{m} \| v_i - f_0(x_i) \|^2
+$$
+
+- $f_0$ NN  
+- $f_0$ SINDy  
+- $f_0$ $\nabla H_0$ H o NN  
+
+**2) Apprentissage sur des trajectoires**  
+
+Jusqu'à présent : apprentissage $f_0$ puis simulation de trajectoire avec un schéma numérique  
+
+→ robustesse ?
+
+$$
+\Rightarrow \text{Coupler apprentissage de } f_0 \text{ et simulation numérique}
+$$
+
+**Première stratégie : discrétiser puis optimiser**  
+
+**Données :** $(x_i)_{0 \leq i \leq n}$ sont associées à une trajectoire correspondant à des temps $(t_i)$ avec $t_i = t_0 + i \Delta t$, $0 \leq i \leq n$.  
+
+On compare ces données à une trajectoire générée par le schéma numérique (schéma d'Euler ici) :
+
+$$
+\tilde{x}_0 = x_0,
+$$
+
+$$
+\tilde{x}_{i+1} = \tilde{x}_i + \Delta t \, f_0 (\tilde{x}_i)
+$$
+
+$$
+= \Phi_{\Delta t, \theta} (\tilde{x}_i)
+$$
+
+
+$$
+\tilde{x}_i = \Phi_{\Delta t, \theta}^i (x_0) \quad \text{(composée $i$-fois)}
+$$
+
+On cherche $\theta$ tel que
+
+$$
+J(\theta) = \sum_{i=1}^{m} \| x_i - \tilde{x}_i \|^2
+$$
+
+$$
+= \sum_{i=1}^{m} \| x_i - \Phi_{\Delta t, \theta}^i (x_0) \|^2
+$$
+
+soit la plus petite possible.
+
+
+**Inconvénient :** calcul du gradient nécessite de dériver les composées $i$-fois du réseau de neurones $f_0$ : **coûteux !** (pour $i \in [1, n]$)  
+
+
+**Optimiser puis discrétiser** $[ \text{Neural ODE} ]$  
+
+**Donnée :** trajectoire continue $x(t)$  
+
+Comparer à une trajectoire  
+
+$$
+\begin{cases}  
+\tilde{x}'(t, \theta) = f_0 (\tilde{x}_t, \theta) = f(\tilde{x}(t), \theta) \\  
+\tilde{x}(t_0, \theta) = x(t_0)  
+\end{cases}
+$$
+
+On cherche $\theta$ telle que  
+
+$$
+J(\theta) = \sum_{i=1}^{m} \| x(t_i) - \tilde{x}(t_i, \theta) \|^2
+$$
+
+soit minimale. C'est un **problème de contrôle**  
+
+$$
+[\text{M2} \to \text{cours contrôle}]
+$$
+
+
+**Prog :** Le gradient de $J$ s’écrit :  
+
+$$
+(m = 1)
+$$
+
+$$
+\nabla J(\theta)^T = \int_{t_0}^{t_1} \lambda(t) \nabla_\theta f(\tilde{x}(t, \theta), \theta) \, dt
+$$
+
+avec $\lambda(t) \in \mathbb{R}^d$, vecteur ligne, solution de  
+
+$$
+\begin{cases}  
+\lambda'(t) = -\lambda(t) \nabla_x f(\tilde{x}(t, \theta), \theta) \\  
+\lambda(t_1) = (x(t_1) - \tilde{x}(t_1, \theta))  
+\end{cases}
+$$
+
+---
+
+$\lambda(t)$ : **multiplicateur de Lagrange** associé à la contrainte  
+**"$\tilde{x}'(t) = f_\theta (\tilde{x}(t))$"**  
+
+
+**Preuve :**  
+
+$$
+J(\theta) = \| x(t_1) - \tilde{x}(t_1; \theta) \|^2
+$$
+
+d'où  
+
+$$
+J(\theta) = g(\tilde{x}(t_1, \theta))
+$$
+
+avec $g(y) = \| y - x(t_1) \|^2$  
+
+$$
+\text{Jac } g(y) = (\nabla g(y))^T = (y - x(t_1))^T
+$$
+
+$$
+\nabla J(\theta)^T = \text{Jac } J(\theta) = \text{Jac } g(\tilde{x}(t_1, \theta)) \text{Jac } \tilde{x}(t_1, \theta)
+$$
+
+$$
+= (x(t_1, \theta) - x(t_1))^T \nabla_\theta \tilde{x}(t_1, \theta)
+$$
+
+---
+
+**Difficulté :** calcul de $\nabla_\theta \tilde{x}(t_1, \theta)$ ?  
+
+On a  
+
+$$
+\nabla_\theta [\tilde{x}'(t, \theta)] = \nabla_\theta [ f (\tilde{x}(t, \theta), \theta)]
+$$
+
+d'où  
+
+$$
+\lambda (\nabla_\theta \tilde{x}(t, \theta)) = \lambda \nabla_x f (\tilde{x}(t, \theta), \theta) \nabla_\theta \tilde{x}(t, \theta) + \lambda \nabla_\theta f (\tilde{x}(t, \theta), \theta)
+$$
+
+On a aussi  
+
+$$
+\lambda'(t) \nabla_\theta \tilde{x}(t, \theta) = -\lambda(t) \nabla_x f(\tilde{x}(t, \theta), \theta) \nabla_\theta \tilde{x}(t, \theta)
+$$
+
+En sommant, on obtient  
+
+$$
+\lambda(t) (\nabla_\theta \tilde{x}(t, \theta))' + \lambda'(t) \nabla_\theta \tilde{x}(t, \theta)
+$$
+
+$$
+= \lambda(t) \nabla_\theta f(\tilde{x}(t, \theta), \theta)
+$$
+
+Soit  
+
+$$
+(\lambda(t) \nabla_\theta \tilde{x}(t, \theta))' = \lambda(t) \nabla_\theta f(\tilde{x}(t, \theta), \theta)
+$$
+
+Soit en intégrant  
+
+$$
+\lambda(t_1) \nabla_\theta \tilde{x}(t_1, \theta) - \lambda(t_0) \nabla_\theta \tilde{x}(t_0, \theta) = \int_{t_0}^{t_1} \lambda(t) \nabla_\theta f(\tilde{x}(t, \theta), \theta)
+$$
+
+$$
+\underbrace{\tilde{x}(t_1, \theta) - x(t_1)}_{= \nabla J(\theta)^T}
+$$
+
+car $\tilde{x}(t_0, \theta) = x(t_0)$.
+
+**Rem :** le calcul du gradient se fait en deux étapes :  
+
+1) On calcule $\tilde{x}(t, \theta)$  
+   - Solution $\tilde{x}'(t, \theta) = f(\tilde{x}(t, \theta), \theta)$  
+   - $\tilde{x}(t_0) = x(t_0)$  
+   - **Étape forward** $(t_0 \to t_2)$  
+
+2) On calcule $\lambda(t)$  
+   - Solution  
+   - **Équation adjointe**  
+   - $\lambda'(t) = -\lambda(t) \nabla_x f(\tilde{x}(t, \theta), \theta)$  
+   - $\lambda(t_1) = (x(t_2, \theta) - x(t_2))^T$  
+   - **Étape backward** $(t_2 \to t_0)$  
+   - **Équation linéaire en** $\lambda$  
+
+3) On calcule  
+
+$$
+\nabla J(\theta)^T = \int_{t_0}^{t_2} \lambda(t) \nabla_\theta f(\tilde{x}(t, \theta), \theta) \, dt
+$$
+
+---
+
+**Rem :** $n \geq 1$  
+
+$$
+\nabla J(\theta)^T = \sum_{i=1}^{m} \int_{t_0}^{t_i} \lambda_i(t) \nabla_\theta f(\tilde{x}(t, \theta), \theta) \, dt
+$$
+
+avec  
+
+$$
+\begin{cases}  
+\lambda_i'(t) = -\lambda_i(t) \nabla_x f(\tilde{x}(t, \theta), \theta) \\  
+\lambda_i(t_i) = (x(t_i, \theta) - x(t_i))^T  
+\end{cases}
+$$
+
+**Rem :** en pratique, les équations différentielles sont résolues par des schémas numériques et l’intégrale calculée avec une méthode des rectangles.  
+
+---
+
+## IV) Apprentissage de flot
+
+On souhaite se dispenser du schéma numérique et apprendre une fonction flot $\Phi$  
+
+$$
+x_{i+1} \approx \Phi_{t_i, t_{i+1}, \theta} (x_i)
+$$
+
+On cherche $\theta$, $\Phi_\theta$  
+
+$$
+J(\theta) = \sum_{i=1}^{m} \left\| x_{i+1} - \Phi_\theta (x_i, t_{i+1} - t_i) \right\|^2
+$$
+
+soit minimale.  
+
+$\Phi_\theta$ est un flot associé à une équation autonome $\left( x'(t) = f_\theta(x(t)) \right)$, alors $\Phi_\theta$ est inversible.  
+
+Si $\Phi_\theta$ est un flot, alors il vérifie une propriété de semi-groupe :  
+
+$$
+\Phi_\theta (x, t+s) = \Phi_\theta (\Phi_\theta (x, t), s) \quad \forall t, s > 0
+$$
+
+Si $\Phi_\theta$ est associée à une équation Hamiltonienne, alors $\Phi_\theta (\cdot, t)$ est **symplectique** (en particulier, il est inversible)  
+$\forall t \geq 0$.  
+
+$$
+\rightarrow \text{Construire des réseaux de neurones symplectiques ?}
+$$
+
+Considérons les équations Hamiltoniennes  
+
+$$
+\begin{cases}  
+q' = 0 \\  
+p' = -\nabla H_1(q)  
+\end{cases}
+\quad \text{et} \quad
+\begin{cases}  
+q' = \nabla H_2(p) \\  
+p' = 0  
+\end{cases}
+$$
+
+dont les solutions sont  
+
+$$
+\begin{cases}  
+q(t) = q(t_0) \\  
+p(t) = p(t_0) - (t - t_0) \nabla H_1(q(t_0))  
+\end{cases}
+\quad \text{et} \quad
+\begin{cases}  
+q(t) = q(t_0) + (t - t_0) \nabla H_2(p(t_0)) \\  
+p(t) = p(t_0)  
+\end{cases}
+$$
+
+Les transformations  
+
+$$
+\begin{cases}  
+q_1 = q_0 \\  
+p_1 = p_0 - \Delta t \nabla H_1(q_0)  
+\end{cases}
+\quad \text{et} \quad
+\begin{cases}  
+q_1 = q_0 + \Delta t \nabla H_2(p_0) \\  
+p_1 = p_0  
+\end{cases}
+$$
+
+sont **symplectiques** !!  
+
+---
+
+**Définition :** les **couches symplectiques linéaires** sont définies par  
+
+$$
+\ell_1(q, p) = \begin{pmatrix} q \\ p + A_1 q \end{pmatrix}
+$$
+
+$$
+\ell_2(q, p) = \begin{pmatrix} q + A_2 p \\ p \end{pmatrix}
+$$
+
+avec $A_1, A_2 \in M_d(\mathbb{R})$ 
+
+Les **couches symplectiques de type gradient** sont  
+
+$$
+\ell_2(q, p) = \begin{pmatrix} q \\ p + K_1^T \text{diag}(a) \sigma(K_1 q + b_2) \end{pmatrix}
+$$
+
+$$
+\ell_2(q, p) = \begin{pmatrix} q + K_2^T \text{diag}(a_2) \sigma(K_2 p + b_2) \\ p \end{pmatrix}
+$$
+
+avec $K_1, K_2 \in M_d(\mathbb{R})$,  
+$a_1, a_2, b_1, b_2 \in \mathbb{R}^d$,  
+$\sigma$ s'applique composante par composante.  
+
+---
+
+**Rem :** Ces couches peuvent être représentées par un réseau de neurones  
+
+(Diagramme illustrant la transformation $\ell_1$ appliquée à $q$ et $p$)  
+
+---
+
+**Preuve :**  
+- **Linéaire :**  
+
+$$
+H_1(q) = -\frac{1}{2} \langle A_1 q, q \rangle
+$$
+
+$$
+\Delta t = 1
+$$
+
+$$
+\Rightarrow \nabla H_1(q) = -A_1 q
+$$
+
+$$
+H_2(p) = \frac{1}{2} \langle A_2 p, p \rangle
+$$
+
+$$
+\Delta t = 1
+$$
+
+$$
+\Rightarrow \nabla H_2(p) = A_2 p
+$$
+
+---
+
+- **Type gradient :**  
+
+$$
+H_1(q) = - a_1^T \Sigma (K_1 q + b_1)
+$$
+
+avec $\Sigma' = \sigma$ ($\Sigma$ primitive de $\sigma$)  
+
+$$
+H_2(p) = a_2^T \Sigma (K_2 q + b_2)
+$$
+
+---
+
+**Réseau de neurones symplect. de type gradient**  
+
+---
+
+**Prop :**  
+
+$$
+\left\{ \text{composées de couches symplectiques de type gradient} \right\}
+$$
+
+**est dense** dans l’ensemble des transformations symplectiques (**approximation**).
+

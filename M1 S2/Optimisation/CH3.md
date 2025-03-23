@@ -1026,3 +1026,482 @@ $$
 **Multiplicateur de Lagrange :** variation de $J$ à l’optimum lorsqu’on fait varier les contraintes.
 
 **Application en économie :** "valeur marginale".
+
+
+新课了
+
+**Contrainte d’égalité :**  
+$K = \{ x \in \mathbb{R}^n : h_i(x) = 0 \}$.
+
+**Théorème :**  
+$J, h_1, \dots, h_p \in \mathcal{C}^1(V)$.
+
+Si $\bar{x}$ est un minimum local en $\bar{x} \in K$  
+et $(Dh_i(\bar{x}))_i$ libre, alors il existe $\lambda_1, \dots, \lambda_p \in \mathbb{R}$ tels que  
+
+$$
+\nabla J(\bar{x}) + \sum \lambda_i \nabla h_i(\bar{x}) = 0
+$$
+
+$$
+h(\bar{x}) = 0.
+$$
+
+---
+
+### 1) Contraintes d’inégalités
+
+Soit  
+$$
+K = \{ x \in \mathbb{R}^n : h_1(x) = \dots = h_p(x) = 0, g_1(x) \leq 0, \dots, g_q(x) \leq 0 \}.
+$$
+
+**Théorème :**  
+Soit $J, h_1, \dots, h_p, g_1, \dots, g_q \in \mathcal{C}^1(V)$.  
+Si $J$ admet en $\bar{x} \in K$ un minimum local,  
+alors il existe $\lambda_0 \geq 0, \lambda_1, \dots, \lambda_p \in \mathbb{R}$ et $\gamma_1, \dots, \gamma_q \geq 0$ tels que :
+
+$$
+\lambda_0 \nabla J(\bar{x}) + \sum_{i=1}^{p} \lambda_i \nabla h_i(\bar{x}) + \sum_{i=1}^{q} \gamma_i \nabla g_i(\bar{x}) = 0
+$$
+
+$$
+\forall i \in \{1, \dots, q\}, \quad \gamma_i g_i(\bar{x}) = 0.
+$$
+
+De plus, les multiplicateurs sont non tous nuls.
+
+---
+
+**Remarque : Cas $q = 1$.**  
+On a $\gamma_1 g_1(\bar{x}) = 0$. Soit la contrainte est active  
+($g_1(\bar{x}) = 0$), on se trouve sur le bord de la contrainte,  
+soit la contrainte n'est pas active ($g_1(\bar{x}) < 0$), on se trouve à l'intérieur de l'ensemble des contraintes.
+
+
+**Preuve (en dimension finie) :**  
+Supposons que $\bar{x}$ soit un minimum de $J$ sur $K \cap B(\bar{x}, S)$.
+
+On remarque que $g_i(\bar{x}) \leq 0 \iff g_i^+(\bar{x}) = \max(0, g_i(\bar{x})) = 0$.
+
+On va utiliser une approche par pénalisation.  
+
+Pour $k \in \mathbb{N}$, on considère :
+
+$$
+J_k(x) = J(x) + \frac{k}{2} \left( \sum_{i=1}^{p} h_i(x)^2 + \sum_{i=1}^{q} g_i^+(x)^2 \right) + \| x - \bar{x} \|^2
+$$
+
+Cette fonction est $C^1$.
+
+On considère le problème :
+
+$$
+\inf J_k
+$$
+
+$J_k$ est continue sur $B(\bar{x}, S)$,  
+elle admet donc un minimum $x_k$.
+
+---
+
+**Convergence de $x_k$ vers $\bar{x}$ :**  
+Comme $B(\bar{x}, S/2)$ est compact,  
+on peut extraire une sous-suite convergente $(x_{k_j})_j$ vers un $x^*$.
+
+Comme $J_{k_j}(x_{k_j}) \leq J_{k_j}(\bar{x}) = J(\bar{x})$,  
+on a :
+
+$$
+\left( \sum_{i=1}^{p} h_i(x_{k_j})^2 + \sum_{i=1}^{q} g_i^+(x_{k_j})^2 \right) \leq \frac{2}{k_j} \left[ J(\bar{x}) - J(x_{k_j}) - \| x_{k_j} - \bar{x} \|^2 \right]
+$$
+
+En passant à la limite à droite, on obtient $h_i(x^*) = 0 \ \forall i$, $g_i(x^*) = 0 \ \forall i$.
+
+Ainsi $x^* \in K$.
+
+De plus,
+
+$$
+J(x_{k_j}) + \| x_{k_j} - \bar{x} \|^2 \leq J_{k_j}(x_{k_j}) \leq J_{k_j}(\bar{x}) = J(\bar{x}) \leq J(x^*)
+$$
+
+En passant à la limite,
+
+$$
+J(x^*) + \| x^* - \bar{x} \|^2 \leq J(\bar{x})
+$$
+
+Donc $x^* = \bar{x}$. Ceci est vrai pour toute sous-suite. Donc $x_k \xrightarrow[k \to \infty]{} \bar{x}$.
+
+---
+
+**Condition d’optimalité :**  
+Comme $x_k \to \bar{x}$, alors $x_k \in B(\bar{x}, S/2)$ à partir d’un certain rang.
+
+Comme $x_k$ est minimum de $J_k$ sur $B(\bar{x}, S)$,
+
+$$
+0 = \nabla J_k(x_k) = \nabla J(x_k) + \sum_{i=1}^{p} k h_i(x_k) \nabla h_i(x_k) + \sum_{i=1}^{q} k g_i^+(x_k) \nabla g_i(x_k) + 2 (x_k - \bar{x})
+$$
+
+Ce qui se réécrit :
+
+$$
+0 = \lambda_0^k \nabla J(x_k) + \sum \lambda_i^k \nabla h_i(x_k) + \sum \mu_i^k \nabla g_i^+(x_k) + 2 (x_k - \bar{x})
+$$
+
+avec  
+
+$$
+\lambda_0^k = \frac{1}{\sqrt{1 + \sum k h_i(x_k)^2 + \sum k g_i^+(x_k)^2}}, \quad \lambda_i^k = \lambda_0^k k h_i(x_k), \quad \mu_i^k = \lambda_0^k k g_i^+(x_k)
+$$
+
+Donc la suite $(\lambda_0^k, -\lambda_1^k, \dots, \lambda_p^k, \mu_1^k, \dots, \mu_q^k)$ est de norme 1.  
+On peut extraire une sous-suite convergente du limite $(\lambda_0, -\lambda_1, \dots, \lambda_p, \mu_1, \dots, \mu_q)$ de norme 1, donc non nulle.
+
+En passant à la limite, on obtient la relation voulue.
+
+De plus, $\mu_i^k \geq 0$, donc $\mu_i \geq 0$.
+
+Si $g_i(\bar{x}) < 0$, alors à partir d’un certain rang, $g_i(x_k) < 0$,  
+ce qui implique que $\mu_i^k = 0$. La limite $\mu_i$ est donc nulle. $\square$
+
+### **2) Qualification des contraintes :**  
+On note $I(\bar{x})$ l’ensemble des indices des contraintes actives en un point $\bar{x}$.
+
+**Définition :**  
+Les contraintes sont dites qualifiées en $\bar{x} \in K$ dans l’un des cas suivants :
+
+1) **Critère d’indépendance :**  
+   Si la famille $(\nabla h_i(\bar{x}))_i, (\nabla g_i(\bar{x}))_{i \in I(\bar{x})}$  
+   est linéairement indépendante.
+
+2) **Critère Mangasarian-Fromovitz :**  
+   (i) $(\nabla h_i(\bar{x}))_i, (\nabla g_i(\bar{x}))_{i \in I(\bar{x})}$ sont linéairement indépendants.  
+   (ii) Il existe une direction $d \in \mathbb{R}^n$ telle que :
+
+   $$
+   \langle \nabla h_i(\bar{x}), d \rangle = 0, \quad \forall i
+   $$
+
+   $$
+   \langle \nabla g_i(\bar{x}), d \rangle < 0, \quad \forall i \in I(\bar{x}).
+   $$
+
+**Remarque :**  
+(i) implique (ii).
+
+#### **Théorème (Karush-Kuhn-Tucker) (KKT) :**  
+Soient $J, h_1, \dots, h_p, g_1, \dots, g_q \in \mathcal{C}^1(V)$.  
+
+Si $J$ admet un minimum local en $\bar{x} \in K$ et que les contraintes sont qualifiées en $\bar{x}$,  
+alors il existe $\lambda_1, \dots, \lambda_p \in \mathbb{R}$, $\mu_1, \dots, \mu_q \geq 0$, non tous nuls, tels que :
+
+$$
+\nabla J(\bar{x}) + \sum_{i=1}^{p} \lambda_i \nabla h_i(\bar{x}) + \sum_{i=1}^{q} \mu_i \nabla g_i(\bar{x}) = 0
+$$
+
+$$
+\mu_i g_i(\bar{x}) = 0, \quad \forall i.
+$$
+
+---
+
+### **Preuve :**  
+D’après le théorème précédent, il existe $\lambda_0 \geq 0$, $\lambda_1, \dots, \lambda_p \in \mathbb{R}$, $\mu_1, \dots, \mu_q \geq 0$, tels que :
+
+$$
+\lambda_0 \nabla J(\bar{x}) + \sum_{i=1}^{p} \lambda_i \nabla h_i(\bar{x}) + \sum_{i=1}^{q} \mu_i \nabla g_i(\bar{x}) = 0
+$$
+
+On souhaite montrer que $\lambda_0 \neq 0$.  
+Supposons que $\lambda_0 = 0$.
+
+---
+
+### **Qualification 1) :**  
+Par indépendance de la famille $(\nabla h_i(\bar{x}))_i, (\nabla g_i(\bar{x}))_i$, les multiplicateurs sont nuls,  
+ce qui est impossible.
+
+#### **2) Qualification 2) :**  
+Soit $j^* \in I(\bar{x})$ i.e. $\mu_{j^*} > 0$, alors :
+
+$$
+0 = \langle \sum_i \lambda_i \nabla h_i(\bar{x}) + \sum_i \mu_i \nabla g_i(\bar{x}), d \rangle \leq \mu_{j^*} \langle \nabla g_{j^*}(\bar{x}), d \rangle < 0.
+$$
+
+Ce qui est impossible. Donc tous les $\mu_i$ sont nuls.  
+Par indépendance de la famille $(\nabla h_i(\bar{x}))_i$, on a $\lambda_i = 0$. Ce qui est impossible. $\square$
+
+---
+
+### **Remarque :**  
+Ce théorème englobe l’équation d’Euler et les extrémas liés.
+
+---
+
+### **Exemple :**  
+$$
+J(x, y) = x^4 + 3y^4, \quad g(x, y) = 1 - x^2 - y^2
+$$
+
+Donc 
+
+$$
+K = \{ (x, y) : 1 \leq x^2 + y^2 \}.
+$$
+
+---
+
+### **Existence :**  
+$J$ est coercive, continue et $K$ est fermé,  
+on a donc existence d’un minimum $\bar{x}$.
+
+---
+
+### **Qualification :**  
+$$
+\nabla g(x) = \begin{pmatrix} -2x \\ -2y \end{pmatrix} \neq 0
+$$
+
+car $(0,1) \notin K$,  
+d’où tous les points sont qualifiés.
+
+#### **Condition d’optimalité :**  
+Il existe $\mu \geq 0$ tel que :
+
+$$
+\nabla J(\bar{x}) + \mu \nabla g(\bar{x}) = 0
+$$
+
+$$
+\mu g(\bar{x}) = 0
+$$
+
+$$
+g(\bar{x}) \leq 0
+$$
+
+$$
+\mu \geq 0
+$$
+
+---
+
+$$
+\begin{cases} 
+4x^3 - 2 \mu x = 0 \\ 
+12y^3 - 2 \mu y = 0 \\ 
+\mu (1 - x^2 - y^2) = 0 \\ 
+1 - x^2 - y^2 \leq 0 \\ 
+\mu \geq 0
+\end{cases}
+$$
+
+Si $\mu = 0$, alors $(\bar{x}, \bar{y}) = (0,0)$.  
+Ce qui est impossible, car $(0,0) \notin K$.
+
+Donc $\mu \neq 0$, d’où :
+
+$$
+\begin{cases} 
+\frac{x^2}{4} + \frac{y^2}{12} = 1 \\ 
+\mu \left( 4 x^2 - 2 \right) = 0 \\ 
+\mu \left( 12 y^2 - 2 \right) = 0
+\end{cases}
+$$
+
+---
+
+- Si $x = y = 0$, alors impossible.
+- Si $x = 0$ et $y \neq 0$, alors $y = \pm 1$ et $\mu = 6$.
+- Si $y = 0$ et $x \neq 0$, alors $x = \pm 1$ et $\mu = 2$.
+- Si $x \neq 0$ et $y \neq 0$, alors :
+
+  $$
+  \frac{x^2}{4} = \frac{y^2}{12} = \frac{1}{2}, \quad x^2 = 2, \quad y^2 = \frac{2}{3}
+  $$
+
+  $$
+  x = \pm \frac{\sqrt{3}}{2}, \quad y = \pm \frac{1}{\sqrt{6}}, \quad \mu = \frac{3}{2}.
+  $$
+
+---
+
+### **Les candidats sont :**  
+$$
+(0, \pm 1), \quad (\pm 1, 0), \quad \left( \pm \frac{\sqrt{3}}{2}, \pm \frac{1}{\sqrt{6}} \right).
+$$
+
+Pour lesquels $J$ prend les valeurs $1, 3$ et $\frac{3}{4}$.  
+
+Donc $J$ atteint son minimum en  
+
+$$
+\left( \pm \frac{\sqrt{3}}{2}, \pm \frac{1}{\sqrt{6}} \right).
+$$
+
+---
+
+### **Remarque :**  
+Le théorème précédent est valide par les conditions de qualifications suivantes :
+
+1) **Critère de limitalité :**  
+   Si toutes les contraintes sont actives.
+
+2) **Critère de convexité :**  
+   (i) La famille $(\nabla h_i(\bar{x}))$ est linéairement indépendante.  
+   (ii) $g_i$ convexes et $J$ quasi, i.e. :  
+   $$
+   \forall j \in I(\bar{x}),
+   \begin{cases}
+   g_j(\bar{x}) < 0, & \text{si } g_j \text{ affine} \\
+   g_j(\bar{x}) < 0, & \text{sinon.}
+   \end{cases}
+   $$
+
+3) **Critère général :**  
+   (i) La famille $(\nabla h_i(\bar{x}))$ est linéairement indépendante.  
+   (ii) Il existe une direction $d \in \mathbb{R}^n$ telle que :  
+
+   $$
+   \forall i, \quad \langle \nabla h_i(\bar{x}), d \rangle = 0
+   $$
+
+   $$
+   \forall j \in I(\bar{x}),
+   \begin{cases}
+   \langle \nabla g_j(\bar{x}), d \rangle \leq 0, & \text{si } g_j \text{ affine} \\
+   \langle \nabla g_j(\bar{x}), d \rangle < 0, & \text{sinon.}
+   \end{cases}
+   $$
+
+### **3) Réciproque :**  
+
+#### **Théorème :**  
+Soient $J$ convexe, $h_1, \dots, h_p$ affines, $g_1, \dots, g_q$ convexes et toutes $\mathcal{C}^1(V)$.  
+
+Si il existe $\bar{x}$, $\lambda_1, \dots, \lambda_p \in \mathbb{R}$, $\mu_1, \dots, \mu_q \geq 0$ vérifiant KKT,  
+alors $\bar{x}$ est minimum global de $J$ sur $K$.
+
+---
+
+### **Preuve :**  
+Soit $x \in K$. Par convexité de $J$,
+
+$$
+J(x) \geq J(\bar{x}) + \langle \nabla J(\bar{x}), x - \bar{x} \rangle.
+$$
+
+Or,
+
+$$
+\nabla J(\bar{x}) = -\sum_{i=1}^{p} \lambda_i \nabla h_i(\bar{x}) - \sum_{i \in I(\bar{x})} \mu_i \nabla g_i(\bar{x}).
+$$
+
+Donc,
+
+$$
+J(x) \geq J(\bar{x}) - \sum_{i=1}^{p} \lambda_i \langle \nabla h_i(\bar{x}), x - \bar{x} \rangle - \sum_{i \in I(\bar{x})} \mu_i \langle \nabla g_i(\bar{x}), x - \bar{x} \rangle.
+$$
+
+Or,  
+$0 = h_i(x) - h_i(\bar{x}) = \langle \nabla h_i(\bar{x}), x - \bar{x} \rangle$.  
+De même,  
+$g_j(x) \geq g_j(\bar{x}) + \langle \nabla g_j(\bar{x}), x - \bar{x} \rangle$.
+
+Comme $\mu_j \geq 0$, on obtient :
+
+$$
+J(x) \geq J(\bar{x}).
+$$
+
+$\square$
+
+### **4) Dualité :**  
+
+#### **Définition :**  
+On introduit le **Lagrangien** :
+
+$$
+\mathcal{L}(x, \lambda, \mu) = J(x) + \sum_{i=1}^{p} \lambda_i h_i(x) + \sum_{i=1}^{q} \mu_i g_i(x).
+$$
+
+$$
+\nabla \mathcal{L} (x, \lambda, \mu) \in V \times \mathbb{R}^p \times \mathbb{R}^q.
+$$
+
+---
+
+### **Remarque :**  
+Si on n’a pas de contrainte d’inégalité, alors les conditions des extrémas liés sont équivalentes au fait que  
+$(\bar{x}, \bar{\lambda})$ est un point critique de $\mathcal{L}$.
+
+Plus généralement :
+
+$$
+\frac{\partial}{\partial \mu_i} \mathcal{L} (\bar{x}, \bar{\lambda}, \bar{\mu}) = g_i(\bar{x}) \leq 0.
+$$
+
+Ce n’est pas un point critique mais un **point selle**.
+
+---
+
+#### **Définition :**  
+$(\bar{x}, \bar{\lambda}, \bar{\mu})$ est un **point selle** si :
+
+$$
+\forall (x, \lambda, \mu) \in V \times \mathbb{R}^p \times \mathbb{R}^q, \quad \mathcal{L} (\bar{x}, \bar{\lambda}, \bar{\mu}) \leq \mathcal{L} (\bar{x}, \lambda, \mu) \leq \mathcal{L} (x, \bar{\lambda}, \bar{\mu}).
+$$
+
+### **Proposition :**  
+S’il existe $(\bar{x}, \bar{\lambda}, \bar{\mu}) \in V \times \mathbb{R}^p \times \mathbb{R}^q$ point selle de $\mathcal{L}$,  
+alors $\bar{x} \in K$ et c’est un minimum global de $J$ sur $K$, et KKT est vérifié.
+
+Dans le cas où $J$ est convexe, $h_i$ sont affines et $g_i$ sont convexes,  
+alors il y a équivalence entre $\bar{x}$ minimum global, KKT et point selle.
+
+---
+
+### **Preuve :**  
+La première inégalité s’écrit :
+
+$$
+\sum (\lambda_i - \bar{\lambda}_i) h_i(\bar{x}) + \sum (\mu_i - \bar{\mu}_i) g_i(\bar{x}) \leq 0.
+$$
+
+En prenant $\lambda = \bar{\lambda} \pm e_i$ et $\mu = \bar{\mu}$,  
+on obtient $h_i(\bar{x}) = 0$.  
+
+Puis en prenant $\lambda = \bar{\lambda}$ et $\mu = \bar{\mu} \pm e_i$,  
+on a $g_j(\bar{x}) \leq 0$.  
+
+Donc $\bar{x} \in K$.  
+
+En posant $\mu = \bar{\mu} \pm t e_i$ et $\mu = \bar{\mu}$,  
+on obtient :
+
+$$
+\bar{\mu}_i g_i(\bar{x}) = 0.
+$$
+
+De plus,
+
+$$
+J(\bar{x}) \leq J(x) + \sum \lambda_i h_i(x) + \sum \mu_i g_i(x) \leq J(x).
+$$
+
+Ainsi, $\bar{x}$ est minimum de $J$ sur $K$.
+
+$\bar{x}$ est un minimum de $\mathcal{L} (x, \bar{\lambda}, \bar{\mu})$ sans contrainte.  
+L’égalité d’Euler associée est justement KKT.
+
+---
+
+2) Si $\bar{x}$ est minimum de $J$ sur $K$, alors comme $J$ est convexe, KKT implique  
+que $\bar{x}$ est un minimum global de $\mathcal{L} (x, \bar{\lambda}, \bar{\mu})$,  
+d’où la seconde inégalité.
+
+La première inégalité est immédiate puisque $\bar{x} \in K$  
+et que la condition de complémentarité est vérifiée. $\square$

@@ -116,6 +116,7 @@ $$
 
 Diagramme : distance entre le modèle et les données en $x_i$ (erreur verticale).  
 $f_\theta(x) = \langle w, x \rangle + b$.  
+
 ![[Pasted image 20250123221421.png]]
 
 > [!proposition]
@@ -152,7 +153,7 @@ $\rightarrow$ Infinité de minimisateurs.
 
 En développant :  
 $$
-J(\theta, h) = \frac{1}{n} \lVert Y - A(\theta + h) \rVert^2  
+J(\theta + h) = \frac{1}{n} \lVert Y - A(\theta + h) \rVert^2  
 $$
 $$
 =\frac{1}{n} \lVert Y - A \theta - A h \rVert^2

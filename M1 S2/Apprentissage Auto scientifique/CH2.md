@@ -389,7 +389,7 @@ $$
 
 solution au champ $f$.  
 
-![[image.png]]
+![[CSMI_Notes/M1 S2/Apprentissage Auto scientifique/assets/image.png]]
 
 Cette application vérifie :  
 
@@ -515,7 +515,7 @@ $$
 dy = |\det \nabla \Phi_t(x)| dx
 $$
 
-![[image-1.png]]
+![[CSMI_Notes/M1 S2/Apprentissage Auto scientifique/assets/image-1.png]]
 
 Or  
 $$
@@ -645,7 +645,7 @@ $$
 **Remarque :** les schémas symplectiques préservent le **volume**  
 (*comme dans le cas continu*).  
 
-![[image-2.png]]
+![[CSMI_Notes/M1 S2/Apprentissage Auto scientifique/assets/image-2.png]]
 
 **Préserve le Hamiltonien ?**  
 

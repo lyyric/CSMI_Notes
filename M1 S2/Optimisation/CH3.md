@@ -18,7 +18,7 @@ $$
 
 C’est la dérivée directionnelle dans la direction $y - \bar{x}$.  
 
-![[image.png|300x240]]
+![[CSMI_Notes/M1 S2/Optimisation/assets/image.png|300x240]]
 
 **Inégalité d’Euler :** $f$ est **croissante** dans toutes les directions contenues dans $K$.  
 
@@ -97,7 +97,7 @@ $$
 \langle \nabla f(\bar{x}), h \rangle = 0.
 $$
 
-![[image-1.png|264x186]]
+![[CSMI_Notes/M1 S2/Optimisation/assets/image-1.png|264x186]]
 
 En effet, il existe $t > 0$ tel que $\bar{x} \pm th \in B(\bar{x}, \delta)$.  
 
@@ -390,7 +390,7 @@ $$
 $$
 \ell(u).
 $$
-![[image-2.png]]
+![[CSMI_Notes/M1 S2/Optimisation/assets/image-2.png]]
 
 - **$a$ est bilinéaire** ✅  
 - **$a$ est continue**  

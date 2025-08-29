@@ -1,194 +1,135 @@
-以下是一份对题目内容的中文翻译（保留原题的数学符号与编号，以便对应）：
+以下是这份法语考试复习题的中文翻译：
 
 ---
 
-## 科学计算考试准备
+### 科学计算考试准备
 
-在下文中，$E$ 表示在 $\mathbb{R}_x \times \mathbb{R}_t$ 上的函数集合 $u(x, t)$，满足以下条件：
+设 $E$ 是定义在 $\mathbb{R}_x \times \mathbb{R}_t$ 上的函数 $u(x, t)$ 的集合，满足：
 
-1. 对任意 $t$，映射 $x \mapsto u(x, t)$ 属于 $L^2(\mathbb{R}) \cap L^1(\mathbb{R})$。
-2. 对任意 $t$，映射 $x \mapsto u(x, t)$ 是 $C^2$ 级（即二阶连续可导）。
-3. 对任意 $t$，当 $x \to \pm \infty$ 时，$u(x, t) \to 0$。
-4. 存在一个实数 $T$ 使得
-   $$
-   \forall\, t \leq T,\quad u(x, t) = 0.
-   $$
+1. 对任意 $t$，$x \mapsto u(x, t) \in L^2(\mathbb{R}) \cap L^1(\mathbb{R})$；
+2. 对任意 $t$，$x \mapsto u(x, t)$ 是 $C^2$ 类函数；
+3. 对任意 $t$，$u(x, t) \to 0$ 当 $x \to \pm\infty$；
+4. 存在一个实数 $T$ 使得：对任意 $t \leq T$，有 $u(x, t) = 0$。
 
-在下文中，属于集合 $E$ 的函数 $u$ 若满足上述条件，则称为**因果函数（causale）**。
+在下文中，称属于 $E$ 的函数为“因果函数”（causale）。
 
 ---
 
-### 1）  
-证明：若一个因果函数同时满足热方程（方程 de la chaleur）或输运方程（方程 de transport），则该函数必定恒为零。
+1）证明：满足热方程或输运方程的因果函数必为零函数。
 
----
-
-### 2）  
-设初值条件 $u_0(x)$ 是一个具有紧支撑且 $C^2$ 级的函数。考虑下面定义的函数 $u$：
+2）设初始条件 $u_0(x)$ 是具有紧支集的 $C^2$ 函数，考虑下列问题定义的函数 $u$：
 
 $$
 \begin{cases}
-\partial_t u - \partial_{xx} u = 0,\quad & t \geq 0,\\
-u(x, t = 0) = u_0(x), \\
-u(x, t) = 0,\quad & t < 0.
+\partial_t u - \partial_{xx} u = 0, & t \geq 0, \\
+u(x, 0) = u_0(x), \\
+u(x, t) = 0, & t < 0.
 \end{cases}
 $$
 
-- 证明：此函数 $u$ 定义良好，并且它是一个因果函数。
+证明：$u$ 被良好定义，并且是因果函数。
 
----
-
-### 3）  
-证明：在分布（distribution）的意义下，对于所有 $(x, t) \in \mathbb{R}^2$，函数 $u$ 满足
+3）证明：在分布意义下，$u$ 满足如下方程：
 
 $$
-\partial_t u - \partial_{xx} u = \delta\,u_0,
+\partial_t u - \partial_{xx} u = \delta u_0,
 $$
 
-其中 $\delta$ 是**时间变量**上的狄拉克分布，形式定义为
+其中 $\delta$ 是时间上的狄拉克分布，其形式定义为：
 
 $$
-\int \delta(t)\,\varphi(t)\,\mathrm{d}t := \varphi(0).
+\int \delta(t) \phi(t) dt := \phi(0)。
 $$
 
----
-
-### 4）  
-因此，可以将问题 2）中的“随时间给定初值条件”改写为“在所有时间上给出一个带有分布项（狄拉克）作为源项的方程”：
+4）因此，可以将第2问中的初始条件问题转换为一个定义在全时间轴上的分布右端项问题：寻找一个因果函数 $u$，使得：
 
 $$
-\partial_t u \;-\; \partial_{xx} u \;=\; \delta \,u_0.
+\partial_t u - \partial_{xx} u = \delta u_0.
 $$
 
-要求：寻找一个因果函数，满足上式。证明：在因果函数的集合中，该问题的解是唯一的。
+证明：该问题在因果函数集合中有唯一解。
 
----
-
-### 5）  
-为了数值计算，需要会近似狄拉克分布。  
-首先考虑一个函数 $\rho : \mathbb{R} \to \mathbb{R}^+$，其支撑在区间 $[-1, 1]$，并且满足
+5）为了进行数值求解，需要近似狄拉克分布。我们考虑函数 $\rho : \mathbb{R} \to \mathbb{R}_+$，其支集在区间 \[−1, 1] 上，且满足：
 
 $$
-\int \rho = 1.
+\int \rho = 1。
 $$
 
-令 $\tau > 0$，定义函数（称为“近似单位”）$\delta_\tau$ 为
+设 $\tau > 0$，定义逼近单位（unité approchée）：
 
 $$
-\delta_\tau(t) = \frac{1}{\tau}\,\rho\!\bigl(\tfrac{t}{\tau}\bigr).
+\delta_\tau(t) = \frac{1}{\tau} \rho\left(\frac{t}{\tau}\right)。
 $$
 
-1. 证明：当 $\tau \to 0$ 时，$\delta_\tau$ 在分布意义下趋于 $\delta$（即对所有测试函数 $\varphi$，都有 $\lim_{\tau \to 0} \langle \delta_\tau, \varphi \rangle = \langle \delta, \varphi \rangle$）。  
-2. 若无额外说明，之后我们取
-   $$
-   \rho(t) =
-   \begin{cases}
-   1, & t \in [0, 1],\\
-   0, & \text{否则}.
-   \end{cases}
-   $$
-
----
-
-### 6）  
-对于 $\tau > 0$ 和 $h > 0$，在集合 $E$ 上定义时间与空间的平移算子：
+证明：当 $\tau \to 0$ 时，$\delta_\tau$ 以分布意义收敛于 $\delta$（即对所有测试函数 $\phi$，有 $\langle \delta_\tau, \phi \rangle \to \langle \delta, \phi \rangle$）。除非另有说明，后续中取：
 
 $$
-(T_\tau u)(x, t) \;=\; u(x,\,t-\tau),
-\quad
-(S_h u)(x, t) \;=\; u(x-h,\,t).
-$$
-
-证明：这两个算子都能将 $E$ 映射到自身（即 $T_\tau, S_h : E \to E$）。
-
----
-
-### 7）  
-回顾对变量 $x$ 的傅里叶变换定义（可参考 [Fourier变换 - 维基百科](https://fr.wikipedia.org/wiki/Transformation_de_Fourier)）：
-
-$$
-\widehat{u}(\xi, t)
-\;=\;
-\int_{-\infty}^{\infty} u(x, t)\,e^{-\,\mathrm{i}\,\xi\,x}\,\mathrm{d}x.
-$$
-
-1. 计算 $\widehat{(S_h u)}(\xi, t)$。  
-2. 证明：若 $u$ 是因果函数，则 $(\xi, t) \mapsto \widehat{u}(\xi, t)$ 也是因果函数。
-
----
-
-### 8）  
-为逼近热方程解，考虑下面的函数型差分格式（“函数性”是指直接在函数空间中写出的格式），
-
-$$
-\frac{v - T_\tau v}{\tau}
-\;+\;
-\frac{-\,S_h v \;+\; 2\,v \;-\; S_{-h}v}{h^2}
-\;=\;
-\delta_\tau \,v_0.
-\tag{1}
-$$
-
-1. 证明：若设 $v_i^n = v(i\,h,\,n\,\tau)$，则此函数型格式与常见的显式差分格式等价。  
-2. 证明：此函数型解 $v$ 依旧是因果的。  
-3. 如果更改选取的 $\rho$（从而改变 $\delta_\tau$ 的形状），是否会带来实质影响（是否“有趣”）？
-
----
-
-### 9）  
-在离散差分格式中，我们讲过对解的 $\ell^1$ 稳定性与 $\ell^2$ 稳定性。如何在**函数型差分格式**层面上翻译（对应）这两种稳定性的概念？
-
----
-
-### 10）  
-将 von Neumann 的**放大因子（coefficient d’amplification）** 的概念推广到此函数型差分格式的情形。应如何定义与计算？
-
----
-
-### 11）  
-针对格式 (1)，分别求其在 $\mathrm{L}^2$ 和 $\mathrm{L}^\infty$ 范数意义下的稳定性条件。
-
----
-
-### 12）  
-就输运方程  
-$$
-\partial_t u \;+\; c\,\partial_x u \;=\; 0,\quad c > 0,
-$$  
-以及一阶偏风（迎风）差分格式（schéma décentré d’ordre 1）：
-
-- 讨论与前面类似的问题：稳定性、因果性、唯一性等。
-
----
-
-### 13）  
-如何验证格式 (1) 的一致性（consistance）？在傅里叶空间中，这个一致性又怎样体现？
-
----
-
-### 14）  
-为求解输运方程
-$$
-\partial_t u + c\,\partial_x u = 0,\quad c > 0,
-$$
-我们考虑如下差分格式：
-$$
-\frac{u_i^{n+1} - u_i^n}{\tau}
-\;+\;
-c \,\frac{3\,u_i^n \;-\;4\,u_{i-1}^n \;+\; u_{i-2}^n}{h}
-\;=\;
-d_n\,u_0(i\,h),
-$$
-其中
-$$
-d_n \;=\;
+\rho(t) = 
 \begin{cases}
-1/\tau, & n = 0,\\
+1, & t \in [0, 1], \\
+0, & \text{其他情况}.
+\end{cases}
+$$
+
+6）设 $\tau > 0$, $h > 0$，定义时间和平移算子：
+
+$$
+(T_\tau u)(x, t) = u(x, t - \tau), \quad (S_h u)(x, t) = u(x - h, t)。
+$$
+
+证明：这些算子将 $E$ 映射到自身。
+
+7）回顾关于 $x$ 变量在 $\mathbb{R}$ 上的傅里叶变换定义：
+
+$$
+\hat{u}(\xi, t) = \int_{-\infty}^{\infty} u(x, t) e^{-i\xi x} dx。
+$$
+
+计算 $S_h u$ 的傅里叶变换。证明：如果 $u$ 是因果函数，则 $(\xi, t) \mapsto \hat{u}(\xi, t)$ 也是因果函数。
+
+8）为近似热方程的解，考虑如下差分函数格式（函数型）：
+
+$$
+\frac{v - T_\tau v}{\tau} + \frac{-S_h v + 2v - S_{-h}v}{h^2} = \delta_\tau v_0. \quad (1)
+$$
+
+证明：该格式等价于显式差分格式（若设 $v^n_i = v(ih, n\tau)$）。证明：函数型解是因果的。是否有必要改变函数 $\rho$？
+
+9）如何将离散格式中学过的 $\ell^1$ 和 $\ell^2$ 稳定性翻译到函数型格式中？
+
+10）将冯·诺依曼放大系数（coefficient d'amplification）的一般概念推广到函数型差分格式中。
+
+11）计算格式 (1) 的 $L^2$ 与 $L^\infty$ 稳定性条件。
+
+12）将上述问题应用于输运方程与一阶偏移格式（schéma décentré d’ordre 1）。
+
+13）如何验证格式 (1) 的一致性？这种一致性如何在傅里叶空间中表现出来？
+
+14）为求解输运方程：
+
+$$
+\partial_t u + c \partial_x u = 0, \quad c > 0,
+$$
+
+考虑如下格式：
+
+$$
+\frac{u^{n+1}_i - u^n_i}{\tau} + c \cdot \frac{3u^n_i - 4u^n_{i-1} + u^n_{i-2}}{h} = d_n u_0(ih),
+$$
+
+其中：
+
+$$
+d_n = 
+\begin{cases}
+1/\tau, & n = 0, \\
 0, & \text{否则}.
 \end{cases}
 $$
 
-用“函数型”方法（同前面对热方程的思路）计算此格式的稳定性条件。
+使用函数型方法计算该格式的稳定性。
 
 ---
- 
+
+需要我为你重点讲解哪一部分内容？
+	

@@ -1,0 +1,27 @@
+{
+  "helices": [
+    {
+      "name": "helix_test",
+      "r1": 10.0,
+      "r2": 12.0,
+      "z1": 0.0,
+      "z2": 20.0,
+      "cut": 0.5,
+      "eps": 0.1,
+      "nturns": 1,
+      "pitch": 5.0
+    }
+  ],
+  "rings": [
+    {
+      "name": "ring_test",
+      "r1": 8.0,
+      "r2": 14.0,
+      "h": 5.0,
+      "n": 4,
+      "r_slit": 10.0,
+      "e_slit": 1.0,
+      "angular_length": 30.0
+    }
+  ]
+}

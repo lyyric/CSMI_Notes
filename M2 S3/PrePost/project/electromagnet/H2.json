@@ -1,0 +1,16 @@
+{
+  "name": "H2",
+  "r1": 25.1,
+  "r2": 30.7,
+  "z1": -108,
+  "z2": 108,
+  "cut": 2,
+  "eps": 0.2,
+  "nturns": 2,
+  "pitch": 18.03646917296748,
+  "npts": 60,
+  "start_hole_diameter": 6,
+  "z_offset": 0.0,
+  "add_start_hole": true,
+  "sens": -1
+}

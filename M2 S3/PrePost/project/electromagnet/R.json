@@ -1,0 +1,12 @@
+{
+  "name": "R1",
+  "r1": 19.3,
+  "r2": 30.7,
+  "h": 20,
+  "n": 4,
+  "r_slit": 24.65,
+  "e_slit": 0.9,
+  "angular_length": 30,
+  "add_fillet": true,
+  "eps": 0.2
+}

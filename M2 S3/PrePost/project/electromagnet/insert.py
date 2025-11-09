@@ -98,9 +98,16 @@ class Insert:
             ignore_ids.extend(helix_ids)
             # print(f'H[{i+1}]: {helix_ids}')
             ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-            # if hangles and hangles[i] != 0:
-            #     gmsh.model.occ.rotate(...)
-            #     gmsh.model.occ.synchronize()
+            if self.hangles and i < len(self.hangles) and self.hangles[i] != 0:
+                angle = math.radians(self.hangles[i])
+                gmsh.model.occ.rotate(
+                    [(3, vid) for vid in helix_ids],
+                    0, 0, 0,
+                    0, 0, 1,
+                    angle
+                )
+                gmsh.model.occ.synchronize()
+
             helices_ids.append(helix_ids)
         # print(f'helices_ids: {helices_ids}')
 
@@ -118,17 +125,22 @@ class Insert:
             else:
                 _z = -(self.helices[i].config.z1 + self.ring[i].config.h)
             
-            _z +=  + self.helices[i].config.z_offset
+            _z += self.helices[i].config.z_offset
 
             print(f'  Translating ring R[{i+1}] to z={_z}')
-            gmsh.model.occ.translate(...)
+            gmsh.model.occ.translate([(3, rid) for rid in ring_id], 0, 0, _z)
             gmsh.model.occ.synchronize()
             
             ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-            # eventually rotate: rangle
-            # if rangles and rangles[i] != 0:
-            #     gmsh.model.occ.rotate(...)
-            #     gmsh.model.occ.synchronize()
+            if self.rangles and i < len(self.rangles) and self.rangles[i] != 0:
+                angle = math.radians(self.rangles[i])
+                gmsh.model.occ.rotate(
+                    [(3, rid) for rid in ring_id],
+                    0, 0, 0,
+                    0, 0, 1,
+                    angle
+                )
+                gmsh.model.occ.synchronize()
             
             rings_ids.append(ring_id)
         # print(f'rings_ids: {rings_ids}')
@@ -140,7 +152,8 @@ class Insert:
         
         # print(f'helices_dimtags: {helices_dimtags},  rings_dimtags: {rings_dimtags}')
         ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-        outDimTags, outDimTagsMap = gmsh.model.occ.fragment(...)
+        all_dimtags = [(3, id) for id in flatten_list(helices_ids + rings_ids)]
+        outDimTags, outDimTagsMap = gmsh.model.occ.fragment(all_dimtags, all_dimtags)
         gmsh.model.occ.synchronize()
         
         # Display parent-child relationships

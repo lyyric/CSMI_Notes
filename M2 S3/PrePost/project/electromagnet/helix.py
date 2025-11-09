@@ -118,8 +118,6 @@ class Helix:
         ## TODO h = nturns * pitch, need to rotate if nturns in not integer ##
         ## BPside or HPside depending of Helix sens
 
-        
-
         # Fragment and fuse with helical cut
         outDimTags, _ = gmsh.model.occ.fragment(
             hcut, 
@@ -217,11 +215,17 @@ class Helix:
         # Create base cylinder (annular region)
         ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
         dz = abs(self.config.z2 - self.config.z1)
-        cint = gmsh.model.occ.addCylinder(...)
-        cext = gmsh.model.occ.addCylinder(...)
-        outDimTags, _ = gmsh.model.occ.cut(...)
+        cint = gmsh.model.occ.addCylinder(0, 0, self.config.z1, 0, 0, dz, self.config.r1)
+        cext = gmsh.model.occ.addCylinder(0, 0, self.config.z1, 0, 0, dz, self.config.r2)
+        outDimTags, _ = gmsh.model.occ.cut(
+            [(3, cext)],
+            [(3, cint)],
+            removeObject=True,
+            removeTool=True
+        )
         cyl = outDimTags[0]
         gmsh.model.occ.synchronize()
+
         
         # Add EDM wire start hole if requested
         if self.add_start_hole:
@@ -233,9 +237,11 @@ class Helix:
         # print(f"cyl={cyl}, hcut={hcut}", flush=True)
         ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
         outDimTags, outDimTagsMap = gmsh.model.occ.fragment(
-            ...
+            [cyl],
+            hcut if isinstance(hcut, list) else [hcut]
         )
         gmsh.model.occ.synchronize()
+
         
         cyl_children_id = [dimtag[1] for dimtag in outDimTagsMap[0]]
         # print(f'  Cylinder children IDs: {cyl_children_id}', flush=True)

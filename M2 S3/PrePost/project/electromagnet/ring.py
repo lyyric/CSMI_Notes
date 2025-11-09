@@ -194,10 +194,8 @@ class Ring:
         eps = self.config.eps
         self.create_boundary_groups(volume_ids, prefix=prefix)
         
-    def create_boundary_groups(self, volume_ids: List[int], prefix=""  ):
+    def create_boundary_groups(self, volume_ids: List[int], prefix=""):
         """Create physical groups for ring boundaries."""
-        # TODO implement boundary group creation
-
         eps = self.config.eps
         r1 = self.config.r1
         r2 = self.config.r2
@@ -206,42 +204,74 @@ class Ring:
         bbox = gmsh.model.occ.getBoundingBox(3, volume_ids[0])
         zmin, zmax = bbox[2], bbox[5]
 
-        # V0 and V1 (top and bottom surfaces)
-        ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-        V0 = gmsh.model.getEntitiesInBoundingBox(...)
-        if len(V0) == 1:
+        # --- Top and bottom faces (V0 / V1) ---
+        # Bottom surface (z ≈ zmin)
+        V0 = gmsh.model.getEntitiesInBoundingBox(
+            -r2 - eps, -r2 - eps, zmin - eps,
+             r2 + eps,  r2 + eps, zmin + eps,
+            2
+        )
+        if len(V0) > 0:
             print(f'Created V0 group: {len(V0)} surfaces (V0={V0})')
             gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in V0], name=f"{prefix}V0")
-        
 
-        ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-        V1 = gmsh.model.getEntitiesInBoundingBox(...)
-        if len(V1) == 1:
+        # Top surface (z ≈ zmax)
+        V1 = gmsh.model.getEntitiesInBoundingBox(
+            -r2 - eps, -r2 - eps, zmax - eps,
+             r2 + eps,  r2 + eps, zmax + eps,
+            2
+        )
+        if len(V1) > 0:
             print(f'Created V1 group: {len(V1)} surfaces (V1={V1})')
             gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in V1], name=f"{prefix}V1")
-        
-        
-        # Rint (inner radius surfaces)
-        ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-        rint = gmsh.model.getEntitiesInBoundingBox(...)
-        gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in rint], name=f"{prefix}Rint")
-        print(f'Found {len(rint)} surfaces for Rint (rint={rint})')
 
-        # Rslit (inner radius surfaces)
-        r = self.config.r_slit + self.config.e_slit/2. + eps
-        ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-        rslit_in = gmsh.model.getEntitiesInBoundingBox(...)
-        r = self.config.r_slit - self.config.e_slit/2. - eps
-        ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-        rslit_ext = gmsh.model.getEntitiesInBoundingBox(...)
+
+        # --- Inner cylindrical surface (Rint) ---
+        rint = gmsh.model.getEntitiesInBoundingBox(
+            -r1 - eps, -r1 - eps, zmin - eps,
+             r1 + eps,  r1 + eps, zmax + eps,
+            2
+        )
+        if len(rint) > 0:
+            gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in rint], name=f"{prefix}Rint")
+            print(f'Found {len(rint)} surfaces for Rint (rint={rint})')
+
+
+        # --- Cooling slit cylindrical surfaces (Rslit) ---
+        # Outer slit boundary
+        r = self.config.r_slit + self.config.e_slit / 2. + eps
+        rslit_in = gmsh.model.getEntitiesInBoundingBox(
+            -r, -r, zmin - eps,
+             r,  r, zmax + eps,
+            2
+        )
+        # Inner slit boundary
+        r = self.config.r_slit - self.config.e_slit / 2. - eps
+        rslit_ext = gmsh.model.getEntitiesInBoundingBox(
+            -r, -r, zmin - eps,
+             r,  r, zmax + eps,
+            2
+        )
         rslit = rslit_in + rslit_ext
-        gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in rslit], name=f"{prefix}Coolingslit")
-        
-        # Rext (inner radius surfaces)
-        ################ TO FILL IN THE ELLIPSES WITH PROPER ARGUMENTS ################
-        rext = gmsh.model.getEntitiesInBoundingBox(...)
-        gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in rext if (dim,tag) not in rint + V0 + V1 + rslit], name=f"{prefix}Rext")
-        print(f'Found {len(rext)} surfaces for Rext (rint={rext})')
+        if len(rslit) > 0:
+            gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in rslit], name=f"{prefix}Coolingslit")
+            print(f'Found {len(rslit)} surfaces for Coolingslit (rslit={rslit})')
+
+
+        # --- Outer cylindrical surface (Rext) ---
+        rext = gmsh.model.getEntitiesInBoundingBox(
+            -r2 - eps, -r2 - eps, zmin - eps,
+             r2 + eps,  r2 + eps, zmax + eps,
+            2
+        )
+        # Avoid double-counting with V0/V1/Rint/Rslit
+        exclude = set(rint + V0 + V1 + rslit)
+        rext_filtered = [(dim, tag) for (dim, tag) in rext if (dim, tag) not in exclude]
+
+        if len(rext_filtered) > 0:
+            gmsh.model.addPhysicalGroup(2, [tag for (dim, tag) in rext_filtered], name=f"{prefix}Rext")
+            print(f'Found {len(rext_filtered)} surfaces for Rext (rext={rext_filtered})')
+
 
     def generate_mesh(self, mesh_size: Optional[float] = None):
         """Generate mesh for the entire insert.

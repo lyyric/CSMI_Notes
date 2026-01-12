@@ -1,0 +1,398 @@
+# %% [markdown]
+# # 1.1 Openturns : Point, Sample
+# 
+# 
+
+# %% [markdown]
+# ## Résumé
+# 
+# Dans cette page, nous présentons les classes `Point` et `Sample`, deux classes de base dans OpenTURNS. Nous présentons les concepts implémentés par ces classes, ainsi que la manière de créer et utiliser de tels objets. Nous montrons comment extraire une ligne ou une colonne avec l'opérateur de slicing. Nous montrons les interactions avec les types Python ainsi qu'avec le module Numpy.
+
+# %% [markdown]
+# ## Références
+# 
+# http://openturns.github.io/openturns/master/user_manual/_generated/openturns.Point.html
+# 
+# http://openturns.github.io/openturns/master/user_manual/_generated/openturns.Sample.html
+
+# %% [markdown]
+# ## Introduction
+# 
+# Deux types de données incontournables avec OpenTURNS sont :
+# * `Point` : un point de dimension D ($\in \mathbb{R}^D$) ;
+# * `Sample` : un échantillon de N points de dimension D.
+# 
+# Objectifs de cette séquence :
+# * extraire et insérer des valeurs,
+# * interactions avec l’environnement Python.
+
+# %%
+#!pip install openturns
+import openturns as ot
+
+# %% [markdown]
+# ## Point
+# 
+# Nous allons voir comment 
+# * créer un point de $\mathbb{R}^3$, 
+# * accéder à ses composantes,
+# * modifier ses composantes.
+# 
+# Les points sont remplis par des zéros par défaut. 
+
+# %%
+p = ot.Point(3)
+p
+
+# %% [markdown]
+# Accéder à la seconde composante (d'indice 1).
+# 
+# Note : La numérotation des composantes commence à 0 en Python.
+
+# %%
+p[1]
+
+# %% [markdown]
+# Modifier la seconde composante.
+
+# %%
+p[1] = 2
+p
+
+# %%
+p.getDimension ()
+
+# %% [markdown]
+# ## Sample
+# 
+# Il s’agit d’un échantillon de N points de $\mathbb{R}^D$.
+# * D est la dimension de l’échantillon.
+# * N est sa taille (en anglais "*size*").
+# 
+# Un `Sample` peut donc être vu comme une matrice (à N lignes et D colonnes plutôt que D lignes et N colonnes en général par les statisticiens).
+# 
+# *Remarque.* Il existe aussi un objet `ProcessSample` (échantillon de champs, typiquement des fonctions de l’espace ou du temps).
+
+# %% [markdown]
+# Créer et manipuler un Sample (N=5, D=3).
+
+# %%
+data = ot.Sample(5, 3)
+data
+
+# %%
+data.getSize()
+
+# %%
+data.getDimension()
+
+# %% [markdown]
+# Modifier un Sample.
+
+# %%
+data [3, 2] = 32
+data
+
+# %% [markdown]
+# ## Sample : extraire une ligne ou une colonne
+# 
+# * Comme avec les tableaux Numpy, extraire une ligne ou une colonne : opérateur de slicing `:`.
+# * En Python, le *slicing* est l’acte d’extraire une partie d’un tableau en une seule instruction.
+# * Objectif : éviter les boucles `for` par vectorisation pour améliorer la performance et la lisibilité
+
+# %%
+ligne = data [3, :]
+ligne
+
+# %%
+type(ligne)
+
+# %%
+colonne = data [:, 2]
+colonne
+
+# %%
+type(colonne)
+
+# %% [markdown]
+# On observe que 
+# * la `ligne` est de type `Point`
+# * la `colonne` est de type `Sample`
+# 
+# C'est cohérent : dans un `Sample` en dimension D, une ligne est bien un `Point` en dimension D.
+
+# %% [markdown]
+# Extraire plusieurs colonnes dans un nouveau `Sample`.
+
+# %%
+data.getMarginal([0, 2])
+
+# %% [markdown]
+# ## Créer des Points ou Samples à partir d’une liste Python
+# 
+# Créer un `Point` à partir d’une liste
+
+# %%
+p1 = ot.Point([2, 3])
+p1
+
+# %%
+p2 = ot.Point(range(2))
+p2
+
+# %% [markdown]
+# Un *Pythonisme* utile : la *list comprehension*. Elle permet de créer une liste en réalisant une boucle `for`. Cette construction est souvent utilisée dans la documentation d'OpenTURNS, dans le but d'obtenir des exemples concis.
+
+# %%
+p3 = ot.Point([i*i for i in p1 ])
+p3
+
+# %% [markdown]
+# Un *Pythonisme* utile : la répétition avec l'opérateur `*`.
+
+# %%
+p4 = [5] * 3
+p4
+
+# %% [markdown]
+# Créer un `Sample` à partir d’une liste de `Point`s.
+
+# %%
+data = ot.Sample([p1, p2, p3 ])
+data
+
+# %% [markdown]
+# Créer un `Sample` à partir d'un `Point`, répété trois fois.
+
+# %%
+data = ot.Sample([p4] * 3)
+data
+
+# %% [markdown]
+# Créer un `Sample` à partir d’une liste (imbriquée).
+
+# %%
+data = ot.Sample([[0, 1], [2, 3], [4, 5]])
+data
+
+# %% [markdown]
+# ## Interactions avec Numpy
+# 
+# * Les classes Python extérieures à OpenTURNS ne connaissent pas les classes OpenTURNS. 
+# * C'est pourquoi il est utile de savoir convertir vers des types Python plus classiques, en particulier les tableaux (arrays) de Numpy.
+
+# %% [markdown]
+# Créer un `Sample`, puis le convertir en `array` Numpy 2D.
+
+# %%
+X = ot.Sample(5, 3)
+import numpy as np
+Xarray = np.array(X)
+Xarray
+
+# %%
+type(Xarray)
+
+# %% [markdown]
+# Dans l’autre sens : créer un `array` Numpy, puis le convertir en `Sample`.
+
+# %%
+Xarray = 3.14 * np.ones((5, 3))
+X = ot.Sample(Xarray )
+X
+
+# %%
+X.getSize()
+
+# %%
+X.getDimension()
+
+# %% [markdown]
+# Créer un `Sample` à partir de 5 valeurs est ambigüe. En effet, est-ce :
+# * un échantillon de taille 5 en dimension 1 ou
+# * un échantillon de taille 1 en dimension 5 ?
+# 
+# Pour retirer l'ambiguïté, on utilise le second argument du constructeur de `Sample`, qui permet de spécifier la dimension.
+
+# %%
+u = np.linspace(0, 1, 5)
+u
+
+# %% [markdown]
+# Choix A : on créée un `Sample` de taille 5 en dimension 1.
+
+# %%
+X = ot.Sample(1,u)
+X
+
+# %% [markdown]
+# Choix B : on créée un `Sample` de taille 5 en dimension 5.
+
+# %%
+X= ot.Sample(5,u)
+X
+
+# %%
+# Génère une exception attendue
+# X = ot.Sample(u)
+
+# %% [markdown]
+# ## Point/Sample : exercices
+# 
+# ### Exercice 1 : point et norme 1
+# Créer la variable X contenant un `Point` en dimension 12 contenant les
+# valeurs numériques suivantes : 0., 1., ..., 11. 
+# * Utiliser la méthode `norm` pour calculer la norme Euclidienne de X. 
+# * Comment calculer la norme 1 de X ?
+
+# %%
+X = ot.Point(range(12))
+norm2 = X.norm()
+print(norm2)
+norm1 = sum(abs(x) for x in X)
+print(norm1)
+
+# %% [markdown]
+# ### Exercice 2 : moyenne et minimum
+# Créer la variable X contenant un Sample correspondant à l’échantillon
+# en dimension 2 suivant :
+# $$
+# X=
+# \begin{pmatrix}
+# 0 & 1 \\
+# 2 & 3 \\
+# 4 & 5
+# \end{pmatrix}
+# $$
+# * Utiliser la méthode `computeMean` pour calculer la moyenne empirique.
+# * Utiliser la méthode `getMin` pour calculer le minimum.
+# 
+# 
+
+# %%
+X = ot.Sample([[0,1],[2,3],[4,5]])
+print(X.computeMean())
+print(X.getMin())
+
+# %% [markdown]
+# ### Exercice 3 : différents échantillons
+# 
+# Quel est le résultat des instructions suivantes ?
+# 
+# `
+# u= np.linspace(0, 1, 10)
+# ot.Sample(2,u)
+# ot.Sample(3,u)
+# ot.Sample(12,u)
+# `
+# 
+# 
+
+# %%
+u = np.linspace(0, 1, 10)
+ot.Sample(2, u)
+
+# %%
+ot.Sample(3, u)
+
+# %%
+ot.Sample(12, u)
+
+# %% [markdown]
+# ### Exercice 4 : un pythonisme
+# 
+# Experimentez le pythonisme suivant, qui permet d’extraire les quatre
+# champs d’un `Point` en une seule ligne :
+# 
+# `
+# X= ot.Point([12, 1.680, 3.1416, 2.718])
+# [ apotres, golden, pi, euler ]=X
+# `
+# 
+# * Afficher les valeurs de `apotres`, `golden`, `pi` et `euler` et vérifier les valeurs. 
+# * Que se passe-t-il si on ajoute une dimension dans le `Point` ?
+# 
+# 
+
+# %%
+X = ot.Point([12, 1.680, 3.1416, 2.718])
+[apotres, golden, pi, euler] = X
+print(apotres, golden, pi, euler)
+
+# %% [markdown]
+# Si vous ajoutez une dimension supplémentaire (par exemple, 42), le déballage entraînera une erreur (trop de valeurs).
+
+# %% [markdown]
+# ### Exercice 5 : matrice de corrélation
+# 
+# Créer la `CorrelationMatrix` correspondant à la matrice de
+# corrélation suivante :
+# $$
+# A=
+# \begin{pmatrix}
+# 1   & 0.1 \\
+# 0.1 & 1
+# \end{pmatrix}
+# $$
+# de deux manières différentes : 
+# * à partir d’une liste Python, 
+# * à partir  d’un array Numpy.
+# 
+# 
+
+# %%
+ot.CorrelationMatrix([[1,0.1],[0.1,1]])
+
+# %%
+import numpy as np
+arr = np.array([[1,0.1],[0.1,1]])
+ot.CorrelationMatrix(arr)
+
+# %% [markdown]
+# 
+# ### Exercice 6 : types
+# 
+# Lorsqu'on utilise par exemple la classe `Normal`, les méthodes associées peuvent renvoyer des `Sample`, des `Point` ou des `float` en fonction des cas. Il faut donc être capable de faire cohabiter ces objets. 
+# 
+# * Utiliser l'instruction suivante pour calculer la moyenne d'une variable gaussienne avec les paramètres par défaut :
+# ```
+# moyenne = ot.Normal().getMean()
+# ```
+# * Quel est le type de la variable `moyenne` ?
+# * Extraire la première composante de `moyenne` : quel est son type ?
+# * Créer un échantillon de 5 réalisations en dimension 3 d'une variable gaussienne centrée-réduite avec l'instruction :
+# ```
+# X = ot.Normal(3).getSample(5)
+# ```
+# * Quel est le type de `X` ?
+
+# %%
+moyenne = ot.Normal().getMean()
+print(type(moyenne))
+print(type(moyenne[0]))
+
+X = ot.Normal(3).getSample(5)
+print(type(X))
+X
+
+# %% [markdown]
+# ### Exercice 7 : split
+# 
+# La méthode `split` de la classe `Sample` permet de découper un échantillon en deux parties. Par exemple, dans le contexte de la validation d'un méta-modèle, on découpe un échantillon en deux sous-échantillon :
+# * un sous-échantillon d'apprentissage,
+# * un sous-échantillon de validation.
+# 
+# L'objectif de cet exercice est de faire des essais avec cette méthode. 
+# * Créer la variable `data` contenant un échantillon de taille 5 issu d'une loi gaussienne en dimension 2.
+# * Utiliser la méthode `split` pour créer la variable `reste` contenant un sous-échantillon de taille 2. 
+# * Observer le contenu de la variable `data`.
+# 
+
+# %%
+data = ot.Normal(2).getSample(5)
+print(data)
+reste = data.split(2)
+print(data)
+print(reste)
+
+

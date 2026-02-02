@@ -4,6 +4,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 L = 1.
 nx = 128
@@ -112,22 +113,41 @@ def leapfrog_step(un, unm1, unp1, t):
             dt * dt * a * s
 
 
+def run_simulation(nx_, ny_):
+    global nx, ny, dx, dy, dt, bx, by
 
-unm1 = np.zeros((nx,ny))
-un = np.zeros((nx,ny))
-unp1 = np.zeros((nx,ny))
+    nx = nx_
+    ny = ny_
 
-init_sol(un, unm1)
+    dx = L / (nx - 1)
+    dy = dx
+    dt = cfl * np.sqrt(dx * dx + dy * dy) / c
+    bx = c * dt / dx
+    by = c * dt / dy
 
-pl2d(un)
 
-t = 0.
-tmax = 1.
+    unm1 = np.zeros((nx,ny))
+    un = np.zeros((nx,ny))
+    unp1 = np.zeros((nx,ny))
 
-while t < tmax:
-    leapfrog_step(un, unm1, unp1, t)
-    unm1, un, unp1 = un, unp1, unm1
-    t += dt
+    init_sol(un, unm1)
 
-pl2d(un)
+    # pl2d(un)
 
+    t = 0.
+    tmax = 1.
+
+    while t < tmax:
+        leapfrog_step(un, unm1, unp1, t)
+        unm1, un, unp1 = un, unp1, unm1
+        t += dt
+
+    # pl2d(un)
+
+mesh_sizes = [32, 64, 128]
+
+for n in mesh_sizes:
+    start = time.perf_counter()
+    run_simulation(n, n)
+    end = time.perf_counter()
+    print(f"nx = ny ={n:3d} | time = {end - start:.3f} s")
